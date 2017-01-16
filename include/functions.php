@@ -54,9 +54,9 @@ function settings_cloner()
 
 	$arr_settings = array();
 
-	$arr_settings["setting_server_ip"] = __("This server IP", 'lang_site_manager');
-	$arr_settings["setting_server_ips_allowed"] = __("Server IPs allowed", 'lang_site_manager');
-	$arr_settings["setting_site_comparison"] = __("Sites to compare with", 'lang_site_manager');
+	$arr_settings['setting_server_ip'] = __("This server IP", 'lang_site_manager');
+	$arr_settings['setting_server_ips_allowed'] = __("Server IPs allowed", 'lang_site_manager');
+	$arr_settings['setting_site_comparison'] = __("Sites to compare with", 'lang_site_manager');
 
 	foreach($arr_settings as $handle => $text)
 	{
