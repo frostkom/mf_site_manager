@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-15 11:58+0100\n"
+"POT-Creation-Date: 2017-01-19 08:49+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -24,7 +24,7 @@ msgid "All data was cloned"
 msgstr "All data klonades"
 
 #: ../clone/index.php:111
-#: ../switch/index.php:139
+#: ../switch/index.php:146
 msgid "You have to choose a site other than this site"
 msgstr "Du måste välja en annan webbplats än denna"
 
@@ -43,7 +43,7 @@ msgid "Clone from"
 msgstr "Klona från"
 
 #: ../clone/index.php:133
-#: ../switch/index.php:160
+#: ../switch/index.php:167
 msgid "Choose here"
 msgstr "Välj här"
 
@@ -102,8 +102,8 @@ msgid "Site Manager"
 msgstr ""
 
 #: ../include/functions.php:43
-#: ../switch/index.php:144
-#: ../switch/index.php:173
+#: ../switch/index.php:151
+#: ../switch/index.php:180
 msgid "Switch"
 msgstr "Byt"
 
@@ -124,28 +124,31 @@ msgid "There appears to be no tables on either of the sites"
 msgstr "Det verkar inte finnas några tabeller på sidorna"
 
 #: ../switch/index.php:132
-msgid "All data was switched"
-msgstr "All data byte webbplats"
+msgid "I have switched all the data on the two domain as you requested."
+msgstr "Jag har bytt all data mellan de två domänerna som du efterfrågade."
 
-#: ../switch/index.php:147
+#: ../switch/index.php:154
 msgid "Switch sites"
 msgstr "Byt webbplatser"
 
-#: ../switch/index.php:153
+#: ../switch/index.php:160
 msgid "Switch this site..."
 msgstr "Byt denna webbplats..."
 
-#: ../switch/index.php:171
+#: ../switch/index.php:178
 msgid "...with this site"
 msgstr "...med denna webbplats"
 
-#: ../switch/index.php:172
+#: ../switch/index.php:179
 msgid "Are you really sure? This will switch domain for the two sites."
 msgstr "Är du helt säker? Detta kommer att byta domän för de två webbplatserna."
 
-#: ../switch/index.php:179
+#: ../switch/index.php:186
 msgid "You have to have a MultiSite to be able to switch sites"
 msgstr "Du måste ha en MultiSite för att kunna byta domän mellan två webbplatser"
+
+#~ msgid "All data was switched"
+#~ msgstr "All data byte webbplats"
 
 #~ msgid "Themes"
 #~ msgstr "Teman"

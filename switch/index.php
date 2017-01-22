@@ -129,7 +129,7 @@ if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_P
 				}
 			}
 
-			$done_text = __("All data was switched", 'lang_site_manager')." (".$strBasePrefixFrom." -> ".$strBasePrefixTo.")";
+			$done_text = __("I have switched all the data on the two domain as you requested.", 'lang_site_manager')." (".$strBasePrefixFrom." -> ".$strBasePrefixTo.")";
 			//$done_text .= " [".nl2br($str_queries)."]";
 		}
 	}
