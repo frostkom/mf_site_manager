@@ -162,6 +162,8 @@ class mf_site_manager
 
 			if(count($arr_data) > 0)
 			{
+				//$has_equal_version = false;
+
 				$out .= "<tr>
 					<td><i class='fa fa-lg fa-info-circle'></i></td>";
 
@@ -175,12 +177,28 @@ class mf_site_manager
 
 							if(count($arr_data_check) > 0)
 							{
-								$out .= "<td>".($arr_data_check['value'] > 0 ? "<i class='fa fa-lg fa-close red'></i> <a href='".$arr_data_check['link']."' rel='external'>".$arr_data_check['value']."</a>" : "<i class='fa fa-lg fa-check green'></i>")."</td>";
+								$out .= "<td>";
+								
+									if($arr_data_check['value'] > 0)
+									{
+										$out .= "<i class='fa fa-lg fa-close red'></i> <a href='".$arr_data_check['link']."' rel='external'>".$arr_data_check['value']."</a>";
+
+										$has_equal_version = false;
+									}
+									
+									else
+									{
+										$out .= "<i class='fa fa-lg fa-check green'></i>";
+									}
+
+								$out .= "</td>";
 							}
 
 							else
 							{
 								$out .= "<td><em>(".__("does not exist", 'lang_site_manager').")</em></td>";
+
+								$has_equal_version = false;
 							}
 
 							unset($array[$site][$key]);
@@ -199,11 +217,29 @@ class mf_site_manager
 							{
 								$out_temp = "";
 
+								foreach($arr_data['array'] as $key2 => $value2)
+								{
+									$value_check = isset($arr_data_check['array'][$key2]) ? $arr_data_check['array'][$key2] : "";
+
+									if($value2 != $value_check)
+									{
+										$out_temp .= "<li><i class='fa fa-lg fa-close red'></i> <strong>".$key2.":</strong> ".$value_check." -> ".$value2."</li>";
+
+										$has_equal_version = false;
+									}
+									
+									unset($arr_data_check['array'][$key2]);
+								}
+
 								foreach($arr_data_check['array'] as $key2 => $value2)
 								{
-									if(!isset($arr_data['array'][$key2]) || $value2 != $arr_data['array'][$key2])
+									$value_check = isset($arr_data['array'][$key2]) ? $arr_data['array'][$key2] : "";
+
+									if($value2 != $value_check)
 									{
-										$out_temp .= "<li><i class='fa fa-lg fa-close red'></i> <strong>".$key2.":</strong> ".$value2." != ".$arr_data['array'][$key2]."</li>";
+										$out_temp .= "<li><i class='fa fa-lg fa-close red'></i> <strong>".$key2.":</strong> ".$value2." -> ".$value_check."</li>";
+
+										$has_equal_version = false;
 									}
 								}
 
@@ -212,6 +248,8 @@ class mf_site_manager
 									if($out_temp != '')
 									{
 										$out .= "<ul>".$out_temp."</ul>";
+
+										$has_equal_version = false;
 									}
 
 									else
@@ -225,6 +263,8 @@ class mf_site_manager
 							else
 							{
 								$out .= "<td><em>(".__("does not exist", 'lang_site_manager').")</em></td>";
+
+								$has_equal_version = false;
 							}
 
 							unset($array[$site][$key]);
@@ -232,8 +272,6 @@ class mf_site_manager
 					}
 
 				$out .= "</tr>";
-
-				$has_equal_version = false;
 			}
 
 			if($has_equal_version == false)
