@@ -221,6 +221,9 @@ class mf_site_manager
 								{
 									$value_check = isset($arr_data_check['array'][$key2]) ? $arr_data_check['array'][$key2] : "";
 
+									$value2 = str_replace(get_site_url(), "[".__("domain", 'lang_site_manager')."]", $value2);
+									$value_check = str_replace("http://".$site, "[".__("domain", 'lang_site_manager')."]", $value_check);
+
 									if($value2 != $value_check)
 									{
 										$out_temp .= "<li><i class='fa fa-lg fa-close red'></i> <strong>".$key2.":</strong> ".$value_check." -> ".$value2."</li>";
@@ -234,6 +237,9 @@ class mf_site_manager
 								foreach($arr_data_check['array'] as $key2 => $value2)
 								{
 									$value_check = isset($arr_data['array'][$key2]) ? $arr_data['array'][$key2] : "";
+
+									$value2 = str_replace(get_site_url(), "[".__("domain", 'lang_site_manager')."]", $value2);
+									$value_check = str_replace("http://".$site, "[".__("domain", 'lang_site_manager')."]", $value_check);
 
 									if($value2 != $value_check)
 									{
