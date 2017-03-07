@@ -126,7 +126,6 @@ echo "<div class='wrap'>
 
 				if(is_multisite())
 				{
-
 					$result = $wpdb->get_results($wpdb->prepare("SELECT blog_id, domain, path FROM ".$wpdb->base_prefix."blogs WHERE blog_id != %d ORDER BY blog_id ASC", $wpdb->blogid));
 
 					$arr_data = array();
