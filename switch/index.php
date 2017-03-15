@@ -2,7 +2,7 @@
 
 $intBlogID = check_var('intBlogID');
 
-if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_POST['intSiteSwitchAccept'] == 1 && wp_verify_nonce($_POST['_wpnonce'], 'site_switch'))
+if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_POST['intSiteSwitchAccept'] == 1 && wp_verify_nonce($_POST['_wpnonce'], 'site_switch_'.$wpdb->blogid))
 {
 	if($intBlogID > 0 && $intBlogID != $wpdb->blogid)
 	{
@@ -11,13 +11,13 @@ if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_P
 		$strBasePrefix = $wpdb->base_prefix;
 
 		$strBasePrefixFrom = $wpdb->prefix;
-		$strBlogDomainFrom = trim($wpdb->get_var($wpdb->prepare("SELECT CONCAT(domain, path) FROM ".$wpdb->base_prefix."blogs WHERE blog_id = '%d'", $wpdb->blogid)), "/");
+		//$strBlogDomainFrom = trim($wpdb->get_var($wpdb->prepare("SELECT CONCAT(domain, path) FROM ".$wpdb->base_prefix."blogs WHERE blog_id = '%d'", $wpdb->blogid)), "/");
+		$strBlogDomainFrom = get_site_url_clean(array('trim' => "/"));
 
 		$arr_tables_from = array();
 
-		$query = "SHOW TABLES LIKE '".$strBasePrefixFrom."%'";
-		$result = $wpdb->get_results($query);
-		$str_queries .= $query.";\n";
+		$result = $wpdb->get_results("SHOW TABLES LIKE '".$strBasePrefixFrom."%'");
+		$str_queries .= $wpdb->last_query.";\n";
 
 		foreach($result as $r)
 		{
@@ -28,14 +28,14 @@ if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_P
 		}
 
 		$strBasePrefixTo = $intBlogID > 1 ? $wpdb->base_prefix.$intBlogID."_" : $wpdb->base_prefix;
-		$strBlogDomainTo = trim($wpdb->get_var($wpdb->prepare("SELECT CONCAT(domain, path) FROM ".$wpdb->base_prefix."blogs WHERE blog_id = '%d'", $intBlogID)), "/");
+		//$strBlogDomainTo = trim($wpdb->get_var($wpdb->prepare("SELECT CONCAT(domain, path) FROM ".$wpdb->base_prefix."blogs WHERE blog_id = '%d'", $intBlogID)), "/");
+		$strBlogDomainTo = get_site_url_clean(array('id' => $intBlogID, 'trim' => "/"));
 
 		$strBlogDomain_temp = "mf_cloner.com";
 		$arr_tables_to = array();
 
-		$query = "SHOW TABLES LIKE '".$strBasePrefixTo."%'";
-		$result = $wpdb->get_results($query);
-		$str_queries .= $query.";\n";
+		$result = $wpdb->get_results("SHOW TABLES LIKE '".$strBasePrefixTo."%'");
+		$str_queries .= $wpdb->last_query.";\n";
 
 		foreach($result as $r)
 		{
@@ -45,7 +45,7 @@ if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_P
 			}
 		}
 
-			$str_queries .= "# Tables: ".count($arr_tables_from)." -> ".count($arr_tables_to)."\n";
+		$str_queries .= "# Tables: ".count($arr_tables_from)." -> ".count($arr_tables_to)."\n";
 
 		if(count($arr_tables_from) == 0 || count($arr_tables_to) == 0)
 		{
@@ -72,16 +72,14 @@ if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_P
 
 				if(substr($table_name, -5) == "posts")
 				{
-					$query = "UPDATE ".$table_name." SET guid = REPLACE(guid, '".$domain_from."', '".$domain_to."'), post_content = REPLACE(post_content, '".$domain_from."', '".$domain_to."')";
-					$wpdb->query($query);
-					$str_queries .= $query.";\n";
+					$wpdb->query("UPDATE ".$table_name." SET guid = REPLACE(guid, '".$domain_from."', '".$domain_to."'), post_content = REPLACE(post_content, '".$domain_from."', '".$domain_to."')");
+					$str_queries .= $wpdb->last_query.";\n";
 				}
 
 				else if(substr($table_name, -7) == "options")
 				{
-					$query = "UPDATE ".$table_name." SET option_value = REPLACE(option_value, '".$domain_from."', '".$domain_to."') WHERE (option_name = 'siteurl' OR option_name = 'home')";
-					$wpdb->query($query);
-					$str_queries .= $query.";\n";
+					$wpdb->query("UPDATE ".$table_name." SET option_value = REPLACE(option_value, '".$domain_from."', '".$domain_to."') WHERE (option_name = 'siteurl' OR option_name = 'home')");
+					$str_queries .= $wpdb->last_query.";\n";
 				}
 			}
 
@@ -94,16 +92,14 @@ if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_P
 
 				if(substr($table_name, -5) == "posts")
 				{
-					$query = "UPDATE ".$table_name." SET guid = REPLACE(guid, '".$domain_from."', '".$domain_to."'), post_content = REPLACE(post_content, '".$domain_from."', '".$domain_to."')";
-					$wpdb->query($query);
-					$str_queries .= $query.";\n";
+					$wpdb->query("UPDATE ".$table_name." SET guid = REPLACE(guid, '".$domain_from."', '".$domain_to."'), post_content = REPLACE(post_content, '".$domain_from."', '".$domain_to."')");
+					$str_queries .= $wpdb->last_query.";\n";
 				}
 
 				else if(substr($table_name, -7) == "options")
 				{
-					$query = "UPDATE ".$table_name." SET option_value = REPLACE(option_value, '".$domain_from."', '".$domain_to."') WHERE (option_name = 'siteurl' OR option_name = 'home')";
-					$wpdb->query($query);
-					$str_queries .= $query.";\n";
+					$wpdb->query("UPDATE ".$table_name." SET option_value = REPLACE(option_value, '".$domain_from."', '".$domain_to."') WHERE (option_name = 'siteurl' OR option_name = 'home')");
+					$str_queries .= $wpdb->last_query.";\n";
 				}
 			}
 
@@ -116,16 +112,14 @@ if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_P
 
 				if(substr($table_name, -5) == "posts")
 				{
-					$query = "UPDATE ".$table_name." SET guid = REPLACE(guid, '".$domain_from."', '".$domain_to."'), post_content = REPLACE(post_content, '".$domain_from."', '".$domain_to."')";
-					$wpdb->query($query);
-					$str_queries .= $query.";\n";
+					$wpdb->query("UPDATE ".$table_name." SET guid = REPLACE(guid, '".$domain_from."', '".$domain_to."'), post_content = REPLACE(post_content, '".$domain_from."', '".$domain_to."')");
+					$str_queries .= $wpdb->last_query.";\n";
 				}
 
 				else if(substr($table_name, -7) == "options")
 				{
-					$query = "UPDATE ".$table_name." SET option_value = REPLACE(option_value, '".$domain_from."', '".$domain_to."') WHERE (option_name = 'siteurl' OR option_name = 'home')";
-					$wpdb->query($query);
-					$str_queries .= $query.";\n";
+					$wpdb->query("UPDATE ".$table_name." SET option_value = REPLACE(option_value, '".$domain_from."', '".$domain_to."') WHERE (option_name = 'siteurl' OR option_name = 'home')");
+					$str_queries .= $wpdb->last_query.";\n";
 				}
 			}
 
@@ -146,32 +140,25 @@ echo "<div class='wrap'>
 	."<div id='poststuff' class='postbox'>
 		<h3 class='hndle'><span>".__("Switch sites", 'lang_site_manager')."</span></h3>
 		<div class='inside'>
-			<form method='post' action='' class='mf_form'>";
-
-				$strBlogDomain = $wpdb->get_var($wpdb->prepare("SELECT CONCAT(domain, path) FROM ".$wpdb->base_prefix."blogs WHERE blog_id = '%d'", $wpdb->blogid));
-
-				echo show_textfield(array('name' => 'intBlogID_old', 'text' => __("Switch this site...", 'lang_site_manager'), 'value' => $strBlogDomain, 'xtra' => "readonly"));
+			<form method='post' action='' class='mf_form'>"
+				.show_textfield(array('name' => 'intBlogID_old', 'text' => __("Switch this site...", 'lang_site_manager'), 'value' => get_site_url_clean(), 'xtra' => "readonly"));
 
 				if(is_multisite())
 				{
-					$result = $wpdb->get_results($wpdb->prepare("SELECT blog_id, domain, path FROM ".$wpdb->base_prefix."blogs WHERE blog_id != %d ORDER BY blog_id ASC", $wpdb->blogid));
+					$arr_data = get_sites_for_select();
 
-					$arr_data = array();
-					$arr_data[''] = "-- ".__("Choose here", 'lang_site_manager')." --";
-
-					foreach($result as $r)
+					if(count($arr_data) > 1)
 					{
-						$blog_id = $r->blog_id;
-						$domain = $r->domain;
-						$path = $r->path;
-
-						$arr_data[$blog_id] = $domain.$path;
+						echo show_select(array('data' => $arr_data, 'name' => 'intBlogID', 'value' => $intBlogID, 'text' => __("...with this site", 'lang_site_manager'), 'required' => true))
+						.show_checkbox(array('name' => 'intSiteSwitchAccept', 'text' => __("Are you really sure? This will switch domain for the two sites.", 'lang_site_manager'), 'value' => 1, 'required' => true))
+						.show_button(array('name' => 'btnSiteSwitch', 'text' => __("Switch", 'lang_site_manager')))
+						.wp_nonce_field('site_switch_'.$wpdb->blogid, '_wpnonce', true, false);
 					}
 
-					echo show_select(array('data' => $arr_data, 'name' => 'intBlogID', 'value' => $intBlogID, 'text' => __("...with this site", 'lang_site_manager'), 'required' => true))
-					.show_checkbox(array('name' => 'intSiteSwitchAccept', 'text' => __("Are you really sure? This will switch domain for the two sites.", 'lang_site_manager'), 'value' => 1, 'required' => true))
-					.show_button(array('name' => 'btnSiteSwitch', 'text' => __("Switch", 'lang_site_manager')))
-					.wp_nonce_field('site_switch', '_wpnonce', true, false);
+					else
+					{
+						echo "<em>".__("I could not find any sites to switch to", 'lang_site_manager')."</em>";
+					}
 				}
 
 				else

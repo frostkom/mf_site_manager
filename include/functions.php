@@ -1,5 +1,51 @@
 <?php
 
+function get_site_url_clean($data = array())
+{
+	global $wpdb;
+
+	if(!isset($data['id'])){	$data['id'] = $wpdb->blogid;}
+	if(!isset($data['trim'])){	$data['trim'] = "";}
+
+	$out = "";
+
+	$result = get_sites(array('ID' => $data['id']));
+
+	foreach($result as $r)
+	{
+		$out = $r->domain.$r->path;
+		break;
+	}
+
+	if($data['trim'] != '')
+	{
+		$out = trim($out, $data['trim']);
+	}
+
+	return $out;
+}
+
+function get_sites_for_select()
+{
+	global $wpdb;
+
+	$result = get_sites(array('site__not_in' => array($wpdb->blogid)));
+
+	$arr_data = array();
+	$arr_data[''] = "-- ".__("Choose here", 'lang_site_manager')." --";
+
+	foreach($result as $r)
+	{
+		$blog_id = $r->blog_id;
+		$domain = $r->domain;
+		$path = $r->path;
+
+		$arr_data[$blog_id] = $domain.$path;
+	}
+
+	return $arr_data;
+}
+
 function get_or_set_transient($data)
 {
 	$out = get_transient($data['key']);
@@ -54,7 +100,6 @@ function settings_cloner()
 
 	$arr_settings = array();
 
-	$arr_settings['setting_server_ip'] = __("This server IP", 'lang_site_manager');
 	$arr_settings['setting_server_ips_allowed'] = __("Server IPs allowed", 'lang_site_manager');
 	$arr_settings['setting_site_comparison'] = __("Sites to compare with", 'lang_site_manager');
 
@@ -73,19 +118,14 @@ function settings_cloner_callback()
 	echo settings_header($setting_key, __("Site Manager", 'lang_site_manager'));
 }
 
-function setting_server_ip_callback()
-{
-	echo get_or_set_transient(array('key' => "server_ip_transient", 'url' => "http://ipecho.net/plain"));
-}
-
 function setting_server_ips_allowed_callback()
 {
 	$setting_key = get_setting_key(__FUNCTION__);
 	$option = get_option($setting_key);
 
-	$server_ip = get_or_set_transient(array('key' => "server_ip_transient", 'url' => "http://ipecho.net/plain"));
+	$placeholder = $option == "" ? get_or_set_transient(array('key' => "server_ip_transient", 'url' => "http://ipecho.net/plain")) : "";
 
-	echo show_textfield(array('name' => $setting_key, 'value' => $option, 'xtra' => " class='widefat'", 'placeholder' => $server_ip));
+	echo show_textfield(array('name' => $setting_key, 'value' => $option, 'xtra' => " class='widefat'", 'placeholder' => $placeholder));
 }
 
 function setting_site_comparison_callback()

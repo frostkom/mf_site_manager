@@ -69,34 +69,72 @@ class mf_site_manager
 
 	function get_sites($setting_site_comparison)
 	{
-		$this->arr_sites = explode(",", $setting_site_comparison);
+		global $wpdb;
+
+		if($setting_site_comparison != '')
+		{
+			$this->arr_sites = explode(",", $setting_site_comparison);
+		}
 
 		$count_temp = count($this->arr_sites);
 
-		for($i = 0; $i < $count_temp; $i++)
+		if($count_temp > 0)
 		{
-			$this->arr_sites[$i] = $site = trim($this->arr_sites[$i]);
-
-			$site_ajax = $site."/wp-content/plugins/mf_site_manager/include/ajax.php?type=compare";
-
-			list($content, $headers) = get_url_content($site_ajax, true);
-
-			if($headers['http_code'] == 200)
+			for($i = 0; $i < $count_temp; $i++)
 			{
-				$arr_content = json_decode($content, true);
+				$this->arr_sites[$i] = $site = trim($this->arr_sites[$i]);
 
-				$this->arr_core[$site] = isset($arr_content['core']) ? $arr_content['core'] : "";
-				$this->arr_themes[$site] = $arr_content['themes'];
-				$this->arr_plugins[$site] = $arr_content['plugins'];
-			}
+				$site_ajax = $site."/wp-content/plugins/mf_site_manager/include/ajax.php?type=compare";
 
-			else
-			{
-				$this->arr_sites_error[$site] = array('headers' => $headers, 'content' => $content);
+				list($content, $headers) = get_url_content($site_ajax, true);
 
-				unset($this->arr_sites[$i]);
+				if($headers['http_code'] == 200)
+				{
+					$arr_content = json_decode($content, true);
+
+					$this->arr_core[$site] = isset($arr_content['core']) ? $arr_content['core'] : "";
+					$this->arr_themes[$site] = $arr_content['themes'];
+					$this->arr_plugins[$site] = $arr_content['plugins'];
+				}
+
+				else
+				{
+					$this->arr_sites_error[$site] = array('headers' => $headers, 'content' => $content);
+
+					unset($this->arr_sites[$i]);
+				}
 			}
 		}
+
+		/*else
+		{
+			$arr_sites = get_sites(array('site__not_in' => array($wpdb->blogid)));
+
+			foreach($arr_sites as $key => $site)
+			{
+				$this->arr_sites[] = $site = trim($site->domain.$site->path, "/");
+
+				$site_ajax = $site."/wp-content/plugins/mf_site_manager/include/ajax.php?type=compare";
+
+				list($content, $headers) = get_url_content($site_ajax, true);
+
+				if($headers['http_code'] == 200)
+				{
+					$arr_content = json_decode($content, true);
+
+					$this->arr_core[$site] = isset($arr_content['core']) ? $arr_content['core'] : "";
+					$this->arr_themes[$site] = $arr_content['themes'];
+					$this->arr_plugins[$site] = $arr_content['plugins'];
+				}
+
+				else
+				{
+					$this->arr_sites_error[$site] = array('headers' => $headers, 'content' => $content);
+
+					unset($this->arr_sites[$key]);
+				}
+			}
+		}*/
 	}
 
 	function check_version($type)
@@ -162,8 +200,6 @@ class mf_site_manager
 
 			if(count($arr_data) > 0)
 			{
-				//$has_equal_version = false;
-
 				$out .= "<tr>
 					<td><i class='fa fa-lg fa-info-circle'></i></td>";
 
@@ -226,7 +262,7 @@ class mf_site_manager
 
 									if($value2 != $value_check)
 									{
-										$out_temp .= "<li><i class='fa fa-lg fa-close red'></i> <strong>".$key2.":</strong> ".$value_check." -> ".$value2."</li>";
+										$out_temp .= "<li><i class='fa fa-lg fa-close red'></i> <strong>".$key2.":</strong> ".shorten_text(array('text' => $value_check, 'limit' => 50))." <strong>-></strong> ".shorten_text(array('text' => $value2, 'limit' => 50))."</li>";
 
 										$has_equal_version = false;
 									}
@@ -243,7 +279,7 @@ class mf_site_manager
 
 									if($value2 != $value_check)
 									{
-										$out_temp .= "<li><i class='fa fa-lg fa-close red'></i> <strong>".$key2.":</strong> ".$value2." -> ".$value_check."</li>";
+										$out_temp .= "<li><i class='fa fa-lg fa-close red'></i> <strong>".$key2.":</strong> ".shorten_text(array('text' => $value2, 'limit' => 50))." <strong>-></strong> ".shorten_text(array('text' => $value_check, 'limit' => 50))."</li>";
 
 										$has_equal_version = false;
 									}
