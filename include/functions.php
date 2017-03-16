@@ -60,7 +60,7 @@ function get_or_set_transient($data)
 	return $out;
 }
 
-function menu_cloner()
+function menu_site_manager()
 {
 	$menu_root = 'mf_site_manager/';
 	$menu_start = $menu_root."compare/index.php";
@@ -92,7 +92,7 @@ function menu_cloner()
 	}
 }
 
-function settings_cloner()
+function settings_site_manager()
 {
 	$options_area = __FUNCTION__;
 
@@ -111,7 +111,7 @@ function settings_cloner()
 	}
 }
 
-function settings_cloner_callback()
+function settings_site_manager_callback()
 {
 	$setting_key = get_setting_key(__FUNCTION__);
 

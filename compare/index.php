@@ -4,7 +4,7 @@ $setting_site_comparison = get_option('setting_site_comparison');
 
 if($setting_site_comparison == '')
 {
-	mf_redirect(admin_url("options-general.php?page=settings_mf_base#settings_cloner"));
+	mf_redirect(admin_url("options-general.php?page=settings_mf_base#settings_site_manager"));
 }
 
 $obj_site_manager = new mf_site_manager();
@@ -103,7 +103,7 @@ echo "<div class='wrap'>
 
 	else if(count($obj_site_manager->arr_sites) == 0)
 	{
-		echo "<em>".sprintf(__("I could not find any sites to compare with. Convert to MultiSite and add sites or add external ones in %sMy Settings%s", 'lang_site_manager'), "<a href='".admin_url("options-general.php?page=settings_mf_base#settings_cloner")."'>", "</a>")."</em>";
+		echo "<em>".sprintf(__("I could not find any sites to compare with. Convert to MultiSite and add sites or add external ones in %sMy Settings%s", 'lang_site_manager'), "<a href='".admin_url("options-general.php?page=settings_mf_base#settings_site_manager")."'>", "</a>")."</em>";
 	}
 
 echo "</div>";

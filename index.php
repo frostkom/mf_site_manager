@@ -17,8 +17,8 @@ if(is_admin())
 	include_once("include/classes.php");
 	include_once("include/functions.php");
 
-	add_action('admin_menu', 'menu_cloner');
-	add_action('admin_init', 'settings_cloner');
+	add_action('admin_menu', 'menu_site_manager');
+	add_action('admin_init', 'settings_site_manager');
 
 	load_plugin_textdomain('lang_site_manager', false, dirname(plugin_basename(__FILE__)).'/lang/');
 }
