@@ -105,36 +105,6 @@ class mf_site_manager
 				}
 			}
 		}
-
-		/*else
-		{
-			$arr_sites = get_sites(array('site__not_in' => array($wpdb->blogid)));
-
-			foreach($arr_sites as $key => $site)
-			{
-				$this->arr_sites[] = $site = trim($site->domain.$site->path, "/");
-
-				$site_ajax = $site."/wp-content/plugins/mf_site_manager/include/ajax.php?type=compare";
-
-				list($content, $headers) = get_url_content($site_ajax, true);
-
-				if($headers['http_code'] == 200)
-				{
-					$arr_content = json_decode($content, true);
-
-					$this->arr_core[$site] = isset($arr_content['core']) ? $arr_content['core'] : "";
-					$this->arr_themes[$site] = $arr_content['themes'];
-					$this->arr_plugins[$site] = $arr_content['plugins'];
-				}
-
-				else
-				{
-					$this->arr_sites_error[$site] = array('headers' => $headers, 'content' => $content);
-
-					unset($this->arr_sites[$key]);
-				}
-			}
-		}*/
 	}
 
 	function check_version($type)
@@ -262,7 +232,7 @@ class mf_site_manager
 
 									if($value2 != $value_check)
 									{
-										$out_temp .= "<li><i class='fa fa-lg fa-close red'></i> <strong>".$key2.":</strong> ".shorten_text(array('text' => $value_check, 'limit' => 50))." <strong>-></strong> ".shorten_text(array('text' => $value2, 'limit' => 50))."</li>";
+										$out_temp .= "<li><i class='fa fa-lg fa-close red'></i> <strong>".$key2.":</strong> <span class='color_red'>".shorten_text(array('text' => $value_check, 'limit' => 50, 'count' => true))."</span> <strong>-></strong> ".shorten_text(array('text' => $value2, 'limit' => 50, 'count' => true))."</li>";
 
 										$has_equal_version = false;
 									}
@@ -279,7 +249,7 @@ class mf_site_manager
 
 									if($value2 != $value_check)
 									{
-										$out_temp .= "<li><i class='fa fa-lg fa-close red'></i> <strong>".$key2.":</strong> ".shorten_text(array('text' => $value2, 'limit' => 50))." <strong>-></strong> ".shorten_text(array('text' => $value_check, 'limit' => 50))."</li>";
+										$out_temp .= "<li><i class='fa fa-lg fa-close red'></i> <strong>".$key2.":</strong> <span class='color_red'>".shorten_text(array('text' => $value2, 'limit' => 50, 'count' => true))."</span> <strong>-></strong> ".shorten_text(array('text' => $value_check, 'limit' => 50, 'count' => true))."</li>";
 
 										$has_equal_version = false;
 									}

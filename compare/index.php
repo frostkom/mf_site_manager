@@ -25,7 +25,7 @@ echo "<div class='wrap'>
 
 			foreach($obj_site_manager->arr_sites as $site)
 			{
-				$arr_header[] = $site;
+				$arr_header[] = "<a href='".validate_url($site."/wp-admin")."'>".$site."</a>";
 			}
 
 			echo show_table_header($arr_header)
