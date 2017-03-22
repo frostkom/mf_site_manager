@@ -80,6 +80,9 @@ if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_P
 				{
 					$wpdb->query("UPDATE ".$table_name." SET option_value = REPLACE(option_value, '".$domain_from."', '".$domain_to."') WHERE (option_name = 'siteurl' OR option_name = 'home')");
 					$str_queries .= $wpdb->last_query.";\n";
+
+					$wpdb->query("UPDATE ".$table_name." SET option_name = '".$strBasePrefixTo."user_roles' WHERE option_name = '".$strBasePrefixFrom."user_roles'");
+					$str_queries .= $wpdb->last_query.";\n";
 				}
 			}
 
