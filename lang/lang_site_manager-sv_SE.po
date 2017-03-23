@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-15 10:00+0100\n"
+"POT-Creation-Date: 2017-03-23 11:40+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -15,50 +15,73 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: ..\n"
 
+#: ../change/index.php:18
+#, php-format
+msgid "I have changed the URL from %s to %s"
+msgstr "Jag har ändrat URLen från %s till %s"
+
+#: ../change/index.php:23
+msgid "You have to choose another URL than the current one"
+msgstr "Du måste välja en annan URL än den nuvarande"
+
+#: ../change/index.php:28
+#: ../include/functions.php:94
+msgid "Change URL"
+msgstr "Ändra URL"
+
+#: ../change/index.php:33
+msgid "Change to this URL"
+msgstr "Ändra till denna URL"
+
+#: ../change/index.php:34
+msgid "Are you really sure? This will change the URL of the site"
+msgstr "Är du helt säker? Detta kommer att byta URL för webbplatsen"
+
+#: ../change/index.php:35
+#: ../clone/index.php:130
+#: ../switch/index.php:156
+msgid "Perform"
+msgstr "Genomför"
+
 #: ../clone/index.php:56
 msgid "There appears to be no tables on the source site"
 msgstr "Det verkar inte finnas någon tabell på källwebbplatsen"
 
-#: ../clone/index.php:99
+#: ../clone/index.php:102
 msgid "All data was cloned"
 msgstr "All data klonades"
 
-#: ../clone/index.php:106
-#: ../switch/index.php:133
+#: ../clone/index.php:109
+#: ../switch/index.php:136
 msgid "You have to choose a site other than this site"
 msgstr "Du måste välja en annan webbplats än denna"
 
-#: ../clone/index.php:111
-#: ../clone/index.php:128
+#: ../clone/index.php:114
 #: ../include/functions.php:86
 msgid "Clone"
 msgstr "Klona"
 
-#: ../clone/index.php:114
-msgid "Choose site to clone"
-msgstr "Välj webbplats att klona"
+#: ../clone/index.php:119
+msgid "From"
+msgstr "Från"
 
-#: ../clone/index.php:117
-msgid "Clone from"
-msgstr "Klona från"
+#: ../clone/index.php:127
+msgid "To"
+msgstr "Till"
 
-#: ../clone/index.php:125
-msgid "Clone to"
-msgstr "Klona till"
-
-#: ../clone/index.php:126
+#: ../clone/index.php:128
 msgid "Would you like to empty Active Plugins field?"
 msgstr "Vill du deaktivera alla tillägg?"
 
-#: ../clone/index.php:127
+#: ../clone/index.php:129
 msgid "Are you really sure? This will erase all previous data on the recieving site."
 msgstr "Är du helt säker? Detta kommer att radera all tidigare data på den mottagande webbplatsen."
 
-#: ../clone/index.php:134
+#: ../clone/index.php:136
 msgid "I could not find any sites to clone to"
 msgstr "Jag kunde inte hitta några webbplatser att klona till"
 
-#: ../clone/index.php:140
+#: ../clone/index.php:142
 msgid "You have to have a MultiSite to be able to clone this site"
 msgstr "Du måste ha en MultiSite för att kunna klona denna webbplats"
 
@@ -92,18 +115,18 @@ msgstr "Fel"
 msgid "I could not find any sites to compare with. Convert to MultiSite and add sites or add external ones in %sMy Settings%s"
 msgstr "Jag kunde inte hitta några webbplatser att jämföra med. Konvertera till MultiSite och lägga till webbplatser eller lägg till externa via %sMina inställningar%s"
 
-#: ../include/classes.php:193
-#: ../include/classes.php:235
-#: ../include/classes.php:307
-#: ../include/classes.php:338
-#: ../include/classes.php:353
+#: ../include/classes.php:163
+#: ../include/classes.php:205
+#: ../include/classes.php:277
+#: ../include/classes.php:308
+#: ../include/classes.php:323
 msgid "does not exist"
 msgstr "finns inte"
 
-#: ../include/classes.php:260
-#: ../include/classes.php:261
-#: ../include/classes.php:277
-#: ../include/classes.php:278
+#: ../include/classes.php:230
+#: ../include/classes.php:231
+#: ../include/classes.php:247
+#: ../include/classes.php:248
 msgid "domain"
 msgstr "domän"
 
@@ -112,21 +135,20 @@ msgid "Choose here"
 msgstr "Välj här"
 
 #: ../include/functions.php:69
-#: ../include/functions.php:118
+#: ../include/functions.php:121
 msgid "Site Manager"
 msgstr ""
 
 #: ../include/functions.php:89
-#: ../switch/index.php:138
-#: ../switch/index.php:154
+#: ../switch/index.php:141
 msgid "Switch"
 msgstr "Byt"
 
-#: ../include/functions.php:103
+#: ../include/functions.php:106
 msgid "Server IPs allowed"
 msgstr "Tillåtna server-IP"
 
-#: ../include/functions.php:104
+#: ../include/functions.php:107
 msgid "Sites to compare with"
 msgstr "Webbplatser att jämföra med"
 
@@ -134,31 +156,27 @@ msgstr "Webbplatser att jämföra med"
 msgid "There appears to be no tables on either of the sites"
 msgstr "Det verkar inte finnas några tabeller på sidorna"
 
-#: ../switch/index.php:126
+#: ../switch/index.php:129
 msgid "I have switched all the data on the two domain as you requested."
 msgstr "Jag har bytt all data mellan de två domänerna som du efterfrågade."
 
-#: ../switch/index.php:141
-msgid "Switch sites"
-msgstr "Byt webbplatser"
-
-#: ../switch/index.php:144
+#: ../switch/index.php:146
 msgid "Switch this site..."
 msgstr "Byt denna webbplats..."
 
-#: ../switch/index.php:152
-msgid "...with this site"
-msgstr "...med denna webbplats"
+#: ../switch/index.php:154
+msgid "...with this"
+msgstr "...med denna"
 
-#: ../switch/index.php:153
+#: ../switch/index.php:155
 msgid "Are you really sure? This will switch domain for the two sites."
 msgstr "Är du helt säker? Detta kommer att byta domän för de två webbplatserna."
 
-#: ../switch/index.php:160
+#: ../switch/index.php:162
 msgid "I could not find any sites to switch to"
 msgstr "Jag kunde inte hitta några webbplatser att byta till"
 
-#: ../switch/index.php:166
+#: ../switch/index.php:168
 msgid "You have to have a MultiSite to be able to switch sites"
 msgstr "Du måste ha en MultiSite för att kunna byta domän mellan två webbplatser"
 

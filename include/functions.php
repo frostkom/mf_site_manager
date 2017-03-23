@@ -90,6 +90,9 @@ function menu_site_manager()
 			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."switch/index.php");
 		}
 	}
+
+	$menu_title = __("Change URL", 'lang_site_manager');
+	add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."change/index.php");
 }
 
 function settings_site_manager()

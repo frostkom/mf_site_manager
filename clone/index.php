@@ -79,7 +79,7 @@ if(isset($_POST['btnSiteClone']) && isset($_POST['intSiteCloneAccept']) && $_POS
 
 					if($table_name_prefixless == "options")
 					{
-						$wpdb->query("UPDATE ".$table_name_to." SET option_value = REPLACE(option_value, '".$strBlogDomainFrom."', '".$strBlogDomainTo."') WHERE (option_name = 'siteurl' OR option_name = 'home')");
+						$wpdb->query("UPDATE ".$table_name_to." SET option_value = REPLACE(option_value, '".$strBlogDomainFrom."', '".$strBlogDomainTo."') WHERE (option_name = 'home' OR option_name = 'siteurl')");
 						$str_queries .= $wpdb->last_query.";\n";
 
 						$wpdb->query("UPDATE ".$table_name_to." SET option_name = '".$strBasePrefixTo."user_roles' WHERE option_name = '".$strBasePrefixFrom."user_roles'");
@@ -114,10 +114,9 @@ echo "<div class='wrap'>
 	<h2>".__("Clone", 'lang_site_manager')."</h2>"
 	.get_notification()
 	."<div id='poststuff' class='postbox'>
-		<h3 class='hndle'><span>".__("Choose site to clone", 'lang_site_manager')."</span></h3>
 		<div class='inside'>
 			<form method='post' action='' class='mf_form'>"
-				.show_textfield(array('name' => 'intBlogID_old', 'text' => __("Clone from", 'lang_site_manager'), 'value' => get_site_url_clean(), 'xtra' => "readonly"));
+				.show_textfield(array('name' => 'intBlogID_old', 'text' => __("From", 'lang_site_manager'), 'value' => get_site_url_clean(), 'xtra' => "readonly"));
 
 				if(is_multisite())
 				{
@@ -125,10 +124,10 @@ echo "<div class='wrap'>
 
 					if(count($arr_data) > 1)
 					{
-						echo show_select(array('data' => $arr_data, 'name' => 'intBlogID', 'value' => $intBlogID, 'text' => __("Clone to", 'lang_site_manager'), 'required' => true))
+						echo show_select(array('data' => $arr_data, 'name' => 'intBlogID', 'value' => $intBlogID, 'text' => __("To", 'lang_site_manager'), 'required' => true))
 						.show_checkbox(array('name' => 'intSiteEmptyPlugins', 'text' => __("Would you like to empty Active Plugins field?", 'lang_site_manager'), 'value' => 1))
 						.show_checkbox(array('name' => 'intSiteCloneAccept', 'text' => __("Are you really sure? This will erase all previous data on the recieving site.", 'lang_site_manager'), 'value' => 1, 'required' => true))
-						.show_button(array('name' => 'btnSiteClone', 'text' => __("Clone", 'lang_site_manager')))
+						.show_button(array('name' => 'btnSiteClone', 'text' => __("Perform", 'lang_site_manager')))
 						.wp_nonce_field('site_clone_'.$wpdb->blogid, '_wpnonce', true, false);
 					}
 

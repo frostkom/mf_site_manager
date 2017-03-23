@@ -78,7 +78,7 @@ if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_P
 
 				else if(substr($table_name, -7) == "options")
 				{
-					$wpdb->query("UPDATE ".$table_name." SET option_value = REPLACE(option_value, '".$domain_from."', '".$domain_to."') WHERE (option_name = 'siteurl' OR option_name = 'home')");
+					$wpdb->query("UPDATE ".$table_name." SET option_value = REPLACE(option_value, '".$domain_from."', '".$domain_to."') WHERE (option_name = 'home' OR option_name = 'siteurl')");
 					$str_queries .= $wpdb->last_query.";\n";
 
 					$wpdb->query("UPDATE ".$table_name." SET option_name = '".$strBasePrefixTo."user_roles' WHERE option_name = '".$strBasePrefixFrom."user_roles'");
@@ -101,7 +101,7 @@ if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_P
 
 				else if(substr($table_name, -7) == "options")
 				{
-					$wpdb->query("UPDATE ".$table_name." SET option_value = REPLACE(option_value, '".$domain_from."', '".$domain_to."') WHERE (option_name = 'siteurl' OR option_name = 'home')");
+					$wpdb->query("UPDATE ".$table_name." SET option_value = REPLACE(option_value, '".$domain_from."', '".$domain_to."') WHERE (option_name = 'home' OR option_name = 'siteurl')");
 					$str_queries .= $wpdb->last_query.";\n";
 				}
 			}
@@ -121,7 +121,7 @@ if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_P
 
 				else if(substr($table_name, -7) == "options")
 				{
-					$wpdb->query("UPDATE ".$table_name." SET option_value = REPLACE(option_value, '".$domain_from."', '".$domain_to."') WHERE (option_name = 'siteurl' OR option_name = 'home')");
+					$wpdb->query("UPDATE ".$table_name." SET option_value = REPLACE(option_value, '".$domain_from."', '".$domain_to."') WHERE (option_name = 'home' OR option_name = 'siteurl')");
 					$str_queries .= $wpdb->last_query.";\n";
 				}
 			}
@@ -141,7 +141,6 @@ echo "<div class='wrap'>
 	<h2>".__("Switch", 'lang_site_manager')."</h2>"
 	.get_notification()
 	."<div id='poststuff' class='postbox'>
-		<h3 class='hndle'><span>".__("Switch sites", 'lang_site_manager')."</span></h3>
 		<div class='inside'>
 			<form method='post' action='' class='mf_form'>"
 				.show_textfield(array('name' => 'intBlogID_old', 'text' => __("Switch this site...", 'lang_site_manager'), 'value' => get_site_url_clean(), 'xtra' => "readonly"));
@@ -152,9 +151,9 @@ echo "<div class='wrap'>
 
 					if(count($arr_data) > 1)
 					{
-						echo show_select(array('data' => $arr_data, 'name' => 'intBlogID', 'value' => $intBlogID, 'text' => __("...with this site", 'lang_site_manager'), 'required' => true))
+						echo show_select(array('data' => $arr_data, 'name' => 'intBlogID', 'value' => $intBlogID, 'text' => __("...with this", 'lang_site_manager'), 'required' => true))
 						.show_checkbox(array('name' => 'intSiteSwitchAccept', 'text' => __("Are you really sure? This will switch domain for the two sites.", 'lang_site_manager'), 'value' => 1, 'required' => true))
-						.show_button(array('name' => 'btnSiteSwitch', 'text' => __("Switch", 'lang_site_manager')))
+						.show_button(array('name' => 'btnSiteSwitch', 'text' => __("Perform", 'lang_site_manager')))
 						.wp_nonce_field('site_switch_'.$wpdb->blogid, '_wpnonce', true, false);
 					}
 
