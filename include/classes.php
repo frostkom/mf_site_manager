@@ -184,14 +184,14 @@ class mf_site_manager
 							if(count($arr_data_check) > 0)
 							{
 								$out .= "<td>";
-								
+
 									if($arr_data_check['value'] > 0)
 									{
 										$out .= "<i class='fa fa-lg fa-close red'></i> <a href='".$arr_data_check['link']."' rel='external'>".$arr_data_check['value']."</a>";
 
 										$has_equal_version = false;
 									}
-									
+
 									else
 									{
 										$out .= "<i class='fa fa-lg fa-check green'></i>";
@@ -236,7 +236,7 @@ class mf_site_manager
 
 										$has_equal_version = false;
 									}
-									
+
 									unset($arr_data_check['array'][$key2]);
 								}
 
