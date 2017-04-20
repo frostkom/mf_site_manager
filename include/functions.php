@@ -151,7 +151,7 @@ function setting_server_ips_allowed_callback()
 
 	$placeholder = $option == "" ? get_or_set_transient(array('key' => "server_ip_transient", 'url' => "http://ipecho.net/plain")) : "";
 
-	echo show_textfield(array('name' => $setting_key, 'value' => $option, 'xtra' => "class='widefat'", 'placeholder' => $placeholder));
+	echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => $placeholder));
 }
 
 function setting_site_comparison_callback()
@@ -161,5 +161,5 @@ function setting_site_comparison_callback()
 
 	$site_url = str_replace(array("http://", "https://"), "", get_option('siteurl'));
 
-	echo show_textfield(array('name' => $setting_key, 'value' => $option, 'xtra' => "class='widefat'", 'placeholder' => $site_url.", test.".$site_url));
+	echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => $site_url.", test.".$site_url));
 }
