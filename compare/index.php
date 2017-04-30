@@ -31,6 +31,8 @@ echo "<div class='wrap'>
 			echo show_table_header($arr_header)
 			."<tbody>";
 
+				$has_echoed = false;
+
 				//Core
 				##############################
 				$has_equal_version = true;
@@ -60,6 +62,8 @@ echo "<div class='wrap'>
 				if($has_equal_version == false)
 				{
 					echo $out;
+
+					$has_echoed = true;
 				}
 				##############################
 
@@ -67,10 +71,22 @@ echo "<div class='wrap'>
 
 				if($obj_site_manager->echoed == true)
 				{
+					$has_echoed = true;
+
 					echo "<tr><td colspan='".count($arr_header)."'></td></tr>";
 				}
 
 				$obj_site_manager->check_version('plugins');
+
+				if($obj_site_manager->echoed == true)
+				{
+					$has_echoed = true;
+				}
+
+				if($has_echoed == false)
+				{
+					echo "<tr><td colspan='".count($arr_header)."'>".__("I could not find any differences", 'lang_site_manager')."</td></tr>";
+				}
 
 			echo "</tbody>
 		</table>";

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-23 11:40+0100\n"
+"POT-Creation-Date: 2017-04-30 08:54+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -25,7 +25,7 @@ msgid "You have to choose another URL than the current one"
 msgstr "Du måste välja en annan URL än den nuvarande"
 
 #: ../change/index.php:28
-#: ../include/functions.php:94
+#: ../include/functions.php:123
 msgid "Change URL"
 msgstr "Ändra URL"
 
@@ -57,7 +57,7 @@ msgid "You have to choose a site other than this site"
 msgstr "Du måste välja en annan webbplats än denna"
 
 #: ../clone/index.php:114
-#: ../include/functions.php:86
+#: ../include/functions.php:115
 msgid "Clone"
 msgstr "Klona"
 
@@ -86,7 +86,7 @@ msgid "You have to have a MultiSite to be able to clone this site"
 msgstr "Du måste ha en MultiSite för att kunna klona denna webbplats"
 
 #: ../compare/index.php:13
-#: ../include/functions.php:74
+#: ../include/functions.php:103
 msgid "Compare"
 msgstr "Jämför"
 
@@ -98,19 +98,23 @@ msgstr "Namn"
 msgid "Version"
 msgstr "Version"
 
-#: ../compare/index.php:41
+#: ../compare/index.php:43
 msgid "Core"
 msgstr "Kärna"
 
-#: ../compare/index.php:86
+#: ../compare/index.php:88
+msgid "I could not find any differences"
+msgstr "Jag kunde inte hitta några skillnader"
+
+#: ../compare/index.php:102
 msgid "Site"
 msgstr "Webbplats"
 
-#: ../compare/index.php:87
+#: ../compare/index.php:103
 msgid "Error"
 msgstr "Fel"
 
-#: ../compare/index.php:106
+#: ../compare/index.php:122
 #, php-format
 msgid "I could not find any sites to compare with. Convert to MultiSite and add sites or add external ones in %sMy Settings%s"
 msgstr "Jag kunde inte hitta några webbplatser att jämföra med. Konvertera till MultiSite och lägga till webbplatser eller lägg till externa via %sMina inställningar%s"
@@ -130,25 +134,25 @@ msgstr "finns inte"
 msgid "domain"
 msgstr "domän"
 
-#: ../include/functions.php:35
+#: ../include/functions.php:64
 msgid "Choose here"
 msgstr "Välj här"
 
-#: ../include/functions.php:69
-#: ../include/functions.php:121
+#: ../include/functions.php:98
+#: ../include/functions.php:144
 msgid "Site Manager"
 msgstr ""
 
-#: ../include/functions.php:89
+#: ../include/functions.php:118
 #: ../switch/index.php:141
 msgid "Switch"
 msgstr "Byt"
 
-#: ../include/functions.php:106
+#: ../include/functions.php:134
 msgid "Server IPs allowed"
 msgstr "Tillåtna server-IP"
 
-#: ../include/functions.php:107
+#: ../include/functions.php:135
 msgid "Sites to compare with"
 msgstr "Webbplatser att jämföra med"
 
