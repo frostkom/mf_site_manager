@@ -107,11 +107,26 @@ class mf_site_manager
 		}
 	}
 
+	function get_type_url($site, $plugin_name = '')
+	{
+		if($this->type == 'plugins' && $plugin_name != '')
+		{
+			return validate_url($site."/wp-admin".($this->is_multisite ? "/network" : "")."/plugin-install.php?tab=search&s=".$plugin_name);
+		}
+
+		else
+		{
+			return validate_url($site."/wp-admin".($this->is_multisite ? "/network" : "")."/update-core.php"); //".$this->type."
+		}
+	}
+
 	function check_version($type)
 	{
 		$this->echoed = false;
 
-		switch($type)
+		$this->type = $type;
+
+		switch($this->type)
 		{
 			case 'themes':
 				$array = $this->arr_themes;
@@ -143,9 +158,9 @@ class mf_site_manager
 					if(isset($array[$site][$key]))
 					{
 						$version_check = $array[$site][$key]['version'];
-						$is_multisite = $this->arr_core[$site]['is_multisite'];
+						$this->is_multisite = $this->arr_core[$site]['is_multisite'];
 
-						$out .= $this->get_version_check_cell($version, $version_check, validate_url($site."/wp-admin".($is_multisite ? "/network" : "")."/".$type.".php"));
+						$out .= $this->get_version_check_cell($version, $version_check, $this->get_type_url($site));
 
 						if($version_check != $version)
 						{
@@ -160,7 +175,7 @@ class mf_site_manager
 
 					else
 					{
-						$out .= "<td><em>(".__("does not exist", 'lang_site_manager').")</em></td>";
+						$out .= "<td><a href='".$this->get_type_url($site, $name)."' class='italic' rel='external'>(".__("does not exist", 'lang_site_manager').")</a></td>";
 
 						$has_equal_version = false;
 					}
@@ -202,7 +217,7 @@ class mf_site_manager
 
 							else
 							{
-								$out .= "<td><em>(".__("does not exist", 'lang_site_manager').")</em></td>";
+								$out .= "<td><a href='".$this->get_type_url($site)."' class='italic' rel='external'>(".__("does not exist", 'lang_site_manager').")</a></td>";
 
 								$has_equal_version = false;
 							}
@@ -274,7 +289,7 @@ class mf_site_manager
 
 							else
 							{
-								$out .= "<td><em>(".__("does not exist", 'lang_site_manager').")</em></td>";
+								$out .= "<td><a href='".$this->get_type_url($site)."' class='italic' rel='external'>(".__("does not exist", 'lang_site_manager').")</a></td>";
 
 								$has_equal_version = false;
 							}
@@ -320,7 +335,7 @@ class mf_site_manager
 
 						else
 						{
-							echo "<td><em>(".__("does not exist", 'lang_site_manager').")</em></td>";
+							echo "<td><a href='".$this->get_type_url($site, $name)."' class='italic' rel='external'>(".__("does not exist", 'lang_site_manager').")</a></td>";
 						}
 					}
 
@@ -330,7 +345,7 @@ class mf_site_manager
 			}
 		}
 
-		switch($type)
+		switch($this->type)
 		{
 			case 'themes':
 				$this->arr_themes = $array;

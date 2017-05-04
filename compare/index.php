@@ -46,9 +46,9 @@ echo "<div class='wrap'>
 					foreach($obj_site_manager->arr_sites as $site)
 					{
 						$version_check = $obj_site_manager->arr_core[$site]['version'];
-						$is_multisite = $obj_site_manager->arr_core[$site]['is_multisite'];
+						$obj_site_manager->is_multisite = $obj_site_manager->arr_core[$site]['is_multisite'];
 
-						$out .= $obj_site_manager->get_version_check_cell($version, $version_check, validate_url($site."/wp-admin".($is_multisite ? "/network" : "")."/update-core.php"));
+						$out .= $obj_site_manager->get_version_check_cell($version, $version_check, validate_url($site."/wp-admin".($obj_site_manager->is_multisite ? "/network" : "")."/update-core.php"));
 
 						if($version_check != $version)
 						{
