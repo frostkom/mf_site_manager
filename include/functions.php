@@ -72,6 +72,8 @@ function get_sites_for_select()
 		$arr_data[$blog_id] = $domain.$path;
 	}
 
+	$arr_data = array_sort(array('array' => $arr_data, 'keep_index' => true));
+
 	return $arr_data;
 }
 

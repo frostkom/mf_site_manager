@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-30 08:54+0100\n"
+"POT-Creation-Date: 2017-05-05 09:01+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -25,7 +25,7 @@ msgid "You have to choose another URL than the current one"
 msgstr "Du måste välja en annan URL än den nuvarande"
 
 #: ../change/index.php:28
-#: ../include/functions.php:123
+#: ../include/functions.php:125
 msgid "Change URL"
 msgstr "Ändra URL"
 
@@ -38,55 +38,59 @@ msgid "Are you really sure? This will change the URL of the site"
 msgstr "Är du helt säker? Detta kommer att byta URL för webbplatsen"
 
 #: ../change/index.php:35
-#: ../clone/index.php:130
+#: ../clone/index.php:144
 #: ../switch/index.php:156
 msgid "Perform"
 msgstr "Genomför"
 
-#: ../clone/index.php:56
+#: ../clone/index.php:55
 msgid "There appears to be no tables on the source site"
 msgstr "Det verkar inte finnas någon tabell på källwebbplatsen"
 
-#: ../clone/index.php:102
+#: ../clone/index.php:115
 msgid "All data was cloned"
 msgstr "All data klonades"
 
-#: ../clone/index.php:109
+#: ../clone/index.php:122
 #: ../switch/index.php:136
 msgid "You have to choose a site other than this site"
 msgstr "Du måste välja en annan webbplats än denna"
 
-#: ../clone/index.php:114
-#: ../include/functions.php:115
+#: ../clone/index.php:127
+#: ../include/functions.php:117
 msgid "Clone"
 msgstr "Klona"
 
-#: ../clone/index.php:119
+#: ../clone/index.php:132
 msgid "From"
 msgstr "Från"
 
-#: ../clone/index.php:127
+#: ../clone/index.php:140
 msgid "To"
 msgstr "Till"
 
-#: ../clone/index.php:128
+#: ../clone/index.php:141
+msgid "Would you like to keep the original title of the receiving site?"
+msgstr "Vill du behålla originaltiteln på den mottagande webbplatsen?"
+
+#: ../clone/index.php:142
 msgid "Would you like to empty Active Plugins field?"
 msgstr "Vill du deaktivera alla tillägg?"
 
-#: ../clone/index.php:129
+#: ../clone/index.php:143
 msgid "Are you really sure? This will erase all previous data on the recieving site."
 msgstr "Är du helt säker? Detta kommer att radera all tidigare data på den mottagande webbplatsen."
 
-#: ../clone/index.php:136
+#: ../clone/index.php:150
 msgid "I could not find any sites to clone to"
 msgstr "Jag kunde inte hitta några webbplatser att klona till"
 
-#: ../clone/index.php:142
+#: ../clone/index.php:156
 msgid "You have to have a MultiSite to be able to clone this site"
 msgstr "Du måste ha en MultiSite för att kunna klona denna webbplats"
 
 #: ../compare/index.php:13
-#: ../include/functions.php:103
+#: ../include/functions.php:105
 msgid "Compare"
 msgstr "Jämför"
 
@@ -119,18 +123,18 @@ msgstr "Fel"
 msgid "I could not find any sites to compare with. Convert to MultiSite and add sites or add external ones in %sMy Settings%s"
 msgstr "Jag kunde inte hitta några webbplatser att jämföra med. Konvertera till MultiSite och lägga till webbplatser eller lägg till externa via %sMina inställningar%s"
 
-#: ../include/classes.php:163
-#: ../include/classes.php:205
-#: ../include/classes.php:277
-#: ../include/classes.php:308
+#: ../include/classes.php:178
+#: ../include/classes.php:220
+#: ../include/classes.php:292
 #: ../include/classes.php:323
+#: ../include/classes.php:338
 msgid "does not exist"
 msgstr "finns inte"
 
-#: ../include/classes.php:230
-#: ../include/classes.php:231
-#: ../include/classes.php:247
-#: ../include/classes.php:248
+#: ../include/classes.php:245
+#: ../include/classes.php:246
+#: ../include/classes.php:262
+#: ../include/classes.php:263
 msgid "domain"
 msgstr "domän"
 
@@ -138,21 +142,21 @@ msgstr "domän"
 msgid "Choose here"
 msgstr "Välj här"
 
-#: ../include/functions.php:98
-#: ../include/functions.php:144
+#: ../include/functions.php:100
+#: ../include/functions.php:146
 msgid "Site Manager"
 msgstr ""
 
-#: ../include/functions.php:118
+#: ../include/functions.php:120
 #: ../switch/index.php:141
 msgid "Switch"
 msgstr "Byt"
 
-#: ../include/functions.php:134
+#: ../include/functions.php:136
 msgid "Server IPs allowed"
 msgstr "Tillåtna server-IP"
 
-#: ../include/functions.php:135
+#: ../include/functions.php:137
 msgid "Sites to compare with"
 msgstr "Webbplatser att jämföra med"
 

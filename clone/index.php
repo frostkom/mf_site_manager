@@ -11,7 +11,6 @@ if(isset($_POST['btnSiteClone']) && isset($_POST['intSiteCloneAccept']) && $_POS
 		$str_queries = "";
 
 		$strBasePrefixFrom = $wpdb->prefix;
-		//$strBlogDomainFrom = trim($wpdb->get_var($wpdb->prepare("SELECT CONCAT(domain, path) FROM ".$wpdb->base_prefix."blogs WHERE blog_id = '%d'", $wpdb->blogid)), "/");
 		$strBlogDomainFrom = get_site_url_clean(array('trim' => "/"));
 
 		$arr_tables_from = array();
@@ -27,8 +26,8 @@ if(isset($_POST['btnSiteClone']) && isset($_POST['intSiteCloneAccept']) && $_POS
 			}
 		}
 
+		
 		$strBasePrefixTo = $intBlogID > 1 ? $wpdb->base_prefix.$intBlogID."_" : $wpdb->base_prefix;
-		//$strBlogDomainTo = trim($wpdb->get_var($wpdb->prepare("SELECT CONCAT(domain, path) FROM ".$wpdb->base_prefix."blogs WHERE blog_id = '%d'", $intBlogID)), "/");
 		$strBlogDomainTo = get_site_url_clean(array('id' => $intBlogID, 'trim' => "/"));
 
 		$arr_tables_to = array();
@@ -68,6 +67,14 @@ if(isset($_POST['btnSiteClone']) && isset($_POST['intSiteCloneAccept']) && $_POS
 
 				if(in_array($table_name_to, $arr_tables_to))
 				{
+					if($table_name_prefixless == "options")
+					{
+						if(isset($_POST['intSiteKeepTitle']) && $_POST['intSiteKeepTitle'] == 1)
+						{
+							$strBlogName_orig = $wpdb->get_var("SELECT option_value FROM ".$table_name_to." WHERE option_name = 'blogname'");
+						}
+					}
+
 					$wpdb->query("DROP TABLE IF EXISTS ".$table_name_to);
 					$str_queries .= $wpdb->last_query.";\n";
 
@@ -84,6 +91,12 @@ if(isset($_POST['btnSiteClone']) && isset($_POST['intSiteCloneAccept']) && $_POS
 
 						$wpdb->query("UPDATE ".$table_name_to." SET option_name = '".$strBasePrefixTo."user_roles' WHERE option_name = '".$strBasePrefixFrom."user_roles'");
 						$str_queries .= $wpdb->last_query.";\n";
+
+						if(isset($_POST['intSiteKeepTitle']) && $_POST['intSiteKeepTitle'] == 1)
+						{
+							$wpdb->query("UPDATE ".$table_name_to." SET option_value = '".$strBlogName_orig."' WHERE option_name = 'blogname'");
+							$str_queries .= $wpdb->last_query.";\n";
+						}
 
 						if(isset($_POST['intSiteEmptyPlugins']) && $_POST['intSiteEmptyPlugins'] == 1)
 						{
@@ -125,6 +138,7 @@ echo "<div class='wrap'>
 					if(count($arr_data) > 1)
 					{
 						echo show_select(array('data' => $arr_data, 'name' => 'intBlogID', 'value' => $intBlogID, 'text' => __("To", 'lang_site_manager'), 'required' => true))
+						.show_checkbox(array('name' => 'intSiteKeepTitle', 'text' => __("Would you like to keep the original title of the receiving site?", 'lang_site_manager'), 'value' => 1))
 						.show_checkbox(array('name' => 'intSiteEmptyPlugins', 'text' => __("Would you like to empty Active Plugins field?", 'lang_site_manager'), 'value' => 1))
 						.show_checkbox(array('name' => 'intSiteCloneAccept', 'text' => __("Are you really sure? This will erase all previous data on the recieving site.", 'lang_site_manager'), 'value' => 1, 'required' => true))
 						.show_button(array('name' => 'btnSiteClone', 'text' => __("Perform", 'lang_site_manager')))
