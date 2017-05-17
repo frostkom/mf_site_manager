@@ -128,15 +128,18 @@ function menu_site_manager()
 
 function settings_site_manager()
 {
-	$options_area = __FUNCTION__;
+	if(IS_SUPER_ADMIN)
+	{
+		$options_area = __FUNCTION__;
 
-	add_settings_section($options_area, "", $options_area.'_callback', BASE_OPTIONS_PAGE);
+		add_settings_section($options_area, "", $options_area.'_callback', BASE_OPTIONS_PAGE);
 
-	$arr_settings = array();
-	$arr_settings['setting_server_ips_allowed'] = __("Server IPs allowed", 'lang_site_manager');
-	$arr_settings['setting_site_comparison'] = __("Sites to compare with", 'lang_site_manager');
+		$arr_settings = array();
+		$arr_settings['setting_server_ips_allowed'] = __("Server IPs allowed", 'lang_site_manager');
+		$arr_settings['setting_site_comparison'] = __("Sites to compare with", 'lang_site_manager');
 
-	show_settings_fields(array('area' => $options_area, 'settings' => $arr_settings));
+		show_settings_fields(array('area' => $options_area, 'settings' => $arr_settings));
+	}
 }
 
 function settings_site_manager_callback()
