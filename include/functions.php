@@ -1,34 +1,5 @@
 <?php
 
-if(!function_exists('point2int'))
-{
-	function point2int($in)
-	{
-		$arr_version = explode(".", $in);
-
-		$count_temp = count($arr_version);
-
-		while($count_temp < 3)
-		{
-			$arr_version[] = 0;
-
-			$count_temp++;
-		}
-
-		$str_version = 0;
-		$multiplier = 1;
-
-		for($i = 1; $i <= $count_temp; $i++)
-		{
-			$str_version += $arr_version[$count_temp - $i] * $multiplier;
-
-			$multiplier *= 100;
-		}
-
-		return $str_version;
-	}
-}
-
 function get_site_url_clean($data = array())
 {
 	global $wpdb;
