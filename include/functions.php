@@ -1,30 +1,5 @@
 <?php
 
-function get_site_url_clean($data = array())
-{
-	global $wpdb;
-
-	if(!isset($data['id'])){	$data['id'] = $wpdb->blogid;}
-	if(!isset($data['trim'])){	$data['trim'] = "";}
-
-	$out = "";
-
-	$result = get_sites(array('ID' => $data['id']));
-
-	foreach($result as $r)
-	{
-		$out = $r->domain.$r->path;
-		break;
-	}
-
-	if($data['trim'] != '')
-	{
-		$out = trim($out, $data['trim']);
-	}
-
-	return $out;
-}
-
 function get_sites_for_select()
 {
 	global $wpdb;

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-05 09:01+0100\n"
+"POT-Creation-Date: 2017-05-22 10:56+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -25,7 +25,7 @@ msgid "You have to choose another URL than the current one"
 msgstr "Du måste välja en annan URL än den nuvarande"
 
 #: ../change/index.php:28
-#: ../include/functions.php:125
+#: ../include/functions.php:96
 msgid "Change URL"
 msgstr "Ändra URL"
 
@@ -57,7 +57,7 @@ msgid "You have to choose a site other than this site"
 msgstr "Du måste välja en annan webbplats än denna"
 
 #: ../clone/index.php:127
-#: ../include/functions.php:117
+#: ../include/functions.php:88
 msgid "Clone"
 msgstr "Klona"
 
@@ -90,7 +90,7 @@ msgid "You have to have a MultiSite to be able to clone this site"
 msgstr "Du måste ha en MultiSite för att kunna klona denna webbplats"
 
 #: ../compare/index.php:13
-#: ../include/functions.php:105
+#: ../include/functions.php:76
 msgid "Compare"
 msgstr "Jämför"
 
@@ -138,25 +138,25 @@ msgstr "finns inte"
 msgid "domain"
 msgstr "domän"
 
-#: ../include/functions.php:64
+#: ../include/functions.php:35
 msgid "Choose here"
 msgstr "Välj här"
 
-#: ../include/functions.php:100
-#: ../include/functions.php:146
+#: ../include/functions.php:71
+#: ../include/functions.php:120
 msgid "Site Manager"
 msgstr ""
 
-#: ../include/functions.php:120
+#: ../include/functions.php:91
 #: ../switch/index.php:141
 msgid "Switch"
 msgstr "Byt"
 
-#: ../include/functions.php:136
+#: ../include/functions.php:109
 msgid "Server IPs allowed"
 msgstr "Tillåtna server-IP"
 
-#: ../include/functions.php:137
+#: ../include/functions.php:110
 msgid "Sites to compare with"
 msgstr "Webbplatser att jämföra med"
 
