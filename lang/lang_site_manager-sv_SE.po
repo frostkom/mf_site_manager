@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-22 10:56+0100\n"
+"POT-Creation-Date: 2017-06-22 09:02+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -15,31 +15,36 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../change/index.php:18
+#: ../change/index.php:39
+#, php-format
+msgid "I executed your request but there were %d errors so you need to manually update the database"
+msgstr "Jag genomförde din förfrågan men det uppkom %d fel så du behöver uppdatera databasen manuellt"
+
+#: ../change/index.php:46
 #, php-format
 msgid "I have changed the URL from %s to %s"
 msgstr "Jag har ändrat URLen från %s till %s"
 
-#: ../change/index.php:23
+#: ../change/index.php:52
 msgid "You have to choose another URL than the current one"
 msgstr "Du måste välja en annan URL än den nuvarande"
 
-#: ../change/index.php:28
-#: ../include/functions.php:96
+#: ../change/index.php:57
+#: ../include/functions.php:71
 msgid "Change URL"
 msgstr "Ändra URL"
 
-#: ../change/index.php:33
+#: ../change/index.php:62
 msgid "Change to this URL"
 msgstr "Ändra till denna URL"
 
-#: ../change/index.php:34
+#: ../change/index.php:63
 msgid "Are you really sure? This will change the URL of the site"
 msgstr "Är du helt säker? Detta kommer att byta URL för webbplatsen"
 
-#: ../change/index.php:35
+#: ../change/index.php:64
 #: ../clone/index.php:144
-#: ../switch/index.php:156
+#: ../switch/index.php:154
 msgid "Perform"
 msgstr "Genomför"
 
@@ -52,12 +57,12 @@ msgid "All data was cloned"
 msgstr "All data klonades"
 
 #: ../clone/index.php:122
-#: ../switch/index.php:136
+#: ../switch/index.php:134
 msgid "You have to choose a site other than this site"
 msgstr "Du måste välja en annan webbplats än denna"
 
 #: ../clone/index.php:127
-#: ../include/functions.php:88
+#: ../include/functions.php:63
 msgid "Clone"
 msgstr "Klona"
 
@@ -90,7 +95,7 @@ msgid "You have to have a MultiSite to be able to clone this site"
 msgstr "Du måste ha en MultiSite för att kunna klona denna webbplats"
 
 #: ../compare/index.php:13
-#: ../include/functions.php:76
+#: ../include/functions.php:51
 msgid "Compare"
 msgstr "Jämför"
 
@@ -138,53 +143,53 @@ msgstr "finns inte"
 msgid "domain"
 msgstr "domän"
 
-#: ../include/functions.php:35
+#: ../include/functions.php:10
 msgid "Choose here"
 msgstr "Välj här"
 
-#: ../include/functions.php:71
-#: ../include/functions.php:120
+#: ../include/functions.php:46
+#: ../include/functions.php:95
 msgid "Site Manager"
 msgstr ""
 
-#: ../include/functions.php:91
-#: ../switch/index.php:141
+#: ../include/functions.php:66
+#: ../switch/index.php:139
 msgid "Switch"
 msgstr "Byt"
 
-#: ../include/functions.php:109
+#: ../include/functions.php:84
 msgid "Server IPs allowed"
 msgstr "Tillåtna server-IP"
 
-#: ../include/functions.php:110
+#: ../include/functions.php:85
 msgid "Sites to compare with"
 msgstr "Webbplatser att jämföra med"
 
-#: ../switch/index.php:52
+#: ../switch/index.php:50
 msgid "There appears to be no tables on either of the sites"
 msgstr "Det verkar inte finnas några tabeller på sidorna"
 
-#: ../switch/index.php:129
+#: ../switch/index.php:127
 msgid "I have switched all the data on the two domain as you requested."
 msgstr "Jag har bytt all data mellan de två domänerna som du efterfrågade."
 
-#: ../switch/index.php:146
+#: ../switch/index.php:144
 msgid "Switch this site..."
 msgstr "Byt denna webbplats..."
 
-#: ../switch/index.php:154
+#: ../switch/index.php:152
 msgid "...with this"
 msgstr "...med denna"
 
-#: ../switch/index.php:155
+#: ../switch/index.php:153
 msgid "Are you really sure? This will switch domain for the two sites."
 msgstr "Är du helt säker? Detta kommer att byta domän för de två webbplatserna."
 
-#: ../switch/index.php:162
+#: ../switch/index.php:160
 msgid "I could not find any sites to switch to"
 msgstr "Jag kunde inte hitta några webbplatser att byta till"
 
-#: ../switch/index.php:168
+#: ../switch/index.php:166
 msgid "You have to have a MultiSite to be able to switch sites"
 msgstr "Du måste ha en MultiSite för att kunna byta domän mellan två webbplatser"
 

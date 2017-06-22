@@ -8,10 +8,9 @@ if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_P
 	{
 		$str_queries = "";
 
-		$strBasePrefix = $wpdb->base_prefix;
+		//$strBasePrefix = $wpdb->base_prefix;
 
 		$strBasePrefixFrom = $wpdb->prefix;
-		//$strBlogDomainFrom = trim($wpdb->get_var($wpdb->prepare("SELECT CONCAT(domain, path) FROM ".$wpdb->base_prefix."blogs WHERE blog_id = '%d'", $wpdb->blogid)), "/");
 		$strBlogDomainFrom = get_site_url_clean(array('trim' => "/"));
 
 		$arr_tables_from = array();
@@ -28,7 +27,6 @@ if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_P
 		}
 
 		$strBasePrefixTo = $intBlogID > 1 ? $wpdb->base_prefix.$intBlogID."_" : $wpdb->base_prefix;
-		//$strBlogDomainTo = trim($wpdb->get_var($wpdb->prepare("SELECT CONCAT(domain, path) FROM ".$wpdb->base_prefix."blogs WHERE blog_id = '%d'", $intBlogID)), "/");
 		$strBlogDomainTo = get_site_url_clean(array('id' => $intBlogID, 'trim' => "/"));
 
 		$strBlogDomain_temp = "mf_cloner.com";
@@ -55,13 +53,13 @@ if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_P
 		else
 		{
 			//Step 1
-			$wpdb->query("UPDATE ".$strBasePrefix."blogs SET domain = REPLACE(domain, '".$strBlogDomainFrom."', '".$strBlogDomain_temp."') WHERE domain LIKE '%".$strBlogDomainFrom."%'");
+			$wpdb->query("UPDATE ".$wpdb->blogs." SET domain = REPLACE(domain, '".$strBlogDomainFrom."', '".$strBlogDomain_temp."') WHERE domain LIKE '%".$strBlogDomainFrom."%'");
 
 			//Step 2
-			$wpdb->query("UPDATE ".$strBasePrefix."blogs SET domain = REPLACE(domain, '".$strBlogDomainTo."', '".$strBlogDomainFrom."') WHERE domain LIKE '%".$strBlogDomainTo."%'");
+			$wpdb->query("UPDATE ".$wpdb->blogs." SET domain = REPLACE(domain, '".$strBlogDomainTo."', '".$strBlogDomainFrom."') WHERE domain LIKE '%".$strBlogDomainTo."%'");
 
 			//Step 3
-			$wpdb->query("UPDATE ".$strBasePrefix."blogs SET domain = REPLACE(domain, '".$strBlogDomain_temp."', '".$strBlogDomainTo."') WHERE domain LIKE '%".$strBlogDomain_temp."%'");
+			$wpdb->query("UPDATE ".$wpdb->blogs." SET domain = REPLACE(domain, '".$strBlogDomain_temp."', '".$strBlogDomainTo."') WHERE domain LIKE '%".$strBlogDomain_temp."%'");
 
 			//Step 1
 			foreach($arr_tables_from as $r)
