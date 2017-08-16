@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-22 09:02+0100\n"
+"POT-Creation-Date: 2017-08-16 11:09+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -16,6 +16,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: ..\n"
 
 #: ../change/index.php:39
+#: ../theme/index.php:39
 #, php-format
 msgid "I executed your request but there were %d errors so you need to manually update the database"
 msgstr "Jag genomförde din förfrågan men det uppkom %d fel så du behöver uppdatera databasen manuellt"
@@ -30,7 +31,7 @@ msgid "You have to choose another URL than the current one"
 msgstr "Du måste välja en annan URL än den nuvarande"
 
 #: ../change/index.php:57
-#: ../include/functions.php:71
+#: ../include/functions.php:85
 msgid "Change URL"
 msgstr "Ändra URL"
 
@@ -45,6 +46,7 @@ msgstr "Är du helt säker? Detta kommer att byta URL för webbplatsen"
 #: ../change/index.php:64
 #: ../clone/index.php:144
 #: ../switch/index.php:154
+#: ../theme/index.php:64
 msgid "Perform"
 msgstr "Genomför"
 
@@ -62,7 +64,7 @@ msgid "You have to choose a site other than this site"
 msgstr "Du måste välja en annan webbplats än denna"
 
 #: ../clone/index.php:127
-#: ../include/functions.php:63
+#: ../include/functions.php:77
 msgid "Clone"
 msgstr "Klona"
 
@@ -95,7 +97,7 @@ msgid "You have to have a MultiSite to be able to clone this site"
 msgstr "Du måste ha en MultiSite för att kunna klona denna webbplats"
 
 #: ../compare/index.php:13
-#: ../include/functions.php:51
+#: ../include/functions.php:65
 msgid "Compare"
 msgstr "Jämför"
 
@@ -147,21 +149,26 @@ msgstr "domän"
 msgid "Choose here"
 msgstr "Välj här"
 
-#: ../include/functions.php:46
-#: ../include/functions.php:95
+#: ../include/functions.php:60
+#: ../include/functions.php:112
 msgid "Site Manager"
 msgstr ""
 
-#: ../include/functions.php:66
+#: ../include/functions.php:80
 #: ../switch/index.php:139
 msgid "Switch"
 msgstr "Byt"
 
-#: ../include/functions.php:84
+#: ../include/functions.php:88
+#: ../theme/index.php:57
+msgid "Change Theme"
+msgstr "Byt tema"
+
+#: ../include/functions.php:101
 msgid "Server IPs allowed"
 msgstr "Tillåtna server-IP"
 
-#: ../include/functions.php:85
+#: ../include/functions.php:102
 msgid "Sites to compare with"
 msgstr "Webbplatser att jämföra med"
 
@@ -193,3 +200,26 @@ msgstr "Jag kunde inte hitta några webbplatser att byta till"
 msgid "You have to have a MultiSite to be able to switch sites"
 msgstr "Du måste ha en MultiSite för att kunna byta domän mellan två webbplatser"
 
+#: ../theme/index.php:16
+msgid "You have to choose a theme that is allowed for this site"
+msgstr "Du måste välja ett tema som är tillåtet för denna webbplats"
+
+#: ../theme/index.php:21
+msgid "You have to choose another Theme than the current one"
+msgstr "Du måste välja en annan tema än den nuvarande"
+
+#: ../theme/index.php:46
+#, php-format
+msgid "I have changed the Theme from %s to %s"
+msgstr "Jag har ändrat temat från %s till %s"
+
+#: ../theme/index.php:62
+msgid "Change to this Theme"
+msgstr "Ändra till detta tema"
+
+#: ../theme/index.php:63
+msgid "Are you really sure? This will change the Theme of the site but not clear menus, widgets and theme modifications like the built-in changer does"
+msgstr "Är du helt säker? Detta kommer att byta tema för webbplatsen men inte rensa menyer, widgets och temaändringar så som den inbyggda funktionen gör"
+
+#~ msgid "Are you really sure? This will change the Theme of the site"
+#~ msgstr "Är du helt säker? Detta kommer att byta tema för webbplatsen"

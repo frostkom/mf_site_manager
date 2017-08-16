@@ -23,6 +23,20 @@ function get_sites_for_select()
 	return $arr_data;
 }
 
+function get_themes_for_select()
+{
+	$arr_data = array();
+
+	$themes = wp_get_themes(array('errors' => false, 'allowed' => true));
+
+	foreach($themes as $key => $value)
+	{
+		$arr_data[$key] = $value['Name'];
+	}
+
+	return $arr_data;
+}
+
 function get_or_set_transient($data)
 {
 	$out = get_transient($data['key']);
@@ -70,6 +84,9 @@ function menu_site_manager()
 
 	$menu_title = __("Change URL", 'lang_site_manager');
 	add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."change/index.php");
+
+	$menu_title = __("Change Theme", 'lang_site_manager');
+	add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."theme/index.php");
 }
 
 function settings_site_manager()
