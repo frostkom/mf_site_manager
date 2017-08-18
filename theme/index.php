@@ -2,7 +2,6 @@
 
 $arr_themes = get_themes_for_select();
 $option_theme_dir = get_option('stylesheet');
-$option_theme_name = get_option('current_theme');
 
 $strSiteTheme = check_var('strSiteTheme');
 
