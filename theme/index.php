@@ -1,16 +1,27 @@
 <?php
 
+$intBlogID = $wpdb->blogid;
 $arr_themes = get_themes_for_select();
 $option_theme_dir = get_option('stylesheet');
 
 $strSiteTheme = check_var('strSiteTheme');
 
-if(isset($_POST['btnSiteChangeTheme']) && isset($_POST['intSiteChangeThemeAccept']) && $_POST['intSiteChangeThemeAccept'] == 1 && wp_verify_nonce($_POST['_wpnonce'], 'site_change_theme_'.$wpdb->blogid))
+if(isset($_POST['btnSiteChangeTheme']))
 {
 	$old_theme = $option_theme_dir;
 	$new_theme = $strSiteTheme;
 
-	if(!isset($arr_themes[$new_theme]))
+	if(!(isset($_POST['intSiteChangeThemeAccept']) && $_POST['intSiteChangeThemeAccept'] == 1))
+	{
+		$error_text = __("You have to check the box to agree that the theme should be changed", 'lang_site_manager');
+	}
+
+	else if(!wp_verify_nonce($_POST['_wpnonce'], 'site_change_theme_'.$intBlogID))
+	{
+		$error_text = __("I could not verify that you were allowed to switch theme on this site. I this problem persists, please contact an admin", 'lang_site_manager');
+	}
+
+	else if(!isset($arr_themes[$new_theme]))
 	{
 		$error_text = __("You have to choose a theme that is allowed for this site", 'lang_site_manager');
 	}
@@ -53,11 +64,22 @@ echo "<div class='wrap'>
 	."<div id='poststuff' class='postbox'>
 		<div class='inside'>
 			<form method='post' action='' class='mf_form'>"
-				.show_select(array('data' => $arr_themes, 'name' => 'strSiteTheme', 'text' => __("Change to this Theme", 'lang_site_manager'), 'value' => $option_theme_dir))
-				.show_checkbox(array('name' => 'intSiteChangeThemeAccept', 'text' => __("Are you really sure? This will change the Theme of the site but not clear menus, widgets and theme modifications like the built-in changer does", 'lang_site_manager'), 'value' => 1, 'required' => true))
-				.show_button(array('name' => 'btnSiteChangeTheme', 'text' => __("Perform", 'lang_site_manager')))
-				.wp_nonce_field('site_change_theme_'.$wpdb->blogid, '_wpnonce', true, false)
-			."</form>
+				//.show_textfield(array('name' => 'strSiteName', 'text' => __("Site", 'lang_site_manager'), 'value' => get_bloginfo('name')." (".$intBlogID.")", 'xtra' => "readonly"))
+				.show_select(array('data' => $arr_themes, 'name' => 'strSiteTheme', 'text' => __("Change to this Theme", 'lang_site_manager'), 'value' => $option_theme_dir));
+
+				if(count($arr_themes) > 1)
+				{
+					echo show_checkbox(array('name' => 'intSiteChangeThemeAccept', 'text' => __("Are you really sure? This will change the Theme of the site but not clear menus, widgets and theme modifications like the built-in changer does", 'lang_site_manager'), 'value' => 1, 'required' => true))
+					.show_button(array('name' => 'btnSiteChangeTheme', 'text' => __("Perform", 'lang_site_manager')))
+					.wp_nonce_field('site_change_theme_'.$intBlogID, '_wpnonce', true, false);
+				}
+
+				else
+				{
+					echo "<em>".sprintf(__("There are no other themes activated for this site. %sPlease, add another theme%s", 'lang_site_manager'), "<a href='".admin_url("network/site-themes.php?id=".$intBlogID)."'>", "</a>")."</em>";
+				}
+
+			echo "</form>
 		</div>
 	</div>
 </div>";

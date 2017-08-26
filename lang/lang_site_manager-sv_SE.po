@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-18 09:28+0100\n"
+"POT-Creation-Date: 2017-08-26 14:27+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: ..\n"
 
 #: ../change/index.php:39
-#: ../theme/index.php:39
+#: ../theme/index.php:49
 #, php-format
 msgid "I executed your request but there were %d errors so you need to manually update the database"
 msgstr "Jag genomförde din förfrågan men det uppkom %d fel så du behöver uppdatera databasen manuellt"
@@ -44,57 +44,57 @@ msgid "Are you really sure? This will change the URL of the site"
 msgstr "Är du helt säker? Detta kommer att byta URL för webbplatsen"
 
 #: ../change/index.php:64
-#: ../clone/index.php:144
+#: ../clone/index.php:143
 #: ../switch/index.php:154
-#: ../theme/index.php:59
+#: ../theme/index.php:73
 msgid "Perform"
 msgstr "Genomför"
 
-#: ../clone/index.php:55
+#: ../clone/index.php:54
 msgid "There appears to be no tables on the source site"
 msgstr "Det verkar inte finnas någon tabell på källwebbplatsen"
 
-#: ../clone/index.php:115
+#: ../clone/index.php:114
 msgid "All data was cloned"
 msgstr "All data klonades"
 
-#: ../clone/index.php:122
+#: ../clone/index.php:121
 #: ../switch/index.php:134
 msgid "You have to choose a site other than this site"
 msgstr "Du måste välja en annan webbplats än denna"
 
-#: ../clone/index.php:127
+#: ../clone/index.php:126
 #: ../include/functions.php:77
 msgid "Clone"
 msgstr "Klona"
 
-#: ../clone/index.php:132
+#: ../clone/index.php:131
 msgid "From"
 msgstr "Från"
 
-#: ../clone/index.php:140
+#: ../clone/index.php:139
 msgid "To"
 msgstr "Till"
 
-#: ../clone/index.php:141
+#: ../clone/index.php:140
 msgid "Would you like to keep the original title of the receiving site?"
 msgstr "Vill du behålla originaltiteln på den mottagande webbplatsen?"
 
-#: ../clone/index.php:142
+#: ../clone/index.php:141
 msgid "Would you like to empty Active Plugins field?"
 msgstr "Vill du deaktivera alla tillägg?"
 
-#: ../clone/index.php:143
+#: ../clone/index.php:142
 msgid "Are you really sure? This will erase all previous data on the recieving site."
 msgstr "Är du helt säker? Detta kommer att radera all tidigare data på den mottagande webbplatsen."
 
-#: ../clone/index.php:150
+#: ../clone/index.php:149
 msgid "I could not find any sites to clone to"
 msgstr "Jag kunde inte hitta några webbplatser att klona till"
 
-#: ../clone/index.php:156
+#: ../clone/index.php:155
 msgid "You have to have a MultiSite to be able to clone this site"
-msgstr "Du måste ha en MultiSite för att kunna klona denna webbplats"
+msgstr "Du måste ha en MultiSite för att kunna byta domän mellan två webbplatser"
 
 #: ../compare/index.php:13
 #: ../include/functions.php:65
@@ -160,7 +160,7 @@ msgid "Switch"
 msgstr "Byt"
 
 #: ../include/functions.php:88
-#: ../theme/index.php:52
+#: ../theme/index.php:62
 msgid "Change Theme"
 msgstr "Byt tema"
 
@@ -209,23 +209,36 @@ msgid "You have to have a MultiSite to be able to switch sites"
 msgstr "Du måste ha en MultiSite för att kunna byta domän mellan två webbplatser"
 
 #: ../theme/index.php:16
+msgid "You have to check the box to agree that the theme should be changed"
+msgstr "Du måste kryssa i att du går med på att temat ska bytas ut"
+
+#: ../theme/index.php:21
+msgid "I could not verify that you were allowed to switch theme on this site. I this problem persists, please contact an admin"
+msgstr "Jag kunde inte verifiera att du är tillåten att ändra tema på den här webbplatsen. Om problemet kvarstår, var vänlig kontakta en admin"
+
+#: ../theme/index.php:26
 msgid "You have to choose a theme that is allowed for this site"
 msgstr "Du måste välja ett tema som är tillåtet för denna webbplats"
 
-#: ../theme/index.php:21
+#: ../theme/index.php:31
 msgid "You have to choose another Theme than the current one"
-msgstr "Du måste välja en annan tema än den nuvarande"
+msgstr "Du måste välja ett annat tema än den nuvarande"
 
-#: ../theme/index.php:46
+#: ../theme/index.php:56
 #, php-format
 msgid "I have changed the Theme from %s to %s"
 msgstr "Jag har ändrat temat från %s till %s"
 
-#: ../theme/index.php:57
+#: ../theme/index.php:68
 msgid "Change to this Theme"
 msgstr "Ändra till detta tema"
 
-#: ../theme/index.php:58
+#: ../theme/index.php:72
 msgid "Are you really sure? This will change the Theme of the site but not clear menus, widgets and theme modifications like the built-in changer does"
 msgstr "Är du helt säker? Detta kommer att byta tema för webbplatsen men inte rensa menyer, widgets och temaändringar så som den inbyggda funktionen gör"
+
+#: ../theme/index.php:79
+#, php-format
+msgid "There are no other themes activated for this site. %sPlease, add another theme%s"
+msgstr "Det finns inga andra teman aktiverade för denna webbplats. %sVar vänlig, lägg till ett annat tema%s"
 

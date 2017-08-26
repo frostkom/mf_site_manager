@@ -26,7 +26,6 @@ if(isset($_POST['btnSiteClone']) && isset($_POST['intSiteCloneAccept']) && $_POS
 			}
 		}
 
-		
 		$strBasePrefixTo = $intBlogID > 1 ? $wpdb->base_prefix.$intBlogID."_" : $wpdb->base_prefix;
 		$strBlogDomainTo = get_site_url_clean(array('id' => $intBlogID, 'trim' => "/"));
 
