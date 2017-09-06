@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-26 14:27+0100\n"
+"POT-Creation-Date: 2017-09-06 16:13+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -31,7 +31,7 @@ msgid "You have to choose another URL than the current one"
 msgstr "Du måste välja en annan URL än den nuvarande"
 
 #: ../change/index.php:57
-#: ../include/functions.php:85
+#: ../include/functions.php:101
 msgid "Change URL"
 msgstr "Ändra URL"
 
@@ -64,7 +64,7 @@ msgid "You have to choose a site other than this site"
 msgstr "Du måste välja en annan webbplats än denna"
 
 #: ../clone/index.php:126
-#: ../include/functions.php:77
+#: ../include/functions.php:93
 msgid "Clone"
 msgstr "Klona"
 
@@ -97,7 +97,7 @@ msgid "You have to have a MultiSite to be able to clone this site"
 msgstr "Du måste ha en MultiSite för att kunna byta domän mellan två webbplatser"
 
 #: ../compare/index.php:13
-#: ../include/functions.php:65
+#: ../include/functions.php:81
 msgid "Compare"
 msgstr "Jämför"
 
@@ -145,38 +145,43 @@ msgstr "finns inte"
 msgid "domain"
 msgstr "domän"
 
-#: ../include/functions.php:10
+#: ../include/functions.php:14
+#, php-format
+msgid "The server has changed IP address from %s to %s"
+msgstr "Servern har bytt IP-adress från %s till %s"
+
+#: ../include/functions.php:26
 msgid "Choose here"
 msgstr "Välj här"
 
-#: ../include/functions.php:60
-#: ../include/functions.php:112
+#: ../include/functions.php:76
+#: ../include/functions.php:128
 msgid "Site Manager"
 msgstr ""
 
-#: ../include/functions.php:80
+#: ../include/functions.php:96
 #: ../switch/index.php:139
 msgid "Switch"
 msgstr "Byt"
 
-#: ../include/functions.php:88
+#: ../include/functions.php:104
 #: ../theme/index.php:62
 msgid "Change Theme"
 msgstr "Byt tema"
 
-#: ../include/functions.php:101
+#: ../include/functions.php:117
 msgid "Server IPs allowed"
 msgstr "Tillåtna server-IP"
 
-#: ../include/functions.php:102
+#: ../include/functions.php:118
 msgid "Sites to compare with"
 msgstr "Webbplatser att jämföra med"
 
-#: ../include/functions.php:139
+#: ../include/functions.php:155
 msgid "Theme"
 msgstr "Tema"
 
-#: ../include/functions.php:153
+#: ../include/functions.php:169
 msgid "Change"
 msgstr "Byt"
 

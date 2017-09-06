@@ -1,5 +1,21 @@
 <?php
 
+function cron_site_manager()
+{
+	$server_ip_old = get_option('mf_server_ip');
+	$server_ip_new = get_or_set_transient(array('key' => "server_ip_transient", 'url' => "http://ipecho.net/plain"));
+
+	if($server_ip_new != $server_ip_old)
+	{
+		update_option('mf_server_ip', $server_ip_new);
+
+		if($server_ip_old != '')
+		{
+			do_log(sprintf(__("The server has changed IP address from %s to %s"), $server_ip_old, $server_ip_new));
+		}
+	}
+}
+
 function get_sites_for_select()
 {
 	global $wpdb;
@@ -117,7 +133,7 @@ function setting_server_ips_allowed_callback()
 	$setting_key = get_setting_key(__FUNCTION__);
 	$option = get_option($setting_key);
 
-	$placeholder = $option == "" ? get_or_set_transient(array('key' => "server_ip_transient", 'url' => "http://ipecho.net/plain")) : "";
+	$placeholder = get_option('mf_server_ip');
 
 	echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => $placeholder));
 }
