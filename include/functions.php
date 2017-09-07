@@ -150,8 +150,10 @@ function setting_site_comparison_callback()
 
 function column_header_site_manager($cols)
 {
-	unset($cols['date']);
+	unset($cols['registered']);
+	//unset($cols['date']);
 
+	$cols['email'] = __("E-mail", 'lang_site_manager');
 	$cols['theme'] = __("Theme", 'lang_site_manager');
 
 	return $cols;
@@ -163,6 +165,15 @@ function column_cell_site_manager($col, $id)
 
 	switch($col)
 	{
+		case 'email':
+			$admin_email = get_blog_option($id, 'admin_email');
+
+			if($admin_email != '')
+			{
+				echo "<a href='mailto:".$admin_email."'>".$admin_email."</a>";
+			}
+		break;
+
 		case 'theme':
 			echo get_blog_option($id, 'stylesheet')
 			."<div class='row-actions'>"
