@@ -59,9 +59,21 @@ function get_or_set_transient($data)
 
 	if($out == "")
 	{
-		$out = file_get_contents($data['url']);
+		//$content = file_get_contents($data['url']);
 
-		set_transient($data['key'], $out, WEEK_IN_SECONDS);
+		list($content, $headers) = get_url_content($data['url'], true);
+
+		if(isset($headers['http_code']) && $headers['http_code'] == 200)
+		{
+			do_log("Success getting IP: ".$content);
+
+			set_transient($data['key'], $content, WEEK_IN_SECONDS);
+		}
+
+		else
+		{
+			do_log("Error getting IP: ".$headers['http_code']);
+		}
 	}
 
 	return $out;
