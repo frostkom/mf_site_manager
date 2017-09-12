@@ -73,7 +73,7 @@ class mf_site_manager
 
 		if($setting_site_comparison != '')
 		{
-			$this->arr_sites = explode(",", $setting_site_comparison);
+			$this->arr_sites = explode_and_trim(",", $setting_site_comparison);
 		}
 
 		$count_temp = count($this->arr_sites);
@@ -82,7 +82,7 @@ class mf_site_manager
 		{
 			for($i = 0; $i < $count_temp; $i++)
 			{
-				$this->arr_sites[$i] = $site = trim($this->arr_sites[$i]);
+				$this->arr_sites[$i] = $site = $this->arr_sites[$i];
 
 				$site_ajax = $site."/wp-content/plugins/mf_site_manager/include/ajax.php?type=compare";
 

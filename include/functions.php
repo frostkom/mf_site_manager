@@ -154,7 +154,6 @@ function setting_site_comparison_callback()
 function column_header_site_manager($cols)
 {
 	unset($cols['registered']);
-	//unset($cols['date']);
 
 	$cols['email'] = __("E-mail", 'lang_site_manager');
 	$cols['theme'] = __("Theme", 'lang_site_manager');
