@@ -403,4 +403,27 @@ class mf_site_manager
 
 		return $out;
 	}
+
+	function get_server_ip()
+	{
+		$server_ip_old = get_option('setting_server_ip');
+		$server_ip_new = get_or_set_transient(array('key' => "server_ip_transient", 'url' => "http://ipecho.net/plain"));
+
+		if($server_ip_new != '' && $server_ip_new != $server_ip_old)
+		{
+			update_option('setting_server_ip', $server_ip_new);
+
+			if($server_ip_old != '')
+			{
+				do_log(sprintf(__("The server has changed IP address from %s to %s"), $server_ip_old, $server_ip_new));
+			}
+
+			return $server_ip_new;
+		}
+	}
+
+	function cron()
+	{
+		$this->get_server_ip();
+	}
 }

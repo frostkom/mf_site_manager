@@ -1,21 +1,5 @@
 <?php
 
-function cron_site_manager()
-{
-	$server_ip_old = get_option('mf_server_ip');
-	$server_ip_new = get_or_set_transient(array('key' => "server_ip_transient", 'url' => "http://ipecho.net/plain"));
-
-	if($server_ip_new != '' && $server_ip_new != $server_ip_old)
-	{
-		update_option('mf_server_ip', $server_ip_new);
-
-		if($server_ip_old != '')
-		{
-			do_log(sprintf(__("The server has changed IP address from %s to %s"), $server_ip_old, $server_ip_new));
-		}
-	}
-}
-
 function get_sites_for_select()
 {
 	global $wpdb;
@@ -61,7 +45,12 @@ function get_or_set_transient($data)
 	{
 		list($content, $headers) = get_url_content($data['url'], true);
 
-		if(isset($headers['http_code']) && $headers['http_code'] == 200)
+		if(!(isset($headers['http_code']) && $headers['http_code'] == 200))
+		{
+			$content = file_get_contents($data['url']);
+		}
+
+		if($content != '')
 		{
 			set_transient($data['key'], $content, WEEK_IN_SECONDS);
 		}
@@ -117,6 +106,7 @@ function settings_site_manager()
 		add_settings_section($options_area, "", $options_area.'_callback', BASE_OPTIONS_PAGE);
 
 		$arr_settings = array();
+		$arr_settings['setting_server_ip'] = __("Server IP", 'lang_site_manager');
 		$arr_settings['setting_server_ips_allowed'] = __("Server IPs allowed", 'lang_site_manager');
 		$arr_settings['setting_site_comparison'] = __("Sites to compare with", 'lang_site_manager');
 
@@ -131,14 +121,27 @@ function settings_site_manager_callback()
 	echo settings_header($setting_key, __("Site Manager", 'lang_site_manager'));
 }
 
+function setting_server_ip_callback()
+{
+	$setting_key = get_setting_key(__FUNCTION__);
+	$option = get_option($setting_key);
+
+	if($option == '')
+	{
+		$obj_site_manager = new mf_site_manager();
+
+		$option = $obj_site_manager->get_server_ip();
+	}
+
+	echo $option;
+}
+
 function setting_server_ips_allowed_callback()
 {
 	$setting_key = get_setting_key(__FUNCTION__);
 	$option = get_option($setting_key);
 
-	$placeholder = get_option('mf_server_ip');
-
-	echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => $placeholder));
+	echo show_textfield(array('name' => $setting_key, 'value' => $option));
 }
 
 function setting_site_comparison_callback()

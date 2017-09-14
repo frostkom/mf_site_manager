@@ -15,10 +15,14 @@ GitHub Plugin URI: frostkom/mf_site_manager
 include_once("include/classes.php");
 include_once("include/functions.php");
 
-add_action('cron_base', 'cron_site_manager', mt_rand(1, 10));
+$obj_site_manager = new mf_site_manager();
+
+add_action('cron_base', array($obj_site_manager, 'cron'), mt_rand(1, 10));
+add_action('cron_base', 'activate_site_manager', mt_rand(1, 10));
 
 if(is_admin())
 {
+	register_activation_hook(__FILE__, 'activate_site_manager');
 	register_uninstall_hook(__FILE__, 'uninstall_site_manager');
 
 	add_action('admin_menu', 'menu_site_manager');
@@ -32,10 +36,15 @@ if(is_admin())
 
 	load_plugin_textdomain('lang_site_manager', false, dirname(plugin_basename(__FILE__)).'/lang/');
 
+	function activate_site_manager()
+	{
+		replace_option(array('old' => 'mf_server_ip', 'new' => 'setting_server_ip'));
+	}
+
 	function uninstall_site_manager()
 	{
 		mf_uninstall_plugin(array(
-			'options' => array('setting_server_ips_allowed', 'setting_site_comparison', 'mf_server_ip'),
+			'options' => array('setting_server_ip', 'setting_server_ips_allowed', 'setting_site_comparison'),
 		));
 	}
 }
