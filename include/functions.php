@@ -5,7 +5,7 @@ function cron_site_manager()
 	$server_ip_old = get_option('mf_server_ip');
 	$server_ip_new = get_or_set_transient(array('key' => "server_ip_transient", 'url' => "http://ipecho.net/plain"));
 
-	if($server_ip_new != $server_ip_old)
+	if($server_ip_new != '' && $server_ip_new != $server_ip_old)
 	{
 		update_option('mf_server_ip', $server_ip_new);
 
