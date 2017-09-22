@@ -411,7 +411,7 @@ class mf_site_manager
 
 		if($server_ip_new != '' && $server_ip_new != $server_ip_old)
 		{
-			update_option('setting_server_ip', $server_ip_new);
+			update_option('setting_server_ip', $server_ip_new, 'no');
 
 			if($server_ip_old != '')
 			{
