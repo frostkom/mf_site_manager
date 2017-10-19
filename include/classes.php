@@ -120,6 +120,16 @@ class mf_site_manager
 		}
 	}
 
+	function clear_domain_from_urls($url, $domain)
+	{
+		$url = remove_protocol($url);
+		$domain = remove_protocol($domain);
+
+		$url = str_replace($domain, "[".__("domain", 'lang_site_manager')."]", $url);
+
+		return $url;
+	}
+
 	function check_version($type)
 	{
 		$this->echoed = false;
@@ -228,6 +238,8 @@ class mf_site_manager
 
 					else if(isset($arr_data['array']))
 					{
+						$arr_exclude = array('style_source');
+
 						$out .= "<td></td>";
 
 						foreach($this->arr_sites as $site)
@@ -242,10 +254,10 @@ class mf_site_manager
 								{
 									$value_check = isset($arr_data_check['array'][$key2]) ? $arr_data_check['array'][$key2] : "";
 
-									$value2 = str_replace(get_site_url(), "[".__("domain", 'lang_site_manager')."]", $value2);
-									$value_check = str_replace("http://".$site, "[".__("domain", 'lang_site_manager')."]", $value_check);
+									$value2 = $this->clear_domain_from_urls($value2, get_site_url());
+									$value_check = $this->clear_domain_from_urls($value_check, "//".$site);
 
-									if($value2 != $value_check)
+									if(!in_array($key2, $arr_exclude) && $value2 != $value_check)
 									{
 										$out_temp .= "<li><i class='fa fa-lg fa-close red'></i> <strong>".$key2.":</strong> <span class='color_red'>".shorten_text(array('text' => $value_check, 'limit' => 50, 'count' => true))."</span> <strong>-></strong> ".shorten_text(array('text' => $value2, 'limit' => 50, 'count' => true))."</li>";
 
@@ -259,10 +271,10 @@ class mf_site_manager
 								{
 									$value_check = isset($arr_data['array'][$key2]) ? $arr_data['array'][$key2] : "";
 
-									$value2 = str_replace(get_site_url(), "[".__("domain", 'lang_site_manager')."]", $value2);
-									$value_check = str_replace("http://".$site, "[".__("domain", 'lang_site_manager')."]", $value_check);
+									$value2 = $this->clear_domain_from_urls($value2, get_site_url());
+									$value_check = $this->clear_domain_from_urls($value_check, "//".$site);
 
-									if($value2 != $value_check)
+									if(!in_array($key2, $arr_exclude) && $value2 != $value_check)
 									{
 										$out_temp .= "<li><i class='fa fa-lg fa-close red'></i> <strong>".$key2.":</strong> <span class='color_red'>".shorten_text(array('text' => $value2, 'limit' => 50, 'count' => true))."</span> <strong>-></strong> ".shorten_text(array('text' => $value_check, 'limit' => 50, 'count' => true))."</li>";
 
