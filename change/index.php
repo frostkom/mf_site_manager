@@ -23,14 +23,17 @@ if(isset($_POST['btnSiteChangeUrl']) && isset($_POST['intSiteChangeUrlAccept']) 
 			//if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
 		}
 
-		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."options SET option_value = replace(option_value, %s, %s) WHERE option_name = 'home' OR option_name = 'siteurl'", $old_url, $new_url));
+		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->options." SET option_value = replace(option_value, %s, %s) WHERE option_name = 'home' OR option_name = 'siteurl'", $old_url, $new_url));
 		if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
 
-		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."posts SET guid = replace(guid, %s, %s)", $old_url, $new_url));
+		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->posts." SET guid = replace(guid, %s, %s)", $old_url, $new_url));
 		if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
 
-		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->prefix."posts SET post_content = replace(post_content, %s, %s)", $old_url, $new_url));
+		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->posts." SET post_content = replace(post_content, %s, %s)", $old_url, $new_url));
 		if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
+
+		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->postmeta." SET meta_value = replace(guid, %s, %s)", $old_url, $new_url));
+		//if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
 
 		$count_temp = count($arr_errors);
 
