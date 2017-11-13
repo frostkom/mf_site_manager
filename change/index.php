@@ -16,24 +16,49 @@ if(isset($_POST['btnSiteChangeUrl']) && isset($_POST['intSiteChangeUrlAccept']) 
 			$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->blogs." SET domain = %s WHERE blog_id = '%d'", str_replace(array("http://", "https://"), "", $new_url), $wpdb->blogid));
 			if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
 
-			$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->site." SET domain = %s WHERE domain = %s", $new_url, $old_url));
-			//if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
+			$wpdb->get_results($wpdb->prepare("SELECT id FROM ".$wpdb->site." WHERE domain = %s", $old_url));
 
-			$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->sitemeta." SET meta_value = %s WHERE meta_key = 'siteurl' AND meta_value = %s", $new_url, $old_url));
-			//if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
+			if($wpdb->num_rows > 0)
+			{
+				$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->site." SET domain = %s WHERE domain = %s", $new_url, $old_url));
+				if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
+			}
+
+			$wpdb->get_results($wpdb->prepare("SELECT meta_id FROM ".$wpdb->sitemeta." WHERE meta_key = 'siteurl' AND meta_value = %s", $old_url));
+
+			if($wpdb->num_rows > 0)
+			{
+				$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->sitemeta." SET meta_value = %s WHERE meta_key = 'siteurl' AND meta_value = %s", $new_url, $old_url));
+				if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
+			}
 		}
 
 		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->options." SET option_value = replace(option_value, %s, %s) WHERE option_name = 'home' OR option_name = 'siteurl'", $old_url, $new_url));
 		if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
 
-		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->posts." SET guid = replace(guid, %s, %s)", $old_url, $new_url));
-		if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
+		$wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." WHERE guid LIKE %s", "%".$old_url."%"));
 
-		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->posts." SET post_content = replace(post_content, %s, %s)", $old_url, $new_url));
-		//if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
+		if($wpdb->num_rows > 0)
+		{
+			$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->posts." SET guid = replace(guid, %s, %s)", $old_url, $new_url));
+			if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
+		}
 
-		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->postmeta." SET meta_value = replace(meta_value, %s, %s)", $old_url, $new_url));
-		//if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
+		$wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." WHERE post_content LIKE %s", "%".$old_url."%"));
+
+		if($wpdb->num_rows > 0)
+		{
+			$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->posts." SET post_content = replace(post_content, %s, %s)", $old_url, $new_url));
+			if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
+		}
+
+		$wpdb->get_results($wpdb->prepare("SELECT meta_id FROM ".$wpdb->postmeta." WHERE meta_value LIKE %s", "%".$old_url."%"));
+
+		if($wpdb->num_rows > 0)
+		{
+			$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->postmeta." SET meta_value = replace(meta_value, %s, %s)", $old_url, $new_url));
+			if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
+		}
 
 		$count_temp = count($arr_errors);
 
