@@ -13,8 +13,14 @@ if(isset($_POST['btnSiteChangeUrl']) && isset($_POST['intSiteChangeUrlAccept']) 
 
 		if(is_multisite())
 		{
-			$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->blogs." SET domain = %s WHERE blog_id = '%d'", str_replace(array("http://", "https://"), "", $new_url), $wpdb->blogid));
-			if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
+			$old_url_clean = mf_clean_url($old_url);
+			$new_url_clean = mf_clean_url($new_url);
+
+			if($new_url_clean != $old_url_clean)
+			{
+				$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->blogs." SET domain = %s WHERE blog_id = '%d'", $new_url_clean, $wpdb->blogid));
+				if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
+			}
 
 			$wpdb->get_results($wpdb->prepare("SELECT id FROM ".$wpdb->site." WHERE domain = %s", $old_url));
 

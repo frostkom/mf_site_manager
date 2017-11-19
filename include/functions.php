@@ -149,7 +149,7 @@ function setting_site_comparison_callback()
 	$setting_key = get_setting_key(__FUNCTION__);
 	$option = get_option($setting_key);
 
-	$site_url = str_replace(array("http://", "https://"), "", get_option('siteurl'));
+	$site_url = mf_clean_url(get_option('siteurl'));
 
 	echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => $site_url.", test.".$site_url));
 }
