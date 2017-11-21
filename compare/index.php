@@ -10,7 +10,7 @@ if($setting_site_comparison == '')
 $obj_site_manager = new mf_site_manager();
 
 echo "<div class='wrap'>
-	<h2>".__("Compare", 'lang_site_manager')."</h2>"
+	<h2>".__("Compare Sites", 'lang_site_manager')."</h2>"
 	.get_notification();
 
 	$obj_site_manager->get_content_versions();

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-09-14 12:02+0100\n"
+"POT-Creation-Date: 2017-11-21 09:30+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -15,35 +15,20 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../change/index.php:39
-#: ../theme/index.php:49
-#, php-format
-msgid "I executed your request but there were %d errors so you need to manually update the database"
-msgstr "Jag genomförde din förfrågan men det uppkom %d fel så du behöver uppdatera databasen manuellt"
-
-#: ../change/index.php:46
-#, php-format
-msgid "I have changed the URL from %s to %s"
-msgstr "Jag har ändrat URLen från %s till %s"
-
-#: ../change/index.php:52
-msgid "You have to choose another URL than the current one"
-msgstr "Du måste välja en annan URL än den nuvarande"
-
-#: ../change/index.php:57
+#: ../change/index.php:8
 #: ../include/functions.php:93
 msgid "Change URL"
 msgstr "Ändra URL"
 
-#: ../change/index.php:62
+#: ../change/index.php:13
 msgid "Change to this URL"
 msgstr "Ändra till denna URL"
 
-#: ../change/index.php:63
+#: ../change/index.php:14
 msgid "Are you really sure? This will change the URL of the site"
 msgstr "Är du helt säker? Detta kommer att byta URL för webbplatsen"
 
-#: ../change/index.php:64
+#: ../change/index.php:15
 #: ../clone/index.php:143
 #: ../switch/index.php:154
 #: ../theme/index.php:73
@@ -65,8 +50,8 @@ msgstr "Du måste välja en annan webbplats än denna"
 
 #: ../clone/index.php:126
 #: ../include/functions.php:85
-msgid "Clone"
-msgstr "Klona"
+msgid "Clone Site"
+msgstr "Klona webbsida"
 
 #: ../clone/index.php:131
 msgid "From"
@@ -98,8 +83,8 @@ msgstr "Du måste ha en MultiSite för att kunna byta domän mellan två webbpla
 
 #: ../compare/index.php:13
 #: ../include/functions.php:73
-msgid "Compare"
-msgstr "Jämför"
+msgid "Compare Sites"
+msgstr "Jämför webbsidor"
 
 #: ../compare/index.php:23
 msgid "Name"
@@ -130,22 +115,38 @@ msgstr "Fel"
 msgid "I could not find any sites to compare with. Convert to MultiSite and add sites or add external ones in %sMy Settings%s"
 msgstr "Jag kunde inte hitta några webbplatser att jämföra med. Konvertera till MultiSite och lägga till webbplatser eller lägg till externa via %sMina inställningar%s"
 
-#: ../include/classes.php:178
-#: ../include/classes.php:220
-#: ../include/classes.php:292
-#: ../include/classes.php:323
-#: ../include/classes.php:338
-msgid "does not exist"
-msgstr "finns inte"
+#: ../include/classes.php:118
+#: ../theme/index.php:49
+#, php-format
+msgid "I executed your request but there were %d errors so you need to manually update the database"
+msgstr "Jag genomförde din förfrågan men det uppkom %d fel så du behöver uppdatera databasen manuellt"
 
-#: ../include/classes.php:245
-#: ../include/classes.php:246
-#: ../include/classes.php:262
-#: ../include/classes.php:263
+#: ../include/classes.php:120
+msgid "Errors while changing URL"
+msgstr "Fel vid ändring av URL"
+
+#: ../include/classes.php:125
+#, php-format
+msgid "I have changed the URL from %s to %s"
+msgstr "Jag har ändrat URLen från %s till %s"
+
+#: ../include/classes.php:131
+msgid "You have to choose another URL than the current one"
+msgstr "Du måste välja en annan URL än den nuvarande"
+
+#: ../include/classes.php:255
 msgid "domain"
 msgstr "domän"
 
-#: ../include/classes.php:418
+#: ../include/classes.php:315
+#: ../include/classes.php:357
+#: ../include/classes.php:431
+#: ../include/classes.php:462
+#: ../include/classes.php:477
+msgid "does not exist"
+msgstr "finns inte"
+
+#: ../include/classes.php:557
 #, php-format
 msgid "The server has changed IP address from %s to %s"
 msgstr "Servern har bytt IP-adress från %s till %s"
@@ -161,8 +162,8 @@ msgstr ""
 
 #: ../include/functions.php:88
 #: ../switch/index.php:139
-msgid "Switch"
-msgstr "Byt"
+msgid "Switch Sites"
+msgstr "Byt webbsidor"
 
 #: ../include/functions.php:96
 #: ../theme/index.php:62

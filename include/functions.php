@@ -70,7 +70,7 @@ function menu_site_manager()
 
 	if(get_option('setting_site_comparison') != '')
 	{
-		$menu_title = __("Compare", 'lang_site_manager');
+		$menu_title = __("Compare Sites", 'lang_site_manager');
 		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."compare/index.php");
 	}
 
@@ -82,10 +82,10 @@ function menu_site_manager()
 
 		if($wpdb->num_rows > 1)
 		{
-			$menu_title = __("Clone", 'lang_site_manager');
+			$menu_title = __("Clone Site", 'lang_site_manager');
 			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."clone/index.php");
 
-			$menu_title = __("Switch", 'lang_site_manager');
+			$menu_title = __("Switch Sites", 'lang_site_manager');
 			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."switch/index.php");
 		}
 	}

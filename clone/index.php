@@ -123,7 +123,7 @@ if(isset($_POST['btnSiteClone']) && isset($_POST['intSiteCloneAccept']) && $_POS
 }
 
 echo "<div class='wrap'>
-	<h2>".__("Clone", 'lang_site_manager')."</h2>"
+	<h2>".__("Clone Site", 'lang_site_manager')."</h2>"
 	.get_notification()
 	."<div id='poststuff' class='postbox'>
 		<div class='inside'>

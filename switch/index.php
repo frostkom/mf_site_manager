@@ -136,7 +136,7 @@ if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_P
 }
 
 echo "<div class='wrap'>
-	<h2>".__("Switch", 'lang_site_manager')."</h2>"
+	<h2>".__("Switch Sites", 'lang_site_manager')."</h2>"
 	.get_notification()
 	."<div id='poststuff' class='postbox'>
 		<div class='inside'>

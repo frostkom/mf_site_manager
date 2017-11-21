@@ -7,6 +7,179 @@ class mf_site_manager
 		$this->arr_core = $this->arr_themes = $this->arr_plugins = $this->arr_sites = $this->arr_sites_error = array();
 	}
 
+	// Change URL
+	###########################
+	function fetch_request()
+	{
+		$this->site_url = get_site_url();
+		$this->new_url = check_var('strBlogUrl', 'char', true, $this->site_url);
+
+		$this->site_url_clean = mf_clean_url($this->site_url);
+		$this->new_url_clean = mf_clean_url($this->new_url);
+	}
+	
+	function change_multisite_url()
+	{
+		global $wpdb;
+
+		if($this->new_url_clean != $this->site_url_clean)
+		{
+			$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->blogs." SET domain = %s WHERE blog_id = '%d'", $this->new_url_clean, $wpdb->blogid));
+			if($wpdb->rows_affected == 0){	$this->arr_errors[] = $wpdb->last_query;}
+		}
+
+		$wpdb->get_results($wpdb->prepare("SELECT id FROM ".$wpdb->site." WHERE domain = %s", $this->site_url));
+
+		if($wpdb->num_rows > 0)
+		{
+			$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->site." SET domain = %s WHERE domain = %s", $this->new_url, $this->site_url));
+			if($wpdb->rows_affected == 0){	$this->arr_errors[] = $wpdb->last_query;}
+		}
+
+		$result = $wpdb->get_results($wpdb->prepare("SELECT meta_id FROM ".$wpdb->sitemeta." WHERE meta_key = 'siteurl' AND (meta_value = %s OR meta_value = %s)", $this->site_url, $this->site_url."/"));
+
+		if($wpdb->num_rows > 0)
+		{
+			foreach($result as $r)
+			{
+				$meta_id = $r->meta_id;
+
+				$this->new_url_temp = substr($this->new_url, -1) == "/" ? $this->new_url : $this->new_url."/";
+
+				$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->sitemeta." SET meta_value = %s WHERE meta_key = 'siteurl' AND meta_id = '%d'", $this->new_url_temp, $meta_id));
+				if($wpdb->rows_affected == 0){	$this->arr_errors[] = $wpdb->last_query;}
+			}
+		}
+	}
+
+	function change_url()
+	{
+		global $wpdb;
+
+		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->options." SET option_value = replace(option_value, %s, %s) WHERE option_name = 'home' OR option_name = 'siteurl'", $this->site_url, $this->new_url));
+		if($wpdb->rows_affected == 0){	$this->arr_errors[] = $wpdb->last_query;}
+
+		$wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." WHERE guid LIKE %s", "%".$this->site_url."%"));
+
+		if($wpdb->num_rows > 0)
+		{
+			$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->posts." SET guid = replace(guid, %s, %s)", $this->site_url, $this->new_url));
+			if($wpdb->rows_affected == 0){	$this->arr_errors[] = $wpdb->last_query;}
+		}
+
+		$wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." WHERE post_content LIKE %s", "%".$this->site_url."%"));
+
+		if($wpdb->num_rows > 0)
+		{
+			$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->posts." SET post_content = replace(post_content, %s, %s)", $this->site_url, $this->new_url));
+			if($wpdb->rows_affected == 0){	$this->arr_errors[] = $wpdb->last_query;}
+		}
+
+		$wpdb->get_results($wpdb->prepare("SELECT meta_id FROM ".$wpdb->postmeta." WHERE meta_value LIKE %s", "%".$this->site_url."%"));
+
+		if($wpdb->num_rows > 0)
+		{
+			$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->postmeta." SET meta_value = replace(meta_value, %s, %s)", $this->site_url, $this->new_url));
+			if($wpdb->rows_affected == 0){	$this->arr_errors[] = $wpdb->last_query;}
+		}
+	}
+
+	function change_widgets()
+	{
+		global $wpdb;
+
+		$result = $wpdb->get_results($wpdb->prepare("SELECT option_id, option_name FROM ".$wpdb->options." WHERE option_name LIKE %s AND option_value LIKE %s", "widget_%", "%".$this->site_url."%"));
+
+		if($wpdb->num_rows > 0)
+		{
+			foreach($result as $r)
+			{
+				$option_id = $r->option_id;
+				$option_name = $r->option_name;
+
+				$option_value = get_option($option_name);
+
+				if(is_array($option_value))
+				{
+					foreach($option_value as $key => $value)
+					{
+						$option_value[$key] = str_replace($this->site_url, $this->new_url, $value);
+					}
+				}
+
+				else
+				{
+					$option_value = str_replace($this->site_url, $this->new_url, $option_value);
+				}
+
+				//do_log("Update: ".$option_name." (".var_export($option_value, true).")");
+				update_option($option_name, $option_value);
+			}
+		}
+
+		/*else
+		{
+			do_log("No rows: ".$wpdb->last_query);
+		}*/
+	}
+
+	function change_theme_mods()
+	{
+		$arr_theme_mods = get_theme_mods();
+
+		foreach($arr_theme_mods as $key => $value)
+		{
+			$value_new = str_replace($this->site_url, $this->new_url, $value);
+
+			if($value_new != $value)
+			{
+				set_theme_mod($key, $value_new);
+			}
+		}
+	}
+
+	function save_data()
+	{
+		global $wpdb, $error_text, $done_text;
+
+		if(isset($_POST['btnSiteChangeUrl']) && isset($_POST['intSiteChangeUrlAccept']) && $_POST['intSiteChangeUrlAccept'] == 1 && wp_verify_nonce($_POST['_wpnonce'], 'site_change_url_'.$wpdb->blogid))
+		{
+			if($this->new_url != $this->site_url)
+			{
+				$this->arr_errors = array();
+
+				if(is_multisite())
+				{
+					$this->change_multisite_url();
+				}
+
+				$this->change_url();
+				$this->change_widgets();
+				$this->change_theme_mods();
+
+				$count_temp = count($this->arr_errors);
+
+				if($count_temp > 0)
+				{
+					$error_text = sprintf(__("I executed your request but there were %d errors so you need to manually update the database", 'lang_site_manager'), $count_temp);
+
+					do_log(__("Errors while changing URL", 'lang_site_manager').": ".var_export($this->arr_errors, true));
+				}
+
+				else
+				{
+					$done_text = sprintf(__("I have changed the URL from %s to %s", 'lang_site_manager'), $this->site_url, $this->new_url);
+				}
+			}
+
+			else
+			{
+				$error_text = __("You have to choose another URL than the current one", 'lang_site_manager');
+			}
+		}
+	}
+	###########################
+
 	function get_content_versions()
 	{
 		$core_version = get_bloginfo('version');
