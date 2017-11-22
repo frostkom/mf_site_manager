@@ -12,7 +12,7 @@ else
 	require_once($wp_root.'/wp-config.php');
 }
 
-require_once($wp_root."/wp-admin/includes/plugin.php");
+require_once(ABSPATH."wp-admin/includes/plugin.php");
 require_once("classes.php");
 require_once("functions.php");
 

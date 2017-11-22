@@ -28,7 +28,7 @@ class mf_site_manager
 			if($wpdb->rows_affected == 0){	$this->arr_errors[] = $wpdb->last_query;}
 		}
 
-		$wpdb->get_results($wpdb->prepare("SELECT id FROM ".$wpdb->site." WHERE domain = %s", $this->site_url));
+		$wpdb->get_results($wpdb->prepare("SELECT id FROM ".$wpdb->site." WHERE domain = %s LIMIT 0, 1", $this->site_url));
 
 		if($wpdb->num_rows > 0)
 		{
@@ -59,7 +59,7 @@ class mf_site_manager
 		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->options." SET option_value = replace(option_value, %s, %s) WHERE option_name = 'home' OR option_name = 'siteurl'", $this->site_url, $this->new_url));
 		if($wpdb->rows_affected == 0){	$this->arr_errors[] = $wpdb->last_query;}
 
-		$wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." WHERE guid LIKE %s", "%".$this->site_url."%"));
+		$wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." WHERE guid LIKE %s", "%".$this->site_url."% LIMIT 0, 1"));
 
 		if($wpdb->num_rows > 0)
 		{
@@ -67,7 +67,7 @@ class mf_site_manager
 			if($wpdb->rows_affected == 0){	$this->arr_errors[] = $wpdb->last_query;}
 		}
 
-		$wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." WHERE post_content LIKE %s", "%".$this->site_url."%"));
+		$wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." WHERE post_content LIKE %s", "%".$this->site_url."% LIMIT 0, 1"));
 
 		if($wpdb->num_rows > 0)
 		{
@@ -75,7 +75,7 @@ class mf_site_manager
 			if($wpdb->rows_affected == 0){	$this->arr_errors[] = $wpdb->last_query;}
 		}
 
-		$wpdb->get_results($wpdb->prepare("SELECT meta_id FROM ".$wpdb->postmeta." WHERE meta_value LIKE %s", "%".$this->site_url."%"));
+		$wpdb->get_results($wpdb->prepare("SELECT meta_id FROM ".$wpdb->postmeta." WHERE meta_value LIKE %s", "%".$this->site_url."% LIMIT 0, 1"));
 
 		if($wpdb->num_rows > 0)
 		{
