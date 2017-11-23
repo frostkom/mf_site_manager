@@ -224,7 +224,8 @@ class mf_site_manager
 					));
 
 					$arr_data['value'] = count($tbl_group->data);
-					$arr_data['link'] = get_site_url()."/wp-admin/admin.php?page=mf_log/list/index.php";
+					//$arr_data['link'] = get_site_url()."/wp-admin/admin.php?page=mf_log/list/index.php";
+					$arr_data['link'] = admin_url("admin.php?page=mf_log/list/index.php");
 				break;
 			}
 
