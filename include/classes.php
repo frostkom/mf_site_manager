@@ -14,8 +14,8 @@ class mf_site_manager
 		$this->site_url = get_site_url();
 		$this->new_url = check_var('strBlogUrl', 'char', true, $this->site_url);
 
-		$this->site_url_clean = mf_clean_url($this->site_url);
-		$this->new_url_clean = mf_clean_url($this->new_url);
+		$this->site_url_clean = remove_protocol(array('url' => $this->site_url, 'clean' => true));
+		$this->new_url_clean = remove_protocol(array('url' => $this->new_url, 'clean' => true));
 	}
 	
 	function change_multisite_url()
@@ -296,8 +296,8 @@ class mf_site_manager
 
 	function clear_domain_from_urls($url, $domain)
 	{
-		$url = remove_protocol($url);
-		$domain = remove_protocol($domain);
+		$url = remove_protocol(array('url' => $url));
+		$domain = remove_protocol(array('url' => $domain));
 
 		$url = str_replace($domain, "[".__("domain", 'lang_site_manager')."]", $url);
 
