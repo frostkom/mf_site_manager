@@ -6,8 +6,9 @@ function get_sites_for_select()
 
 	$result = get_sites(array('site__not_in' => array($wpdb->blogid)));
 
-	$arr_data = array();
-	$arr_data[''] = "-- ".__("Choose here", 'lang_site_manager')." --";
+	$arr_data = array(
+		'' => "-- ".__("Choose here", 'lang_site_manager')." --"
+	);
 
 	foreach($result as $r)
 	{

@@ -359,7 +359,7 @@ class mf_site_manager
 
 					else
 					{
-						$out .= "<td><a href='".$this->get_type_url($site, $name)."' class='italic' rel='external'>(".__("does not exist", 'lang_site_manager').")</a></td>";
+						$out .= "<td><a href='".$this->get_type_url($site, $name)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a></td>";
 
 						$has_equal_version = false;
 					}
@@ -386,7 +386,7 @@ class mf_site_manager
 
 									if($arr_data_check['value'] > 0)
 									{
-										$out .= "<i class='fa fa-lg fa-close red'></i> <a href='".$arr_data_check['link']."' rel='external'>".$arr_data_check['value']."</a>";
+										$out .= "<i class='fa fa-lg fa-close red'></i> <a href='".$arr_data_check['link']."'>".$arr_data_check['value']."</a>";
 
 										$has_equal_version = false;
 									}
@@ -401,7 +401,7 @@ class mf_site_manager
 
 							else
 							{
-								$out .= "<td><a href='".$this->get_type_url($site)."' class='italic' rel='external'>(".__("does not exist", 'lang_site_manager').")</a></td>";
+								$out .= "<td><a href='".$this->get_type_url($site)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a></td>";
 
 								$has_equal_version = false;
 							}
@@ -475,7 +475,7 @@ class mf_site_manager
 
 							else
 							{
-								$out .= "<td><a href='".$this->get_type_url($site)."' class='italic' rel='external'>(".__("does not exist", 'lang_site_manager').")</a></td>";
+								$out .= "<td><a href='".$this->get_type_url($site)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a></td>";
 
 								$has_equal_version = false;
 							}
@@ -521,7 +521,7 @@ class mf_site_manager
 
 						else
 						{
-							echo "<td><a href='".$this->get_type_url($site, $name)."' class='italic' rel='external'>(".__("does not exist", 'lang_site_manager').")</a></td>";
+							echo "<td><a href='".$this->get_type_url($site, $name)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a></td>";
 						}
 					}
 
@@ -575,7 +575,7 @@ class mf_site_manager
 
 			if($version_check != $version && $link != '')
 			{
-				$out .= "<a href='".$link."' rel='external'>";
+				$out .= "<a href='".$link."'>";
 			}
 
 				$out .= $version_out;

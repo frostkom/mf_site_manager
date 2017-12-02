@@ -1,15 +1,10 @@
 <?php
 
-$wp_root = '../../../..';
-
-if(file_exists($wp_root.'/wp-load.php'))
+if(!defined('ABSPATH'))
 {
-	require_once($wp_root.'/wp-load.php');
-}
+	$folder = str_replace("/wp-content/plugins/mf_site_manager/include", "/", dirname(__FILE__));
 
-else
-{
-	require_once($wp_root.'/wp-config.php');
+	require_once($folder."wp-load.php");
 }
 
 require_once(ABSPATH."wp-admin/includes/plugin.php");
