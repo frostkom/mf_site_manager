@@ -48,7 +48,7 @@ if(isset($_POST['btnSiteChangeTheme']))
 
 			$error_text = sprintf(__("I executed your request but there were %d errors so you need to manually update the database", 'lang_site_manager'), $count_temp);
 
-			do_log("Change Theme Errors: ".var_export($arr_errors, true));
+			error_log("Change Theme Errors: ".var_export($arr_errors, true));
 		}
 
 		else

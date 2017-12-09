@@ -17,7 +17,7 @@ class mf_site_manager
 		$this->site_url_clean = remove_protocol(array('url' => $this->site_url, 'clean' => true));
 		$this->new_url_clean = remove_protocol(array('url' => $this->new_url, 'clean' => true));
 	}
-	
+
 	function change_multisite_url()
 	{
 		global $wpdb;
@@ -112,15 +112,9 @@ class mf_site_manager
 					$option_value = str_replace($this->site_url, $this->new_url, $option_value);
 				}
 
-				//do_log("Update: ".$option_name." (".var_export($option_value, true).")");
 				update_option($option_name, $option_value);
 			}
 		}
-
-		/*else
-		{
-			do_log("No rows: ".$wpdb->last_query);
-		}*/
 	}
 
 	function change_theme_mods()
@@ -601,7 +595,7 @@ class mf_site_manager
 
 			if($server_ip_old != '')
 			{
-				do_log(sprintf(__("The server has changed IP address from %s to %s"), $server_ip_old, $server_ip_new));
+				error_log(sprintf(__("The server has changed IP address from %s to %s"), $server_ip_old, $server_ip_new));
 			}
 
 			return $server_ip_new;
