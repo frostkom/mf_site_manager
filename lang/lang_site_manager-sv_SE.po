@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-21 09:30+0100\n"
+"POT-Creation-Date: 2017-12-11 10:13+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -16,7 +16,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: ..\n"
 
 #: ../change/index.php:8
-#: ../include/functions.php:93
+#: ../include/functions.php:94
 msgid "Change URL"
 msgstr "Ändra URL"
 
@@ -49,7 +49,7 @@ msgid "You have to choose a site other than this site"
 msgstr "Du måste välja en annan webbplats än denna"
 
 #: ../clone/index.php:126
-#: ../include/functions.php:85
+#: ../include/functions.php:86
 msgid "Clone Site"
 msgstr "Klona webbsida"
 
@@ -82,7 +82,7 @@ msgid "You have to have a MultiSite to be able to clone this site"
 msgstr "Du måste ha en MultiSite för att kunna byta domän mellan två webbplatser"
 
 #: ../compare/index.php:13
-#: ../include/functions.php:73
+#: ../include/functions.php:74
 msgid "Compare Sites"
 msgstr "Jämför webbsidor"
 
@@ -115,38 +115,38 @@ msgstr "Fel"
 msgid "I could not find any sites to compare with. Convert to MultiSite and add sites or add external ones in %sMy Settings%s"
 msgstr "Jag kunde inte hitta några webbplatser att jämföra med. Konvertera till MultiSite och lägga till webbplatser eller lägg till externa via %sMina inställningar%s"
 
-#: ../include/classes.php:118
+#: ../include/classes.php:158
 #: ../theme/index.php:49
 #, php-format
 msgid "I executed your request but there were %d errors so you need to manually update the database"
 msgstr "Jag genomförde din förfrågan men det uppkom %d fel så du behöver uppdatera databasen manuellt"
 
-#: ../include/classes.php:120
+#: ../include/classes.php:160
 msgid "Errors while changing URL"
 msgstr "Fel vid ändring av URL"
 
-#: ../include/classes.php:125
+#: ../include/classes.php:165
 #, php-format
 msgid "I have changed the URL from %s to %s"
 msgstr "Jag har ändrat URLen från %s till %s"
 
-#: ../include/classes.php:131
+#: ../include/classes.php:171
 msgid "You have to choose another URL than the current one"
 msgstr "Du måste välja en annan URL än den nuvarande"
 
-#: ../include/classes.php:255
+#: ../include/classes.php:296
 msgid "domain"
 msgstr "domän"
 
-#: ../include/classes.php:315
-#: ../include/classes.php:357
-#: ../include/classes.php:431
-#: ../include/classes.php:462
-#: ../include/classes.php:477
+#: ../include/classes.php:356
+#: ../include/classes.php:398
+#: ../include/classes.php:472
+#: ../include/classes.php:503
+#: ../include/classes.php:518
 msgid "does not exist"
 msgstr "finns inte"
 
-#: ../include/classes.php:557
+#: ../include/classes.php:598
 #, php-format
 msgid "The server has changed IP address from %s to %s"
 msgstr "Servern har bytt IP-adress från %s till %s"
@@ -155,44 +155,52 @@ msgstr "Servern har bytt IP-adress från %s till %s"
 msgid "Choose here"
 msgstr "Välj här"
 
-#: ../include/functions.php:68
-#: ../include/functions.php:121
+#: ../include/functions.php:69
+#: ../include/functions.php:122
 msgid "Site Manager"
 msgstr ""
 
-#: ../include/functions.php:88
+#: ../include/functions.php:89
 #: ../switch/index.php:139
 msgid "Switch Sites"
 msgstr "Byt webbsidor"
 
-#: ../include/functions.php:96
+#: ../include/functions.php:97
 #: ../theme/index.php:62
 msgid "Change Theme"
 msgstr "Byt tema"
 
-#: ../include/functions.php:109
+#: ../include/functions.php:110
 msgid "Server IP"
 msgstr "Server-IP"
 
-#: ../include/functions.php:110
+#: ../include/functions.php:111
 msgid "Server IPs allowed"
 msgstr "Tillåtna server-IP"
 
-#: ../include/functions.php:111
+#: ../include/functions.php:112
 msgid "Sites to compare with"
 msgstr "Webbplatser att jämföra med"
 
-#: ../include/functions.php:161
+#: ../include/functions.php:162
 msgid "E-mail"
 msgstr "E-post"
 
-#: ../include/functions.php:162
+#: ../include/functions.php:163
 msgid "Theme"
 msgstr "Tema"
 
-#: ../include/functions.php:185
+#: ../include/functions.php:187
 msgid "Change"
 msgstr "Byt"
+
+#: ../include/ajax/index.php:57
+msgid "Wrong Type"
+msgstr "Fel typ"
+
+#: ../include/ajax/index.php:65
+msgid "Wrong IP"
+msgstr "Fel IP"
 
 #: ../switch/index.php:50
 msgid "There appears to be no tables on either of the sites"
