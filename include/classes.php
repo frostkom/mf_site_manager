@@ -252,7 +252,7 @@ class mf_site_manager
 			{
 				$this->arr_sites[$i] = $site = $this->arr_sites[$i];
 
-				$site_ajax = $site."/wp-content/plugins/mf_site_manager/include/ajax/?type=compare";
+				$site_ajax = $site."/wp-content/plugins/mf_site_manager/include/api/?type=compare";
 
 				list($content, $headers) = get_url_content($site_ajax, true);
 
