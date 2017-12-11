@@ -256,6 +256,13 @@ class mf_site_manager
 
 				list($content, $headers) = get_url_content($site_ajax, true);
 
+				if($headers['http_code'] != 200) //Fallback until all sites are updated
+				{
+					$site_ajax = $site."/wp-content/plugins/mf_site_manager/include/ajax.php?type=compare";
+
+					list($content, $headers) = get_url_content($site_ajax, true);
+				}
+
 				if($headers['http_code'] == 200)
 				{
 					$arr_content = json_decode($content, true);
@@ -573,6 +580,8 @@ class mf_site_manager
 			}
 
 				$out .= $version_out;
+
+				//$out .= " (".version_compare($version_check, $version, '>=').")";
 
 			if($version_check != $version && $link != '')
 			{
