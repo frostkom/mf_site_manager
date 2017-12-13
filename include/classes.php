@@ -558,7 +558,8 @@ class mf_site_manager
 
 		else
 		{
-			if(point2int($version_check) > point2int($version))
+			//if(point2int($version_check) > point2int($version))
+			if(version_compare($version_check, $version, ">"))
 			{
 				$class = "fa-arrow-up green";
 			}
@@ -580,8 +581,6 @@ class mf_site_manager
 			}
 
 				$out .= $version_out;
-
-				//$out .= " (".version_compare($version_check, $version, '>=').")";
 
 			if($version_check != $version && $link != '')
 			{
