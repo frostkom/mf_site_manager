@@ -53,7 +53,7 @@ function get_or_set_transient($data)
 
 		if($content != '')
 		{
-			set_transient($data['key'], $content, WEEK_IN_SECONDS);
+			set_transient($data['key'], $content, DAY_IN_SECONDS); //HOUR_IN_SECONDS, WEEK_IN_SECONDS
 		}
 	}
 
@@ -102,6 +102,11 @@ function settings_site_manager()
 {
 	if(IS_SUPER_ADMIN)
 	{
+		$plugin_include_url = plugin_dir_url(__FILE__);
+		$plugin_version = get_plugin_version(__FILE__);
+
+		mf_enqueue_script('script_site_manager', $plugin_include_url."script_wp.js", array('plugin_url' => $plugin_include_url, 'ajax_url' => admin_url('admin-ajax.php')), $plugin_version);
+
 		$options_area = __FUNCTION__;
 
 		add_settings_section($options_area, "", $options_area.'_callback', BASE_OPTIONS_PAGE);
@@ -135,6 +140,12 @@ function setting_server_ip_callback()
 	}
 
 	echo $option;
+
+	echo "<div class='form_buttons'>"
+		.show_button(array('type' => 'button', 'name' => 'btnGetServerIP', 'text' => __("Get Server IP", 'lang_cache'), 'class' => 'button-secondary'))
+		//.show_button(array('type' => 'button', 'name' => 'btnGetMyIP', 'text' => __("Get My IP", 'lang_cache'), 'class' => 'button-secondary'))
+	."</div>
+	<div id='ip_debug'></div>";
 }
 
 function setting_server_ips_allowed_callback()

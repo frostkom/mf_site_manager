@@ -594,20 +594,63 @@ class mf_site_manager
 
 	function get_server_ip()
 	{
-		$server_ip_old = get_option('setting_server_ip');
-		$server_ip_new = get_or_set_transient(array('key' => "server_ip_transient", 'url' => "http://ipecho.net/plain"));
+		$this->server_ip_old = get_option('setting_server_ip');
+		$this->server_ip_new = get_or_set_transient(array('key' => "server_ip_transient", 'url' => "http://ipecho.net/plain"));
 
-		if($server_ip_new != '' && $server_ip_new != $server_ip_old)
+		if($this->server_ip_new != '' && $this->server_ip_new != $this->server_ip_old)
 		{
-			update_option('setting_server_ip', $server_ip_new, 'no');
+			update_option('setting_server_ip', $this->server_ip_new, 'no');
 
-			if($server_ip_old != '')
+			if($this->server_ip_old != '')
 			{
-				error_log(sprintf(__("The server has changed IP address from %s to %s"), $server_ip_old, $server_ip_new));
+				error_log(sprintf(__("The server has changed IP address from %s to %s", 'lang_site_manager'), $server_ip_old, $server_ip_new));
 			}
 
-			return $server_ip_new;
+			return $this->server_ip_new;
 		}
+	}
+
+	function force_server_ip()
+	{
+		global $done_text, $error_text;
+
+		$result = array();
+
+		delete_transient('server_ip_transient');
+
+		$this->get_server_ip();
+
+		if($this->server_ip_new != '' && $this->server_ip_new != $this->server_ip_old)
+		{
+			$done_text = sprintf(__("I successfully fetched the server IP (%s) for you", 'lang_site_manager'), $this->server_ip_old." -> ".$this->server_ip_new);
+		}
+
+		else if($this->server_ip_new == $this->server_ip_old)
+		{
+			$done_text = sprintf(__("The IP (%s) is the same as before", 'lang_site_manager'), $this->server_ip_new);
+		}
+
+		else
+		{
+			$error_text = sprintf(__("I could not fetch the server IP (%s) for you", 'lang_site_manager'), $this->server_ip_old." -> ".$this->server_ip_new);
+		}
+
+		$out = get_notification();
+
+		if($done_text != '')
+		{
+			$result['success'] = true;
+			$result['message'] = $out;
+		}
+
+		else
+		{
+			$result['error'] = $out;
+		}
+
+		header('Content-Type: application/json');
+		echo json_encode($result);
+		die();
 	}
 
 	function cron()
