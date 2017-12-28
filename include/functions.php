@@ -165,39 +165,3 @@ function setting_site_comparison_callback()
 
 	echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => $site_url.", test.".$site_url));
 }
-
-function column_header_site_manager($cols)
-{
-	unset($cols['registered']);
-
-	$cols['email'] = __("E-mail", 'lang_site_manager');
-	$cols['theme'] = __("Theme", 'lang_site_manager');
-
-	return $cols;
-}
-
-function column_cell_site_manager($col, $id)
-{
-	global $wpdb;
-
-	switch($col)
-	{
-		case 'email':
-			$admin_email = get_blog_option($id, 'admin_email');
-
-			if($admin_email != '')
-			{
-				echo "<a href='mailto:".$admin_email."'>".$admin_email."</a>";
-			}
-		break;
-
-		case 'theme':
-			echo get_blog_option($id, 'stylesheet')
-			."<div class='row-actions'>"
-				//."<a href='".get_site_url($id)."/wp-admin/admin.php?page=mf_site_manager/theme/index.php'>".__("Change", 'lang_site_manager')."</a>"
-				."<a href='".admin_url("admin.php?page=mf_site_manager/theme/index.php", $id)."'>".__("Change", 'lang_site_manager')."</a>"
-				//.get_blog_option($id, 'current_theme')
-			."</div>";
-		break;
-	}
-}

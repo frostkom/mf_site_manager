@@ -7,11 +7,12 @@ class mf_site_manager
 		$this->arr_core = $this->arr_themes = $this->arr_plugins = $this->arr_sites = $this->arr_sites_error = array();
 	}
 
-	// Change URL
+	/* Change URL */
 	###########################
 	function fetch_request()
 	{
-		$this->site_url = get_site_url();
+		//$this->site_url = get_site_url();
+		$this->site_url = get_home_url();
 		$this->new_url = check_var('strBlogUrl', 'char', true, $this->site_url);
 
 		$this->site_url_clean = remove_protocol(array('url' => $this->site_url, 'clean' => true));
@@ -171,6 +172,74 @@ class mf_site_manager
 				$error_text = __("You have to choose another URL than the current one", 'lang_site_manager');
 			}
 		}
+	}
+	###########################
+
+	/* Admin */
+	###########################
+	function column_header($cols)
+	{
+		unset($cols['registered']);
+		unset($cols['lastupdated']);
+
+		$cols['ssl'] = __("SSL", 'lang_site_manager');
+		$cols['email'] = __("E-mail", 'lang_site_manager');
+		$cols['theme'] = __("Theme", 'lang_site_manager');
+
+		return $cols;
+	}
+
+	function column_cell($col, $id)
+	{
+		global $wpdb;
+
+		switch($col)
+		{
+			case 'ssl':
+				$site_url = get_home_url($id, '/');
+
+				if(substr($site_url, 0, 5) == 'https')
+				{
+					echo "<i class='fa fa-lock fa-2x green'></i>";
+				}
+
+				else
+				{
+					echo "<a href='".get_admin_url($id, "admin.php?page=mf_site_manager/change/index.php")."'>
+						<span class='fa-stack fa-lg'>
+							<i class='fa fa-lock fa-stack-1x'></i>
+							<i class='fa fa-ban fa-stack-2x red'></i>
+						</span>
+					</a>";
+				}
+			break;
+
+			case 'email':
+				$admin_email = get_blog_option($id, 'admin_email');
+
+				if($admin_email != '')
+				{
+					echo "<a href='mailto:".$admin_email."'>".$admin_email."</a>";
+				}
+			break;
+
+			case 'theme':
+				echo get_blog_option($id, 'stylesheet')
+				."<div class='row-actions'>"
+					//."<a href='".get_site_url($id)."/wp-admin/admin.php?page=mf_site_manager/theme/index.php'>".__("Change", 'lang_site_manager')."</a>"
+					."<a href='".get_admin_url($id, "admin.php?page=mf_site_manager/theme/index.php")."'>".__("Change", 'lang_site_manager')."</a>"
+					//.get_blog_option($id, 'current_theme')
+				."</div>";
+			break;
+		}
+	}
+
+	function sites_row_actions($actions)
+	{
+		unset($actions['archive']);
+		unset($actions['spam']);
+
+		return $actions;
 	}
 	###########################
 

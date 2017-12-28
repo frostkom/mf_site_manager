@@ -3,7 +3,7 @@
 Plugin Name: MF Site Manager
 Plugin URI: https://github.com/frostkom/mf_site_manager
 Description: 
-Version: 4.9.5
+Version: 4.9.6
 Author: Martin Fors
 Author URI: http://frostkom.se
 Text Domain: lang_site_manager
@@ -30,8 +30,9 @@ if(is_admin())
 
 	if(is_multisite())
 	{
-		add_filter('manage_sites-network_columns', 'column_header_site_manager', 5);
-		add_action('manage_sites_custom_column', 'column_cell_site_manager', 5, 2);
+		add_filter('manage_sites-network_columns', array($obj_site_manager, 'column_header'), 5);
+		add_action('manage_sites_custom_column', array($obj_site_manager, 'column_cell'), 5, 2);
+		add_filter('manage_sites_action_links', array($obj_site_manager, 'sites_row_actions'));
 	}
 
 	load_plugin_textdomain('lang_site_manager', false, dirname(plugin_basename(__FILE__)).'/lang/');
