@@ -6,10 +6,10 @@ if(isset($_POST['btnSiteClone']) && isset($_POST['intSiteCloneAccept']) && $_POS
 {
 	if($intBlogID > 0 && $intBlogID != $wpdb->blogid)
 	{
-		$default_charset = DB_CHARSET != '' ? DB_CHARSET : "utf8";
-
 		$str_queries = "";
 
+		/* Get From Table */
+		####################
 		$strBasePrefixFrom = $wpdb->prefix;
 		$strBlogDomainFrom = get_site_url_clean(array('trim' => "/"));
 
@@ -25,7 +25,10 @@ if(isset($_POST['btnSiteClone']) && isset($_POST['intSiteCloneAccept']) && $_POS
 				$arr_tables_from[] = $s;
 			}
 		}
+		####################
 
+		/* Get To Table */
+		####################
 		$strBasePrefixTo = $intBlogID > 1 ? $wpdb->base_prefix.$intBlogID."_" : $wpdb->base_prefix;
 		$strBlogDomainTo = get_site_url_clean(array('id' => $intBlogID, 'trim' => "/"));
 
@@ -41,6 +44,7 @@ if(isset($_POST['btnSiteClone']) && isset($_POST['intSiteCloneAccept']) && $_POS
 				$arr_tables_to[] = $s;
 			}
 		}
+		####################
 
 		$str_queries .= "# Tables: ".count($arr_tables_from)." -> ".count($arr_tables_to)."\n";
 
@@ -56,6 +60,8 @@ if(isset($_POST['btnSiteClone']) && isset($_POST['intSiteCloneAccept']) && $_POS
 
 		else
 		{
+			/* Clone Tables */
+			#######################
 			foreach($arr_tables_from as $r)
 			{
 				$table_name_from = $r;
@@ -104,14 +110,61 @@ if(isset($_POST['btnSiteClone']) && isset($_POST['intSiteCloneAccept']) && $_POS
 						}
 					}
 
-					else
+					/*else
 					{
-						$str_queries .= $table_name_prefixless."\n";
+						$str_queries .= "# Table: ".$table_name_prefixless."\n";
+					}*/
+				}
+			}
+			#######################
+
+			/* Clone Files */
+			#######################
+			$obj_theme_core = new mf_theme_core();
+
+			$upload_path_global = WP_CONTENT_DIR."/uploads/";
+			$upload_url_global = WP_CONTENT_URL."/uploads/";
+
+			$upload_path_from .= $upload_path_global."sites/".$wpdb->blogid."/";
+			$upload_url_from .= $upload_url_global."sites/".$wpdb->blogid."/";
+
+			$upload_path_to .= $upload_path_global."sites/".$intBlogID."/";
+			$upload_url_to .= $upload_url_global."sites/".$intBlogID."/";
+
+			$arr_sizes = array('thumbnail', 'medium', 'large');
+
+			$result = $wpdb->get_results($wpdb->prepare("SELECT ID, post_title FROM ".$wpdb->posts." WHERE post_type = %s", 'attachment'));
+
+			foreach($result as $r)
+			{
+				$post_id = $r->ID;
+				$post_url = wp_get_attachment_url($post_id);
+
+				$obj_theme_core->file_dir_from = str_replace(array($upload_url_to, $upload_url_from), $upload_path_from, $post_url);
+				$obj_theme_core->file_dir_to = str_replace(array($upload_url_to, $upload_url_from), $upload_path_to, $post_url);
+
+				$obj_theme_core->copy_file();
+				$str_queries .= "Copied: ".$obj_theme_core->file_dir_from." -> ".$obj_theme_core->file_dir_to."\n";
+
+				if(wp_attachment_is_image($post_id))
+				{
+					foreach($arr_sizes as $size)
+					{
+						$arr_image = wp_get_attachment_image_src($post_id, $size);
+						$post_url = $arr_image[0];
+
+						$obj_theme_core->file_dir_from = str_replace(array($upload_url_to, $upload_url_from), $upload_path_from, $post_url);
+						$obj_theme_core->file_dir_to = str_replace(array($upload_url_to, $upload_url_from), $upload_path_to, $post_url);
+
+						$obj_theme_core->copy_file();
+						$str_queries .= "Copied: ".$obj_theme_core->file_dir_from." -> ".$obj_theme_core->file_dir_to."\n";
 					}
 				}
 			}
+			#######################
 
-			$done_text = __("All data was cloned", 'lang_site_manager')." (".$strBasePrefixFrom." -> ".$strBasePrefixTo.")";
+			$done_text = __("All data was cloned", 'lang_site_manager');
+			//$done_text .= " (".$strBasePrefixFrom." -> ".$strBasePrefixTo.")";
 			//$done_text .= " [".nl2br($str_queries)."]";
 		}
 	}
