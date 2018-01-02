@@ -48,7 +48,10 @@ function get_or_set_transient($data)
 
 		if(!(isset($headers['http_code']) && $headers['http_code'] == 200))
 		{
-			$content = file_get_contents($data['url']);
+			if(ini_get('allow_url_fopen'))
+			{
+				$content = file_get_contents($data['url']);
+			}
 		}
 
 		if($content != '')
