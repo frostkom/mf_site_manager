@@ -1,27 +1,30 @@
 <?php
 
-function get_sites_for_select()
+if(!function_exists('get_sites_for_select'))
 {
-	global $wpdb;
-
-	$result = get_sites(array('site__not_in' => array($wpdb->blogid)));
-
-	$arr_data = array(
-		'' => "-- ".__("Choose here", 'lang_site_manager')." --"
-	);
-
-	foreach($result as $r)
+	function get_sites_for_select()
 	{
-		$blog_id = $r->blog_id;
-		$domain = $r->domain;
-		$path = $r->path;
+		global $wpdb;
 
-		$arr_data[$blog_id] = $domain.$path;
+		$result = get_sites(array('site__not_in' => array($wpdb->blogid)));
+
+		$arr_data = array(
+			'' => "-- ".__("Choose here", 'lang_site_manager')." --"
+		);
+
+		foreach($result as $r)
+		{
+			$blog_id = $r->blog_id;
+			$domain = $r->domain;
+			$path = $r->path;
+
+			$arr_data[$blog_id] = get_blog_option($blog_id, 'blogname')." (".$domain.$path.")";
+		}
+
+		$arr_data = array_sort(array('array' => $arr_data, 'keep_index' => true));
+
+		return $arr_data;
 	}
-
-	$arr_data = array_sort(array('array' => $arr_data, 'keep_index' => true));
-
-	return $arr_data;
 }
 
 function get_themes_for_select()
@@ -50,7 +53,7 @@ function get_or_set_transient($data)
 		{
 			if(ini_get('allow_url_fopen'))
 			{
-				$content = file_get_contents($data['url']);
+				$content = @file_get_contents($data['url']);
 			}
 		}
 
