@@ -8,8 +8,6 @@ if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_P
 	{
 		$str_queries = "";
 
-		//$strBasePrefix = $wpdb->base_prefix;
-
 		$strBasePrefixFrom = $wpdb->prefix;
 		$strBlogDomainFrom = get_site_url_clean(array('trim' => "/"));
 
