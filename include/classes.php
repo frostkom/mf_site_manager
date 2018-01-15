@@ -225,9 +225,8 @@ class mf_site_manager
 
 			case 'theme':
 				echo get_blog_option($id, 'stylesheet')
-				."<div class='row-actions'>"
-					//."<a href='".get_site_url($id)."/wp-admin/admin.php?page=mf_site_manager/theme/index.php'>".__("Change", 'lang_site_manager')."</a>"
-					."<a href='".get_admin_url($id, "admin.php?page=mf_site_manager/theme/index.php")."'>".__("Change", 'lang_site_manager')."</a>"
+				."<div class='row-actions'>
+					<a href='".get_admin_url($id, "admin.php?page=mf_site_manager/theme/index.php")."'>".__("Change", 'lang_site_manager')."</a>"
 					//.get_blog_option($id, 'current_theme')
 				."</div>";
 			break;
