@@ -281,12 +281,11 @@ class mf_site_manager
 					$tbl_group = new mf_log_table();
 
 					$tbl_group->select_data(array(
-						//'select' => "*",
+						'select' => "ID",
 						//'debug' => true,
 					));
 
 					$arr_data['value'] = count($tbl_group->data);
-					//$arr_data['link'] = get_site_url()."/wp-admin/admin.php?page=mf_log/list/index.php";
 					$arr_data['link'] = admin_url("admin.php?page=mf_log/list/index.php");
 				break;
 			}
@@ -309,7 +308,7 @@ class mf_site_manager
 
 		if($setting_site_comparison != '')
 		{
-			$this->arr_sites = explode_and_trim(",", $setting_site_comparison);
+			$this->arr_sites = array_map('trim', explode(",", $setting_site_comparison));
 		}
 
 		$count_temp = count($this->arr_sites);
