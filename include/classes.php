@@ -122,13 +122,16 @@ class mf_site_manager
 	{
 		$arr_theme_mods = get_theme_mods();
 
-		foreach($arr_theme_mods as $key => $value)
+		if(is_array($arr_theme_mods))
 		{
-			$value_new = str_replace($this->site_url, $this->new_url, $value);
-
-			if($value_new != $value)
+			foreach($arr_theme_mods as $key => $value)
 			{
-				set_theme_mod($key, $value_new);
+				$value_new = str_replace($this->site_url, $this->new_url, $value);
+
+				if($value_new != $value)
+				{
+					set_theme_mod($key, $value_new);
+				}
 			}
 		}
 	}
