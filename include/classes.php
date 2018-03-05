@@ -723,7 +723,7 @@ class mf_site_manager
 		die();
 	}
 
-	function cron()
+	function run_cron()
 	{
 		$this->get_server_ip();
 	}

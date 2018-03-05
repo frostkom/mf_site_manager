@@ -3,7 +3,7 @@
 Plugin Name: MF Site Manager
 Plugin URI: https://github.com/frostkom/mf_site_manager
 Description: 
-Version: 4.9.17
+Version: 4.9.18
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: http://frostkom.se
@@ -19,7 +19,7 @@ include_once("include/functions.php");
 
 $obj_site_manager = new mf_site_manager();
 
-add_action('cron_base', array($obj_site_manager, 'cron'), mt_rand(1, 10));
+add_action('cron_base', array($obj_site_manager, 'run_cron'), mt_rand(1, 10));
 add_action('cron_base', 'activate_site_manager', mt_rand(1, 10));
 
 if(is_admin())
