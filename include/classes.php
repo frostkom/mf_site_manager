@@ -227,10 +227,50 @@ class mf_site_manager
 			break;
 
 			case 'theme':
+				$option_theme_saved = get_blog_option($id, 'option_theme_saved');
+
+				/* Get last parent update */
+				$restore_notice = $restore_url = "";
+
+				$obj_theme_core = new mf_theme_core();
+				$obj_theme_core->get_params();
+				$style_source = trim($obj_theme_core->options['style_source'], "/");
+
+				if($style_source != '' && $style_source != get_site_url($id))
+				{
+					list($upload_path, $upload_url) = get_uploads_folder(get_theme_dir_name());
+
+					if($upload_path != '')
+					{
+						$arr_backups = get_previous_backups_list($upload_path);
+						$count_temp = count($arr_backups);
+
+						if($count_temp > 0)
+						{
+							for($i = 0; $i < $count_temp; $i++)
+							{
+								$file_name = $arr_backups[$i]['name'];
+								$file_time = date("Y-m-d H:i:s", $arr_backups[$i]['time']);
+
+								if($file_time > $option_theme_saved)
+								{
+									$restore_notice = "&nbsp;<span class='update-plugins' title='".__("Theme Updates", 'lang_site_manager')."'>
+										<span>1</span>
+									</span>";
+									$restore_url = " | <a href='".get_admin_url($id, "themes.php?page=theme_options&btnThemeRestore&strFileName=".$file_name)."'>".__("Update", 'lang_site_manager')."</a>";
+
+									break;
+								}
+							}
+						}
+					}
+				}
+
 				echo get_blog_option($id, 'stylesheet')
-				."<div class='row-actions'>
-					<a href='".get_admin_url($id, "admin.php?page=mf_site_manager/theme/index.php")."'>".__("Change", 'lang_site_manager')."</a>"
-					//.get_blog_option($id, 'current_theme')
+				.$restore_notice
+				."<div class='row-actions'>"
+					."<a href='".get_admin_url($id, "admin.php?page=mf_site_manager/theme/index.php")."'>".__("Change", 'lang_site_manager')."</a>"
+					.$restore_url
 				."</div>";
 			break;
 		}
