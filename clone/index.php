@@ -125,11 +125,11 @@ if(isset($_POST['btnSiteClone']) && isset($_POST['intSiteCloneAccept']) && $_POS
 			$upload_path_global = WP_CONTENT_DIR."/uploads/";
 			$upload_url_global = WP_CONTENT_URL."/uploads/";
 
-			$upload_path_from .= $upload_path_global."sites/".$wpdb->blogid."/";
-			$upload_url_from .= $upload_url_global."sites/".$wpdb->blogid."/";
+			$upload_path_from = $upload_path_global."sites/".$wpdb->blogid."/";
+			$upload_url_from = $upload_url_global."sites/".$wpdb->blogid."/";
 
-			$upload_path_to .= $upload_path_global."sites/".$intBlogID."/";
-			$upload_url_to .= $upload_url_global."sites/".$intBlogID."/";
+			$upload_path_to = $upload_path_global."sites/".$intBlogID."/";
+			$upload_url_to = $upload_url_global."sites/".$intBlogID."/";
 
 			$arr_sizes = array('thumbnail', 'medium', 'large');
 
