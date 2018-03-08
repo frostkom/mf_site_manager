@@ -283,6 +283,21 @@ class mf_site_manager
 
 		return $actions;
 	}
+
+	function admin_footer()
+	{
+		$screen = get_current_screen();
+
+		if(in_array($screen->base, array('site-info-network', 'site-settings-network')))
+		{
+			$blog_id = check_var('id', 'int');
+
+			$plugin_include_url = plugin_dir_url(__FILE__);
+			$plugin_version = get_plugin_version(__FILE__);
+
+			mf_enqueue_script('script_site_manager_url', $plugin_include_url."script_wp_url.js", array('change_url_link' => get_admin_url($blog_id, "admin.php?page=mf_site_manager/change/index.php"), 'change_url_text' => __("Change URL", 'lang_site_manager')), $plugin_version);
+		}
+	}
 	###########################
 
 	function get_content_versions()
