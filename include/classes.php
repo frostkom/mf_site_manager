@@ -142,7 +142,7 @@ class mf_site_manager
 
 		if(isset($_POST['btnSiteChangeUrl']) && isset($_POST['intSiteChangeUrlAccept']) && $_POST['intSiteChangeUrlAccept'] == 1 && wp_verify_nonce($_POST['_wpnonce'], 'site_change_url_'.$wpdb->blogid))
 		{
-			if($this->new_url != $this->site_url)
+			if($this->new_url != $this->site_url || defined('WP_HOME'))
 			{
 				$this->arr_errors = array();
 
