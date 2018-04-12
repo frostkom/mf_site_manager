@@ -73,7 +73,7 @@ function menu_site_manager()
 	$menu_capability = "update_core";
 
 	$menu_title = __("Site Manager", 'lang_site_manager');
-	add_menu_page($menu_title, $menu_title, $menu_capability, $menu_start, '', 'dashicons-images-alt2');
+	add_menu_page($menu_title, $menu_title, $menu_capability, $menu_start, '', 'dashicons-images-alt2', 100);
 
 	if(get_option('setting_site_comparison') != '')
 	{
