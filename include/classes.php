@@ -7,6 +7,19 @@ class mf_site_manager
 		$this->arr_core = $this->arr_themes = $this->arr_plugins = $this->arr_sites = $this->arr_sites_error = array();
 	}
 
+	function admin_init()
+	{
+		global $pagenow;
+
+		if($pagenow == 'options-general.php' && check_var('page') == 'settings_mf_base')
+		{
+			$plugin_include_url = plugin_dir_url(__FILE__);
+			$plugin_version = get_plugin_version(__FILE__);
+
+			mf_enqueue_script('script_site_manager', $plugin_include_url."script_wp.js", array('plugin_url' => $plugin_include_url, 'ajax_url' => admin_url('admin-ajax.php')), $plugin_version);
+		}
+	}
+
 	/* Change URL */
 	###########################
 	function fetch_request()

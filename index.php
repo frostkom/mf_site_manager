@@ -27,6 +27,7 @@ if(is_admin())
 	register_activation_hook(__FILE__, 'activate_site_manager');
 	register_uninstall_hook(__FILE__, 'uninstall_site_manager');
 
+	add_action('admin_init', array($obj_site_manager, 'admin_init'));
 	add_action('admin_menu', 'menu_site_manager');
 	add_action('admin_init', 'settings_site_manager');
 
