@@ -35,7 +35,7 @@ if(isset($_POST['btnSiteChangeTheme']))
 	{
 		$arr_errors = array();
 
-		update_option('stylesheet', $new_theme);
+		update_option('stylesheet', $new_theme, 'no');
 
 		$wpdb->query("UPDATE ".$wpdb->options." SET option_name = 'theme_mods_".$new_theme."' WHERE option_name = 'theme_mods_".$old_theme."'");
 		if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
@@ -44,7 +44,7 @@ if(isset($_POST['btnSiteChangeTheme']))
 
 		if($count_temp > 0)
 		{
-			update_option('stylesheet', $old_theme);
+			update_option('stylesheet', $old_theme, 'no');
 
 			$error_text = sprintf(__("I executed your request but there were %d errors so you need to manually update the database", 'lang_site_manager'), $count_temp);
 

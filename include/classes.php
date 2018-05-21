@@ -733,7 +733,7 @@ class mf_site_manager
 	function get_server_ip()
 	{
 		$this->server_ip_old = get_option('setting_server_ip');
-		$this->server_ip_new = get_or_set_transient(array('key' => "server_ip_transient", 'url' => "http://ipecho.net/plain"));
+		$this->server_ip_new = get_or_set_transient(array('key' => 'server_ip_transient', 'url' => "http://ipecho.net/plain"));
 
 		if($this->server_ip_new != '' && $this->server_ip_new != $this->server_ip_old)
 		{
@@ -741,7 +741,7 @@ class mf_site_manager
 
 			if($this->server_ip_old != '')
 			{
-				error_log(sprintf(__("The server has changed IP address from %s to %s", 'lang_site_manager'), $server_ip_old, $server_ip_new));
+				do_log(sprintf(__("The server has changed IP address from %s to %s", 'lang_site_manager'), $server_ip_old, $server_ip_new));
 			}
 
 			return $this->server_ip_new;
