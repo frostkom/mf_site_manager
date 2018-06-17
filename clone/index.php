@@ -2,7 +2,7 @@
 
 $intBlogID = check_var('intBlogID');
 
-if(isset($_POST['btnSiteClone']) && isset($_POST['intSiteCloneAccept']) && $_POST['intSiteCloneAccept'] == 1 && wp_verify_nonce($_POST['_wpnonce'], 'site_clone_'.$wpdb->blogid))
+if(isset($_POST['btnSiteClone']) && isset($_POST['intSiteCloneAccept']) && $_POST['intSiteCloneAccept'] == 1 && wp_verify_nonce($_POST['_wpnonce_site_clone'], 'site_clone_'.$wpdb->blogid.'_'.get_current_user_id()))
 {
 	if($intBlogID > 0 && $intBlogID != $wpdb->blogid)
 	{
@@ -194,7 +194,7 @@ echo "<div class='wrap'>
 						.show_checkbox(array('name' => 'intSiteEmptyPlugins', 'text' => __("Would you like to empty Active Plugins field?", 'lang_site_manager'), 'value' => 1))
 						.show_checkbox(array('name' => 'intSiteCloneAccept', 'text' => __("Are you really sure? This will erase all previous data on the recieving site.", 'lang_site_manager'), 'value' => 1, 'required' => true))
 						.show_button(array('name' => 'btnSiteClone', 'text' => __("Perform", 'lang_site_manager')))
-						.wp_nonce_field('site_clone_'.$wpdb->blogid, '_wpnonce', true, false);
+						.wp_nonce_field('site_clone_'.$wpdb->blogid.'_'.get_current_user_id(), '_wpnonce_site_clone', true, false);
 					}
 
 					else

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-08 09:49+0100\n"
+"POT-Creation-Date: 2018-06-17 12:50+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -16,6 +16,7 @@ msgstr ""
 "X-Poedit-SearchPath-0: ..\n"
 
 #: ../change/index.php:8
+#: ../include/classes.php:311
 #: ../include/functions.php:100
 msgid "Change URL"
 msgstr "Ändra URL"
@@ -115,87 +116,87 @@ msgstr "Fel"
 msgid "I could not find any sites to compare with. Convert to MultiSite and add sites or add external ones in %sMy Settings%s"
 msgstr "Jag kunde inte hitta några webbplatser att jämföra med. Konvertera till MultiSite och lägga till webbplatser eller lägg till externa via %sMina inställningar%s"
 
-#: ../include/classes.php:162
+#: ../include/classes.php:175
 #: ../theme/index.php:49
 #, php-format
 msgid "I executed your request but there were %d errors so you need to manually update the database"
 msgstr "Jag genomförde din förfrågan men det uppkom %d fel så du behöver uppdatera databasen manuellt"
 
-#: ../include/classes.php:164
+#: ../include/classes.php:177
 msgid "Errors while changing URL"
 msgstr "Fel vid ändring av URL"
 
-#: ../include/classes.php:169
+#: ../include/classes.php:182
 #, php-format
 msgid "I have changed the URL from %s to %s"
 msgstr "Jag har ändrat URLen från %s till %s"
 
-#: ../include/classes.php:175
+#: ../include/classes.php:188
 msgid "You have to choose another URL than the current one"
 msgstr "Du måste välja en annan URL än den nuvarande"
 
-#: ../include/classes.php:188
+#: ../include/classes.php:201
 msgid "SSL"
 msgstr ""
 
-#: ../include/classes.php:189
+#: ../include/classes.php:202
 msgid "E-mail"
 msgstr "E-post"
 
-#: ../include/classes.php:190
+#: ../include/classes.php:203
 msgid "Theme"
 msgstr "Tema"
 
-#: ../include/classes.php:255
+#: ../include/classes.php:270
 msgid "Theme Updates"
 msgstr "Temauppdateringar"
 
-#: ../include/classes.php:258
+#: ../include/classes.php:273
 msgid "Update"
 msgstr "Uppdatera"
 
-#: ../include/classes.php:267
+#: ../include/classes.php:285
 msgid "Change"
 msgstr "Byt"
 
-#: ../include/classes.php:408
+#: ../include/classes.php:441
 msgid "domain"
 msgstr "domän"
 
-#: ../include/classes.php:468
-#: ../include/classes.php:510
-#: ../include/classes.php:584
-#: ../include/classes.php:615
-#: ../include/classes.php:630
+#: ../include/classes.php:501
+#: ../include/classes.php:543
+#: ../include/classes.php:617
+#: ../include/classes.php:648
+#: ../include/classes.php:663
 msgid "does not exist"
 msgstr "finns inte"
 
-#: ../include/classes.php:711
+#: ../include/classes.php:744
 #, php-format
 msgid "The server has changed IP address from %s to %s"
 msgstr "Servern har bytt IP-adress från %s till %s"
 
-#: ../include/classes.php:730
+#: ../include/classes.php:763
 #, php-format
 msgid "I successfully fetched the server IP (%s) for you"
 msgstr "Jag lyckades hämta Server-IP (%s) åt dig"
 
-#: ../include/classes.php:735
+#: ../include/classes.php:768
 #, php-format
 msgid "The IP (%s) is the same as before"
 msgstr "IPt (%s) är samma som innan"
 
-#: ../include/classes.php:740
+#: ../include/classes.php:773
 #, php-format
 msgid "I could not fetch the server IP (%s) for you"
 msgstr "Jag kunde inte hämta Server-IP (%s) åt dig"
 
 #: ../include/functions.php:12
-msgid "Choose here"
+msgid "Choose Here"
 msgstr "Välj här"
 
 #: ../include/functions.php:75
-#: ../include/functions.php:133
+#: ../include/functions.php:128
 msgid "Site Manager"
 msgstr ""
 
@@ -209,19 +210,19 @@ msgstr "Byt webbsidor"
 msgid "Change Theme"
 msgstr "Byt tema"
 
-#: ../include/functions.php:121
+#: ../include/functions.php:116
 msgid "Server IP"
 msgstr "Server-IP"
 
-#: ../include/functions.php:122
+#: ../include/functions.php:117
 msgid "Server IPs allowed"
 msgstr "Tillåtna server-IP"
 
-#: ../include/functions.php:123
+#: ../include/functions.php:118
 msgid "Sites to compare with"
 msgstr "Webbplatser att jämföra med"
 
-#: ../include/functions.php:150
+#: ../include/functions.php:145
 msgid "Get Server IP"
 msgstr "Hämta Server-IP"
 

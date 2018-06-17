@@ -16,7 +16,7 @@ if(isset($_POST['btnSiteChangeTheme']))
 		$error_text = __("You have to check the box to agree that the theme should be changed", 'lang_site_manager');
 	}
 
-	else if(!wp_verify_nonce($_POST['_wpnonce'], 'site_change_theme_'.$intBlogID))
+	else if(!wp_verify_nonce($_POST['_wpnonce_site_change_theme'], 'site_change_theme_'.$intBlogID.'_'.get_current_user_id()))
 	{
 		$error_text = __("I could not verify that you were allowed to switch theme on this site. I this problem persists, please contact an admin", 'lang_site_manager');
 	}
@@ -71,7 +71,7 @@ echo "<div class='wrap'>
 				{
 					echo show_checkbox(array('name' => 'intSiteChangeThemeAccept', 'text' => __("Are you really sure? This will change the Theme of the site but not clear menus, widgets and theme modifications like the built-in changer does", 'lang_site_manager'), 'value' => 1, 'required' => true))
 					.show_button(array('name' => 'btnSiteChangeTheme', 'text' => __("Perform", 'lang_site_manager')))
-					.wp_nonce_field('site_change_theme_'.$intBlogID, '_wpnonce', true, false);
+					.wp_nonce_field('site_change_theme_'.$intBlogID.'_'.get_current_user_id(), '_wpnonce_site_change_theme', true, false);
 				}
 
 				else

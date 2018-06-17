@@ -2,7 +2,7 @@
 
 $intBlogID = check_var('intBlogID');
 
-if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_POST['intSiteSwitchAccept'] == 1 && wp_verify_nonce($_POST['_wpnonce'], 'site_switch_'.$wpdb->blogid))
+if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_POST['intSiteSwitchAccept'] == 1 && wp_verify_nonce($_POST['_wpnonce_site_switch'], 'site_switch_'.$wpdb->blogid.'_'.get_current_user_id()))
 {
 	if($intBlogID > 0 && $intBlogID != $wpdb->blogid)
 	{
@@ -150,7 +150,7 @@ echo "<div class='wrap'>
 						echo show_select(array('data' => $arr_data, 'name' => 'intBlogID', 'value' => $intBlogID, 'text' => __("...with this", 'lang_site_manager'), 'required' => true))
 						.show_checkbox(array('name' => 'intSiteSwitchAccept', 'text' => __("Are you really sure? This will switch domain for the two sites.", 'lang_site_manager'), 'value' => 1, 'required' => true))
 						.show_button(array('name' => 'btnSiteSwitch', 'text' => __("Perform", 'lang_site_manager')))
-						.wp_nonce_field('site_switch_'.$wpdb->blogid, '_wpnonce', true, false);
+						.wp_nonce_field('site_switch_'.$wpdb->blogid.'_'.get_current_user_id(), '_wpnonce_site_switch', true, false);
 					}
 
 					else
