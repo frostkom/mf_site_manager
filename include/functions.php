@@ -70,7 +70,7 @@ function menu_site_manager()
 {
 	$menu_root = 'mf_site_manager/';
 	$menu_start = $menu_root."compare/index.php";
-	$menu_capability = "update_core";
+	$menu_capability = override_capability(array('page' => $menu_start, 'default' => 'update_core'));
 
 	$menu_title = __("Site Manager", 'lang_site_manager');
 	add_menu_page($menu_title, $menu_title, $menu_capability, $menu_start, '', 'dashicons-images-alt2', 100);
