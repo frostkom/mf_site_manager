@@ -142,8 +142,8 @@ function setting_server_ip_callback()
 
 	echo $option
 	."<div class='form_buttons'>"
-		.show_button(array('type' => 'button', 'name' => 'btnGetServerIP', 'text' => __("Get Server IP", 'lang_cache'), 'class' => 'button-secondary'))
-		//.show_button(array('type' => 'button', 'name' => 'btnGetMyIP', 'text' => __("Get My IP", 'lang_cache'), 'class' => 'button-secondary'))
+		.show_button(array('type' => 'button', 'name' => 'btnGetServerIP', 'text' => __("Get Server IP", 'lang_site_manager'), 'class' => 'button-secondary'))
+		//.show_button(array('type' => 'button', 'name' => 'btnGetMyIP', 'text' => __("Get My IP", 'lang_site_manager'), 'class' => 'button-secondary'))
 	."</div>
 	<div id='ip_debug'></div>";
 }
