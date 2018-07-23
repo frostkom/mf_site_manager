@@ -741,7 +741,7 @@ class mf_site_manager
 
 			if($this->server_ip_old != '')
 			{
-				do_log(sprintf(__("The server has changed IP address from %s to %s", 'lang_site_manager'), $server_ip_old, $server_ip_new));
+				do_log(sprintf(__("The server has changed IP address from %s to %s", 'lang_site_manager'), $this->server_ip_old, $this->server_ip_new));
 			}
 
 			return $this->server_ip_new;
