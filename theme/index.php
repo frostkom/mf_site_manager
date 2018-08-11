@@ -37,6 +37,9 @@ if(isset($_POST['btnSiteChangeTheme']))
 
 		update_option('stylesheet', $new_theme, 'no');
 
+		//Make sure it doesn't already exist before trying to use it since it'll return a duplicate error if that is the case
+		$wpdb->query("DELETE FROM ".$wpdb->options." WHERE option_name = 'theme_mods_".$new_theme."'");
+
 		$wpdb->query("UPDATE ".$wpdb->options." SET option_name = 'theme_mods_".$new_theme."' WHERE option_name = 'theme_mods_".$old_theme."'");
 		if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
 
