@@ -392,13 +392,13 @@ class mf_site_manager
 
 				$site_ajax = $site."/wp-content/plugins/mf_site_manager/include/api/?type=compare";
 
-				list($content, $headers) = get_url_content($site_ajax, true);
+				list($content, $headers) = get_url_content(array('url' => $site_ajax, 'catch_head' => true));
 
 				if($headers['http_code'] != 200) //Fallback until all sites are updated
 				{
 					$site_ajax = $site."/wp-content/plugins/mf_site_manager/include/ajax.php?type=compare";
 
-					list($content, $headers) = get_url_content($site_ajax, true);
+					list($content, $headers) = get_url_content(array('url' => $site_ajax, 'catch_head' => true));
 				}
 
 				if($headers['http_code'] == 200)

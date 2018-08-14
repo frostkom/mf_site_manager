@@ -47,7 +47,7 @@ function get_or_set_transient($data)
 
 	if($out == "")
 	{
-		list($content, $headers) = get_url_content($data['url'], true);
+		list($content, $headers) = get_url_content(array('url' => $data['url'], 'catch_head' => true));
 
 		if(!(isset($headers['http_code']) && $headers['http_code'] == 200))
 		{
