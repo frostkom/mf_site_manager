@@ -240,42 +240,43 @@ class mf_site_manager
 			break;
 
 			case 'theme':
-				$option_theme_saved = get_blog_option($id, 'option_theme_saved');
+				//$option_theme_saved = get_blog_option($id, 'option_theme_saved');
 
 				/* Get last parent update */
 				$restore_notice = $restore_url = "";
 
-				$obj_theme_core = new mf_theme_core();
-				$obj_theme_core->get_params();
-				$style_source = trim($obj_theme_core->options['style_source'], "/");
-
-				if($style_source != '' && $style_source != get_site_url($id))
+				if(in_array(get_blog_option($id, 'template'), array('mf_parallax', 'mf_theme')))
 				{
-					list($upload_path, $upload_url) = get_uploads_folder(get_theme_dir_name());
+					switch_to_blog($id);
 
-					if($upload_path != '')
+					$obj_theme_core = new mf_theme_core();
+					$obj_theme_core->get_params();
+					$style_source = trim($obj_theme_core->options['style_source'], "/"); // Should fetch from $id theme mods
+
+					restore_current_blog();
+
+					if($style_source != '')
 					{
-						$arr_backups = get_previous_backups_list($upload_path);
-						$count_temp = count($arr_backups);
-
-						if($count_temp > 0)
+						if($style_source != get_site_url($id))
 						{
-							for($i = 0; $i < $count_temp; $i++)
+							$option_theme_source_style_url = get_blog_option($id, 'option_theme_source_style_url');
+
+							if($option_theme_source_style_url != '')
 							{
-								$file_name = $arr_backups[$i]['name'];
-								$file_time = date("Y-m-d H:i:s", $arr_backups[$i]['time']);
-
-								if($file_time > $option_theme_saved)
-								{
-									$restore_notice = "&nbsp;<span class='update-plugins' title='".__("Theme Updates", 'lang_site_manager')."'>
-										<span>1</span>
-									</span>";
-									$restore_url = " | <a href='".get_admin_url($id, "themes.php?page=theme_options&btnThemeRestore&strFileName=".$file_name)."'>".__("Update", 'lang_site_manager')."</a>";
-
-									break;
-								}
+								$restore_notice = "&nbsp;<span class='update-plugins' title='".__("Theme Updates", 'lang_site_manager')."'>
+									<span>1</span>
+								</span>";
+								$restore_url = " | <a href='".get_admin_url($id, "themes.php?page=theme_options")."'>".__("Update", 'lang_site_manager')."</a>"; //."&btnThemeRestore&strFileName=".$option_theme_source_style_url
 							}
 						}
+					}
+
+					else
+					{
+						$restore_notice = "<span class='fa-stack'>
+							<i class='fa fa-recycle fa-stack-1x'></i>
+							<i class='fa fa-ban fa-stack-2x red'></i>
+						</span>";
 					}
 				}
 
