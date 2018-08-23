@@ -1,5 +1,7 @@
 <?php
 
+$obj_site_manager = new mf_site_manager();
+
 $intBlogID = check_var('intBlogID');
 
 if(isset($_POST['btnSiteClone']) && isset($_POST['intSiteCloneAccept']) && $_POST['intSiteCloneAccept'] == 1 && wp_verify_nonce($_POST['_wpnonce_site_clone'], 'site_clone_'.$wpdb->blogid.'_'.get_current_user_id()))
@@ -166,6 +168,10 @@ if(isset($_POST['btnSiteClone']) && isset($_POST['intSiteCloneAccept']) && $_POS
 			$done_text = __("All data was cloned", 'lang_site_manager');
 			//$done_text .= " (".$strBasePrefixFrom." -> ".$strBasePrefixTo.")";
 			//$done_text .= " [".nl2br($str_queries)."]";
+
+			$user_data = get_userdata(get_current_user_id());
+
+			do_log(sprintf(__("%s cloned %s to %s", 'lang_site_manager'), $user_data->display_name, $strBlogDomainFrom, $strBlogDomainTo), 'auto-draft');
 		}
 	}
 
@@ -185,7 +191,7 @@ echo "<div class='wrap'>
 
 				if(is_multisite())
 				{
-					$arr_data = get_sites_for_select();
+					$arr_data = $obj_site_manager->get_sites_for_select();
 
 					if(count($arr_data) > 1)
 					{

@@ -1,5 +1,7 @@
 <?php
 
+$obj_site_manager = new mf_site_manager();
+
 $intBlogID = check_var('intBlogID');
 
 if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_POST['intSiteSwitchAccept'] == 1 && wp_verify_nonce($_POST['_wpnonce_site_switch'], 'site_switch_'.$wpdb->blogid.'_'.get_current_user_id()))
@@ -124,6 +126,10 @@ if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_P
 
 			$done_text = __("I have switched all the data on the two domain as you requested.", 'lang_site_manager')." (".$strBasePrefixFrom." -> ".$strBasePrefixTo.")";
 			//$done_text .= " [".nl2br($str_queries)."]";
+
+			$user_data = get_userdata(get_current_user_id());
+
+			do_log(sprintf(__("%s switched %s with %s", 'lang_site_manager'), $user_data->display_name, $strBlogDomainFrom, $strBlogDomainTo), 'auto-draft');
 		}
 	}
 
@@ -143,7 +149,7 @@ echo "<div class='wrap'>
 
 				if(is_multisite())
 				{
-					$arr_data = get_sites_for_select();
+					$arr_data = $obj_site_manager->get_sites_for_select();
 
 					if(count($arr_data) > 1)
 					{

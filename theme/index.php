@@ -1,7 +1,9 @@
 <?php
 
+$obj_site_manager = new mf_site_manager();
+
 $intBlogID = $wpdb->blogid;
-$arr_themes = get_themes_for_select();
+$arr_themes = $obj_site_manager->get_themes_for_select();
 $option_theme_dir = get_option('stylesheet');
 
 $strSiteTheme = check_var('strSiteTheme');
@@ -57,6 +59,10 @@ if(isset($_POST['btnSiteChangeTheme']))
 		else
 		{
 			$done_text = sprintf(__("I have changed the Theme from %s to %s", 'lang_site_manager'), $arr_themes[$old_theme], $arr_themes[$new_theme]);
+
+			$user_data = get_userdata(get_current_user_id());
+
+			do_log(sprintf(__("%s changed theme from %s to %s", 'lang_site_manager'), $user_data->display_name, $old_theme, $new_theme), 'auto-draft');
 		}
 	}
 }
