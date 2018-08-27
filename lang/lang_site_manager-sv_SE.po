@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-08-23 14:47+0100\n"
+"POT-Creation-Date: 2018-08-27 13:33+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -17,7 +17,7 @@ msgstr ""
 
 #: ../change/index.php:8
 #: ../include/classes.php:179
-#: ../include/classes.php:478
+#: ../include/classes.php:693
 msgid "Change URL"
 msgstr "Ändra URL"
 
@@ -30,60 +30,46 @@ msgid "Are you really sure? This will change the URL of the site"
 msgstr "Är du helt säker? Detta kommer att byta URL för webbplatsen"
 
 #: ../change/index.php:15
-#: ../clone/index.php:202
+#: ../clone/index.php:31
 #: ../switch/index.php:158
 #: ../theme/index.php:82
 msgid "Perform"
 msgstr "Genomför"
 
-#: ../clone/index.php:60
-msgid "There appears to be no tables on the source site"
-msgstr "Det verkar inte finnas någon tabell på källwebbplatsen"
-
-#: ../clone/index.php:168
-msgid "All data was cloned"
-msgstr "All data klonades"
-
-#: ../clone/index.php:174
-#, php-format
-msgid "%s cloned %s to %s"
-msgstr "%s klonade %s till %s"
-
-#: ../clone/index.php:180
-#: ../switch/index.php:138
-msgid "You have to choose a site other than this site"
-msgstr "Du måste välja en annan webbplats än denna"
-
-#: ../clone/index.php:185
+#: ../clone/index.php:8
 #: ../include/classes.php:171
 msgid "Clone Site"
 msgstr "Klona webbsida"
 
-#: ../clone/index.php:190
+#: ../clone/index.php:13
 msgid "From"
 msgstr "Från"
 
-#: ../clone/index.php:198
+#: ../clone/index.php:21
 msgid "To"
 msgstr "Till"
 
-#: ../clone/index.php:199
+#: ../clone/index.php:25
+msgid "Would you like to perform a backup of the old site before replacing it?"
+msgstr "Vill du ta en backup på den gamla webbplatsen innan du ersätter den?"
+
+#: ../clone/index.php:28
 msgid "Would you like to keep the original title of the receiving site?"
 msgstr "Vill du behålla originaltiteln på den mottagande webbplatsen?"
 
-#: ../clone/index.php:200
+#: ../clone/index.php:29
 msgid "Would you like to empty Active Plugins field?"
 msgstr "Vill du inaktivera alla tillägg?"
 
-#: ../clone/index.php:201
+#: ../clone/index.php:30
 msgid "Are you really sure? This will erase all previous data on the recieving site."
 msgstr "Är du helt säker? Detta kommer att radera all tidigare data på den mottagande webbplatsen."
 
-#: ../clone/index.php:208
+#: ../clone/index.php:37
 msgid "I could not find any sites to clone to"
 msgstr "Jag kunde inte hitta några webbplatser att klona till"
 
-#: ../clone/index.php:214
+#: ../clone/index.php:43
 msgid "You have to have a MultiSite to be able to clone this site"
 msgstr "Du måste ha en MultiSite för att kunna byta domän mellan två webbplatser"
 
@@ -156,82 +142,108 @@ msgstr "Byt webbsidor"
 msgid "Change Theme"
 msgstr "Byt tema"
 
-#: ../include/classes.php:337
+#: ../include/classes.php:350
 #: ../theme/index.php:54
 #, php-format
 msgid "I executed your request but there were %d errors so you need to manually update the database"
 msgstr "Jag genomförde din förfrågan men det uppkom %d fel så du behöver uppdatera databasen manuellt"
 
-#: ../include/classes.php:339
+#: ../include/classes.php:352
 msgid "Errors while changing URL"
 msgstr "Fel vid ändring av URL"
 
-#: ../include/classes.php:344
+#: ../include/classes.php:357
 #, php-format
 msgid "I have changed the URL from %s to %s"
 msgstr "Jag har ändrat URLen från %s till %s"
 
-#: ../include/classes.php:348
+#: ../include/classes.php:361
 #, php-format
 msgid "%s changed the URL from %s to %s"
 msgstr "%s har ändrat URLen från %s till %s"
 
-#: ../include/classes.php:354
+#: ../include/classes.php:367
 msgid "You have to choose another URL than the current one"
 msgstr "Du måste välja en annan URL än den nuvarande"
 
-#: ../include/classes.php:367
+#: ../include/classes.php:438
+msgid "There appears to be no tables on the source site"
+msgstr "Det verkar inte finnas någon tabell på källwebbplatsen"
+
+#: ../include/classes.php:546
+msgid "All data was cloned"
+msgstr "All data klonades"
+
+#: ../include/classes.php:552
+#, php-format
+msgid "%s cloned %s to %s"
+msgstr "%s klonade %s till %s"
+
+#: ../include/classes.php:558
+msgid "The backup was not successful so I could not clone the site for you"
+msgstr "Backupen lyckades inte så jag kan inte klona webbplatsen åt dig"
+
+#: ../include/classes.php:564
+#: ../switch/index.php:138
+msgid "You have to choose a site other than this site"
+msgstr "Du måste välja en annan webbplats än denna"
+
+#: ../include/classes.php:577
 msgid "SSL"
 msgstr "SSL"
 
-#: ../include/classes.php:368
+#: ../include/classes.php:578
 msgid "E-mail"
 msgstr "E-post"
 
-#: ../include/classes.php:369
+#: ../include/classes.php:579
 msgid "Theme"
 msgstr "Tema"
 
-#: ../include/classes.php:432
+#: ../include/classes.php:642
 msgid "Theme Updates"
 msgstr "Temauppdateringar"
 
-#: ../include/classes.php:435
+#: ../include/classes.php:645
 msgid "Update"
 msgstr "Uppdatera"
 
-#: ../include/classes.php:452
+#: ../include/classes.php:650
+msgid "The theme design is up to date"
+msgstr "Temadesignen är uppdaterad"
+
+#: ../include/classes.php:667
 msgid "Change"
 msgstr "Byt"
 
-#: ../include/classes.php:608
+#: ../include/classes.php:823
 msgid "domain"
 msgstr "domän"
 
-#: ../include/classes.php:668
-#: ../include/classes.php:710
-#: ../include/classes.php:784
-#: ../include/classes.php:815
-#: ../include/classes.php:830
+#: ../include/classes.php:883
+#: ../include/classes.php:925
+#: ../include/classes.php:999
+#: ../include/classes.php:1030
+#: ../include/classes.php:1045
 msgid "does not exist"
 msgstr "finns inte"
 
-#: ../include/classes.php:911
+#: ../include/classes.php:1126
 #, php-format
 msgid "The server has changed IP address from %s to %s"
 msgstr "Servern har bytt IP-adress från %s till %s"
 
-#: ../include/classes.php:930
+#: ../include/classes.php:1145
 #, php-format
 msgid "I successfully fetched the server IP (%s) for you"
 msgstr "Jag lyckades hämta Server-IP (%s) åt dig"
 
-#: ../include/classes.php:935
+#: ../include/classes.php:1150
 #, php-format
 msgid "The IP (%s) is the same as before"
 msgstr "IPt (%s) är samma som innan"
 
-#: ../include/classes.php:940
+#: ../include/classes.php:1155
 #, php-format
 msgid "I could not fetch the server IP (%s) for you"
 msgstr "Jag kunde inte hämta Server-IP (%s) åt dig"

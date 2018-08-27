@@ -7,11 +7,11 @@ class mf_site_manager
 		$this->arr_core = $this->arr_themes = $this->arr_plugins = $this->arr_sites = $this->arr_sites_error = array();
 	}
 
-	function get_sites_for_select()
+	function get_sites_for_select($data = array())
 	{
-		global $wpdb;
+		if(!isset($data['exclude'])){	$data['exclude'] = array();}
 
-		$result = get_sites(array('site__not_in' => array($wpdb->blogid)));
+		$result = get_sites(array('site__not_in' => $data['exclude'], 'orderby' => 'domain'));
 
 		$arr_data = array(
 			'' => "-- ".__("Choose Here", 'lang_site_manager')." --"
@@ -23,10 +23,10 @@ class mf_site_manager
 			$domain = $r->domain;
 			$path = $r->path;
 
-			$arr_data[$blog_id] = get_blog_option($blog_id, 'blogname')." (".$domain.$path.")";
+			$arr_data[$blog_id] = get_blog_option($blog_id, 'blogname')." (".trim($domain.$path, "/").")";
 		}
 
-		$arr_data = array_sort(array('array' => $arr_data, 'keep_index' => true));
+		//$arr_data = array_sort(array('array' => $arr_data, 'keep_index' => true));
 
 		return $arr_data;
 	}
@@ -189,17 +189,23 @@ class mf_site_manager
 	{
 		global $wpdb;
 
+		@list($new_domain_clean, $new_path_clean) = explode("/", $this->new_url_clean, 2);
+		$new_path_clean = "/".$new_path_clean;
+
+		@list($site_domain_clean, $site_path_clean) = explode("/", $this->site_url_clean, 2);
+		$site_path_clean = "/".$site_path_clean;
+
 		if($this->new_url_clean != $this->site_url_clean)
 		{
-			$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->blogs." SET domain = %s WHERE blog_id = '%d'", $this->new_url_clean, $wpdb->blogid));
+			$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->blogs." SET domain = %s, path = %s WHERE blog_id = '%d'", $new_domain_clean, $new_path_clean, $wpdb->blogid));
 			if($wpdb->rows_affected == 0){	$this->arr_errors[] = $wpdb->last_query;}
 		}
 
-		$wpdb->get_results($wpdb->prepare("SELECT id FROM ".$wpdb->site." WHERE domain = %s LIMIT 0, 1", $this->site_url));
+		$wpdb->get_results($wpdb->prepare("SELECT id FROM ".$wpdb->site." WHERE domain = %s AND path = %s LIMIT 0, 1", $site_domain_clean, $site_path_clean));
 
 		if($wpdb->num_rows > 0)
 		{
-			$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->site." SET domain = %s WHERE domain = %s", $this->new_url, $this->site_url));
+			$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->site." SET domain = %s, path = %s WHERE domain = %s AND path = %s", $new_domain_clean, $new_path_clean, $site_domain_clean, $site_path_clean));
 			if($wpdb->rows_affected == 0){	$this->arr_errors[] = $wpdb->last_query;}
 		}
 
@@ -301,9 +307,16 @@ class mf_site_manager
 			}
 		}
 	}
+	###########################
 
+	###########################
 	function fetch_request()
 	{
+		// Clone
+		$this->blog_id = check_var('intBlogID');
+		$this->site_backup = check_var('intSiteBackup', 'int', true, '1');
+
+		// Change URL
 		$this->site_url = get_home_url();
 		$this->new_url = check_var('strBlogUrl', 'char', true, $this->site_url);
 
@@ -352,6 +365,203 @@ class mf_site_manager
 			else
 			{
 				$error_text = __("You have to choose another URL than the current one", 'lang_site_manager');
+			}
+		}
+
+		else if(isset($_POST['btnSiteClone']) && isset($_POST['intSiteCloneAccept']) && $_POST['intSiteCloneAccept'] == 1 && wp_verify_nonce($_POST['_wpnonce_site_clone'], 'site_clone_'.$wpdb->blogid.'_'.get_current_user_id()))
+		{
+			if($this->blog_id > 0 && $this->blog_id != $wpdb->blogid)
+			{
+				if($this->site_backup == 1 && is_plugin_active('mf_backup/index.php'))
+				{
+					$obj_backup = new mf_backup();
+
+					$success = $obj_backup->do_backup(array('site' => $this->blog_id));
+				}
+
+				else
+				{
+					$success = true;
+				}
+
+				if($success == true)
+				{
+					$str_queries = "";
+
+					/* Get From Table */
+					####################
+					$strBasePrefixFrom = $wpdb->prefix;
+					$strBlogDomainFrom = get_site_url_clean(array('trim' => "/"));
+
+					$arr_tables_from = array();
+
+					$result = $wpdb->get_results("SHOW TABLES LIKE '".$strBasePrefixFrom."%'");
+					$str_queries .= $wpdb->last_query.";\n";
+
+					foreach($result as $r)
+					{
+						foreach($r as $s)
+						{
+							$arr_tables_from[] = $s;
+						}
+					}
+					####################
+
+					/* Get To Table */
+					####################
+					$strBasePrefixTo = $this->blog_id > 1 ? $wpdb->base_prefix.$this->blog_id."_" : $wpdb->base_prefix;
+					$strBlogDomainTo = get_site_url_clean(array('id' => $this->blog_id, 'trim' => "/"));
+
+					$arr_tables_to = array();
+
+					$result = $wpdb->get_results("SHOW TABLES LIKE '".$strBasePrefixTo."%'");
+					$str_queries .= $wpdb->last_query.";\n";
+
+					foreach($result as $r)
+					{
+						foreach($r as $s)
+						{
+							$arr_tables_to[] = $s;
+						}
+					}
+					####################
+
+					$str_queries .= "# Tables: ".count($arr_tables_from)." -> ".count($arr_tables_to)."\n";
+
+					if(count($arr_tables_to) == 0)
+					{
+						$arr_tables_to = array($strBasePrefixTo."commentmeta", $strBasePrefixTo."comments", $strBasePrefixTo."links", $strBasePrefixTo."options", $strBasePrefixTo."postmeta", $strBasePrefixTo."posts", $strBasePrefixTo."terms", $strBasePrefixTo."term_relationships", $strBasePrefixTo."term_taxonomy");
+					}
+
+					if(count($arr_tables_from) == 0) // || count($arr_tables_to) == 0
+					{
+						$error_text = __("There appears to be no tables on the source site", 'lang_site_manager')." (".$strBasePrefixFrom.": ".count($arr_tables_from)." -> ".$strBasePrefixTo.": ".count($arr_tables_to).")";
+					}
+
+					else
+					{
+						/* Clone Tables */
+						#######################
+						foreach($arr_tables_from as $r)
+						{
+							$table_name_from = $r;
+
+							$table_name_prefixless = str_replace($strBasePrefixFrom, "", $table_name_from);
+
+							$table_name_to = $strBasePrefixTo.$table_name_prefixless;
+
+							if(in_array($table_name_to, $arr_tables_to))
+							{
+								if($table_name_prefixless == "options")
+								{
+									if(isset($_POST['intSiteKeepTitle']) && $_POST['intSiteKeepTitle'] == 1)
+									{
+										$strBlogName_orig = $wpdb->get_var("SELECT option_value FROM ".$table_name_to." WHERE option_name = 'blogname'");
+									}
+								}
+
+								$wpdb->query("DROP TABLE IF EXISTS ".$table_name_to);
+								$str_queries .= $wpdb->last_query.";\n";
+
+								$wpdb->query("CREATE TABLE IF NOT EXISTS ".$table_name_to." LIKE ".$table_name_from);
+								$str_queries .= $wpdb->last_query.";\n";
+
+								$wpdb->query("INSERT INTO ".$table_name_to." (SELECT * FROM ".$table_name_from.")");
+								$str_queries .= $wpdb->last_query.";\n";
+
+								if($table_name_prefixless == "options")
+								{
+									$wpdb->query("UPDATE ".$table_name_to." SET option_value = REPLACE(option_value, '".$strBlogDomainFrom."', '".$strBlogDomainTo."') WHERE (option_name = 'home' OR option_name = 'siteurl')");
+									$str_queries .= $wpdb->last_query.";\n";
+
+									$wpdb->query("UPDATE ".$table_name_to." SET option_name = '".$strBasePrefixTo."user_roles' WHERE option_name = '".$strBasePrefixFrom."user_roles'");
+									$str_queries .= $wpdb->last_query.";\n";
+
+									if(isset($_POST['intSiteKeepTitle']) && $_POST['intSiteKeepTitle'] == 1)
+									{
+										$wpdb->query("UPDATE ".$table_name_to." SET option_value = '".$strBlogName_orig."' WHERE option_name = 'blogname'");
+										$str_queries .= $wpdb->last_query.";\n";
+									}
+
+									if(isset($_POST['intSiteEmptyPlugins']) && $_POST['intSiteEmptyPlugins'] == 1)
+									{
+										$wpdb->query("UPDATE ".$table_name_to." SET option_value = '' WHERE option_name = 'active_plugins'");
+										$str_queries .= $wpdb->last_query.";\n";
+									}
+								}
+
+								/*else
+								{
+									$str_queries .= "# Table: ".$table_name_prefixless."\n";
+								}*/
+							}
+						}
+						#######################
+
+						/* Clone Files */
+						#######################
+						$obj_theme_core = new mf_theme_core();
+
+						$upload_path_global = WP_CONTENT_DIR."/uploads/";
+						$upload_url_global = WP_CONTENT_URL."/uploads/";
+
+						$upload_path_from = $upload_path_global."sites/".$wpdb->blogid."/";
+						$upload_url_from = $upload_url_global."sites/".$wpdb->blogid."/";
+
+						$upload_path_to = $upload_path_global."sites/".$this->blog_id."/";
+						$upload_url_to = $upload_url_global."sites/".$this->blog_id."/";
+
+						$arr_sizes = array('thumbnail', 'medium', 'large');
+
+						$result = $wpdb->get_results($wpdb->prepare("SELECT ID, post_title FROM ".$wpdb->posts." WHERE post_type = %s", 'attachment'));
+
+						foreach($result as $r)
+						{
+							$post_id = $r->ID;
+							$post_url = wp_get_attachment_url($post_id);
+
+							$obj_theme_core->file_dir_from = str_replace(array($upload_url_to, $upload_url_from), $upload_path_from, $post_url);
+							$obj_theme_core->file_dir_to = str_replace(array($upload_url_to, $upload_url_from), $upload_path_to, $post_url);
+
+							$obj_theme_core->copy_file();
+							$str_queries .= "Copied: ".$obj_theme_core->file_dir_from." -> ".$obj_theme_core->file_dir_to."\n";
+
+							if(wp_attachment_is_image($post_id))
+							{
+								foreach($arr_sizes as $size)
+								{
+									$arr_image = wp_get_attachment_image_src($post_id, $size);
+									$post_url = $arr_image[0];
+
+									$obj_theme_core->file_dir_from = str_replace(array($upload_url_to, $upload_url_from), $upload_path_from, $post_url);
+									$obj_theme_core->file_dir_to = str_replace(array($upload_url_to, $upload_url_from), $upload_path_to, $post_url);
+
+									$obj_theme_core->copy_file();
+									$str_queries .= "Copied: ".$obj_theme_core->file_dir_from." -> ".$obj_theme_core->file_dir_to."\n";
+								}
+							}
+						}
+						#######################
+
+						$done_text = __("All data was cloned", 'lang_site_manager');
+						//$done_text .= " (".$strBasePrefixFrom." -> ".$strBasePrefixTo.")";
+						//$done_text .= " [".nl2br($str_queries)."]";
+
+						$user_data = get_userdata(get_current_user_id());
+
+						do_log(sprintf(__("%s cloned %s to %s", 'lang_site_manager'), $user_data->display_name, $strBlogDomainFrom, $strBlogDomainTo), 'auto-draft');
+					}
+				}
+
+				else
+				{
+					$error_text = __("The backup was not successful so I could not clone the site for you", 'lang_site_manager');
+				}
+			}
+
+			else
+			{
+				$error_text = __("You have to choose a site other than this site", 'lang_site_manager');
 			}
 		}
 	}
@@ -434,12 +644,17 @@ class mf_site_manager
 								</span>";
 								$restore_url = " | <a href='".get_admin_url($id, "themes.php?page=theme_options")."'>".__("Update", 'lang_site_manager')."</a>"; //."&btnThemeRestore&strFileName=".$option_theme_source_style_url
 							}
+
+							else
+							{
+								$restore_notice .= "&nbsp;<i class='fa fa-check fa-lg green' title='".__("The theme design is up to date", 'lang_site_manager')."'></i>";
+							}
 						}
 					}
 
 					else
 					{
-						$restore_notice = "<span class='fa-stack'>
+						$restore_notice = "&nbsp;<span class='fa-stack'>
 							<i class='fa fa-recycle fa-stack-1x'></i>
 							<i class='fa fa-ban fa-stack-2x red'></i>
 						</span>";

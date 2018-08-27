@@ -149,7 +149,7 @@ echo "<div class='wrap'>
 
 				if(is_multisite())
 				{
-					$arr_data = $obj_site_manager->get_sites_for_select();
+					$arr_data = $obj_site_manager->get_sites_for_select(array('exclude' => $wpdb->blogid));
 
 					if(count($arr_data) > 1)
 					{
