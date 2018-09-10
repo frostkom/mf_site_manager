@@ -588,9 +588,7 @@ class mf_site_manager
 		switch($col)
 		{
 			case 'ssl':
-				$site_url = get_home_url($id, '/');
-
-				if(substr($site_url, 0, 5) == 'https')
+				if(substr(get_home_url($id, '/'), 0, 5) == 'https')
 				{
 					echo "<i class='fa fa-lock fa-2x green'></i>";
 				}
