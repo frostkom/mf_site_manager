@@ -45,7 +45,7 @@ class mf_site_manager
 		return $arr_data;
 	}
 
-	function get_or_set_transient($data)
+	/*function get_or_set_transient($data)
 	{
 		$out = get_transient($data['key']);
 
@@ -68,7 +68,7 @@ class mf_site_manager
 		}
 
 		return $out;
-	}
+	}*/
 
 	function admin_init()
 	{
@@ -1112,8 +1112,25 @@ class mf_site_manager
 
 	function get_server_ip()
 	{
+		$url = get_site_url()."/my_ip"; //"http://ipecho.net/plain"
+
 		$this->server_ip_old = get_option('setting_server_ip');
-		$this->server_ip_new = $this->get_or_set_transient(array('key' => 'server_ip_transient', 'url' => get_site_url()."/my_ip")); //"http://ipecho.net/plain"
+		$this->server_ip_new = "";
+
+		list($content, $headers) = get_url_content(array('url' => $url, 'catch_head' => true));
+
+		switch($headers['http_code'])
+		{
+			case 200:
+				$this->server_ip_new = $content;
+			break;
+
+			default:
+				do_log("I could not get the IP from ".$url." (".htmlspecialchars(var_export($headers, true)).")");
+			break;
+		}
+
+		//$this->server_ip_new = $this->get_or_set_transient(array('key' => 'server_ip_transient', 'url' => $url));
 
 		if($this->server_ip_new != '' && $this->server_ip_new != $this->server_ip_old)
 		{
@@ -1134,7 +1151,7 @@ class mf_site_manager
 
 		$result = array();
 
-		delete_transient('server_ip_transient');
+		//delete_transient('server_ip_transient');
 
 		$this->get_server_ip();
 
