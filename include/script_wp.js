@@ -53,7 +53,7 @@ jQuery(function($)
 
 	/*$(document).on('click', "button[name=btnGetMyIP]", function(e)
 	{
-		var url = "http://ipecho.net/plain",
+		var url = script_site_manager.get_ip_url,
 			button = $(e.currentTarget),
 			selector = $('#ip_debug');
 

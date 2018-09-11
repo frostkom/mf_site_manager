@@ -79,7 +79,7 @@ class mf_site_manager
 			$plugin_include_url = plugin_dir_url(__FILE__);
 			$plugin_version = get_plugin_version(__FILE__);
 
-			mf_enqueue_script('script_site_manager', $plugin_include_url."script_wp.js", array('plugin_url' => $plugin_include_url, 'ajax_url' => admin_url('admin-ajax.php')), $plugin_version);
+			mf_enqueue_script('script_site_manager', $plugin_include_url."script_wp.js", array('plugin_url' => $plugin_include_url, 'ajax_url' => admin_url('admin-ajax.php')), $plugin_version); //, 'get_ip_url' => get_site_url()."/my_ip" //"http://ipecho.net/plain"
 		}
 	}
 
@@ -1113,7 +1113,7 @@ class mf_site_manager
 	function get_server_ip()
 	{
 		$this->server_ip_old = get_option('setting_server_ip');
-		$this->server_ip_new = $this->get_or_set_transient(array('key' => 'server_ip_transient', 'url' => "http://ipecho.net/plain"));
+		$this->server_ip_new = $this->get_or_set_transient(array('key' => 'server_ip_transient', 'url' => get_site_url()."/my_ip")); //"http://ipecho.net/plain"
 
 		if($this->server_ip_new != '' && $this->server_ip_new != $this->server_ip_old)
 		{
