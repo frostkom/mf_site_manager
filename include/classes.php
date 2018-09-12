@@ -893,7 +893,7 @@ class mf_site_manager
 
 					if(isset($arr_data['value']))
 					{
-						$out .= "<td>".($arr_data['value'] > 0 ? "<i class='fa fa-close fa-lg red'></i> <a href='".$arr_data['link']."'>".$arr_data['value']."</a>" : "<i class='fa fa-check fa-lg green'></i>")."</td>";
+						$out .= "<td>".($arr_data['value'] > 0 ? "<i class='fa fa-times fa-lg red'></i> <a href='".$arr_data['link']."'>".$arr_data['value']."</a>" : "<i class='fa fa-check fa-lg green'></i>")."</td>";
 
 						foreach($this->arr_sites as $site)
 						{
@@ -905,7 +905,7 @@ class mf_site_manager
 
 									if($arr_data_check['value'] > 0)
 									{
-										$out .= "<i class='fa fa-close fa-lg red'></i> <a href='".$arr_data_check['link']."'>".$arr_data_check['value']."</a>";
+										$out .= "<i class='fa fa-times fa-lg red'></i> <a href='".$arr_data_check['link']."'>".$arr_data_check['value']."</a>";
 
 										$has_equal_version = false;
 									}
@@ -952,7 +952,7 @@ class mf_site_manager
 
 									if(!in_array($key2, $arr_exclude) && $value2 != $value_check)
 									{
-										$out_temp .= "<li><i class='fa fa-close fa-lg red'></i> <strong>".$key2.":</strong> <span class='color_red'>".shorten_text(array('text' => $value_check, 'limit' => 50, 'count' => true))."</span> <strong>-></strong> ".shorten_text(array('text' => $value2, 'limit' => 50, 'count' => true))."</li>";
+										$out_temp .= "<li><i class='fa fa-times fa-lg red'></i> <strong>".$key2.":</strong> <span class='color_red'>".shorten_text(array('text' => $value_check, 'limit' => 50, 'count' => true))."</span> <strong>-></strong> ".shorten_text(array('text' => $value2, 'limit' => 50, 'count' => true))."</li>";
 
 										$has_equal_version = false;
 									}
@@ -969,7 +969,7 @@ class mf_site_manager
 
 									if(!in_array($key2, $arr_exclude) && $value2 != $value_check)
 									{
-										$out_temp .= "<li><i class='fa fa-close fa-lg red'></i> <strong>".$key2.":</strong> <span class='color_red'>".shorten_text(array('text' => $value2, 'limit' => 50, 'count' => true))."</span> <strong>-></strong> ".shorten_text(array('text' => $value_check, 'limit' => 50, 'count' => true))."</li>";
+										$out_temp .= "<li><i class='fa fa-times fa-lg red'></i> <strong>".$key2.":</strong> <span class='color_red'>".shorten_text(array('text' => $value2, 'limit' => 50, 'count' => true))."</span> <strong>-></strong> ".shorten_text(array('text' => $value_check, 'limit' => 50, 'count' => true))."</li>";
 
 										$has_equal_version = false;
 									}
