@@ -889,11 +889,11 @@ class mf_site_manager
 			if(count($arr_data) > 0)
 			{
 				$out .= "<tr>
-					<td><i class='fa fa-lg fa-info-circle'></i></td>";
+					<td><i class='fa fa-info-circle fa-lg'></i></td>";
 
 					if(isset($arr_data['value']))
 					{
-						$out .= "<td>".($arr_data['value'] > 0 ? "<i class='fa fa-lg fa-close red'></i> <a href='".$arr_data['link']."'>".$arr_data['value']."</a>" : "<i class='fa fa-lg fa-check green'></i>")."</td>";
+						$out .= "<td>".($arr_data['value'] > 0 ? "<i class='fa fa-close fa-lg red'></i> <a href='".$arr_data['link']."'>".$arr_data['value']."</a>" : "<i class='fa fa-check fa-lg green'></i>")."</td>";
 
 						foreach($this->arr_sites as $site)
 						{
@@ -905,14 +905,14 @@ class mf_site_manager
 
 									if($arr_data_check['value'] > 0)
 									{
-										$out .= "<i class='fa fa-lg fa-close red'></i> <a href='".$arr_data_check['link']."'>".$arr_data_check['value']."</a>";
+										$out .= "<i class='fa fa-close fa-lg red'></i> <a href='".$arr_data_check['link']."'>".$arr_data_check['value']."</a>";
 
 										$has_equal_version = false;
 									}
 
 									else
 									{
-										$out .= "<i class='fa fa-lg fa-check green'></i>";
+										$out .= "<i class='fa fa-check fa-lg green'></i>";
 									}
 
 								$out .= "</td>";
@@ -952,7 +952,7 @@ class mf_site_manager
 
 									if(!in_array($key2, $arr_exclude) && $value2 != $value_check)
 									{
-										$out_temp .= "<li><i class='fa fa-lg fa-close red'></i> <strong>".$key2.":</strong> <span class='color_red'>".shorten_text(array('text' => $value_check, 'limit' => 50, 'count' => true))."</span> <strong>-></strong> ".shorten_text(array('text' => $value2, 'limit' => 50, 'count' => true))."</li>";
+										$out_temp .= "<li><i class='fa fa-close fa-lg red'></i> <strong>".$key2.":</strong> <span class='color_red'>".shorten_text(array('text' => $value_check, 'limit' => 50, 'count' => true))."</span> <strong>-></strong> ".shorten_text(array('text' => $value2, 'limit' => 50, 'count' => true))."</li>";
 
 										$has_equal_version = false;
 									}
@@ -969,7 +969,7 @@ class mf_site_manager
 
 									if(!in_array($key2, $arr_exclude) && $value2 != $value_check)
 									{
-										$out_temp .= "<li><i class='fa fa-lg fa-close red'></i> <strong>".$key2.":</strong> <span class='color_red'>".shorten_text(array('text' => $value2, 'limit' => 50, 'count' => true))."</span> <strong>-></strong> ".shorten_text(array('text' => $value_check, 'limit' => 50, 'count' => true))."</li>";
+										$out_temp .= "<li><i class='fa fa-close fa-lg red'></i> <strong>".$key2.":</strong> <span class='color_red'>".shorten_text(array('text' => $value2, 'limit' => 50, 'count' => true))."</span> <strong>-></strong> ".shorten_text(array('text' => $value_check, 'limit' => 50, 'count' => true))."</li>";
 
 										$has_equal_version = false;
 									}
@@ -986,7 +986,7 @@ class mf_site_manager
 
 									else
 									{
-										$out .= "<i class='fa fa-lg fa-check green'></i>";
+										$out .= "<i class='fa fa-check fa-lg green'></i>";
 									}
 
 								$out .= "</td>";
@@ -1070,7 +1070,7 @@ class mf_site_manager
 	{
 		if($version_check == $version)
 		{
-			$class = "fa-check green";
+			$class = "fa fa-check green";
 			$version_out = "";
 		}
 
@@ -1079,19 +1079,19 @@ class mf_site_manager
 			//if(point2int($version_check) > point2int($version))
 			if(version_compare($version_check, $version, ">"))
 			{
-				$class = "fa-arrow-up green";
+				$class = "fa fa-arrow-up green";
 			}
 
 			else
 			{
-				$class = "fa-arrow-down red";
+				$class = "fa fa-arrow-down red";
 			}
 
 			$version_out = $version_check;
 		}
 
 		$out = "<td>"
-			."<i class='fa fa-lg ".$class."'></i> ";
+			."<i class='".$class." fa-lg'></i> ";
 
 			if($version_check != $version && $link != '')
 			{
