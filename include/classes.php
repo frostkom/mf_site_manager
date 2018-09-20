@@ -1123,6 +1123,8 @@ class mf_site_manager
 		{
 			case 200:
 				$this->server_ip_new = $content;
+
+				do_log("I could not get the IP", 'trash');
 			break;
 
 			default:
