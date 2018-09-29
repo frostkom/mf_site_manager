@@ -588,19 +588,22 @@ class mf_site_manager
 		switch($col)
 		{
 			case 'ssl':
-				if(substr(get_home_url($id, '/'), 0, 5) == 'https')
+				if(get_blog_status($id, 'deleted') == 0)
 				{
-					echo "<i class='fa fa-lock fa-2x green'></i>";
-				}
+					if(substr(get_home_url($id, '/'), 0, 5) == 'https')
+					{
+						echo "<i class='fa fa-lock fa-2x green'></i>";
+					}
 
-				else
-				{
-					echo "<a href='".get_admin_url($id, "admin.php?page=mf_site_manager/change/index.php")."'>
-						<span class='fa-stack fa-lg'>
-							<i class='fa fa-lock fa-stack-1x'></i>
-							<i class='fa fa-ban fa-stack-2x red'></i>
-						</span>
-					</a>";
+					else
+					{
+						echo "<a href='".get_admin_url($id, "admin.php?page=mf_site_manager/change/index.php")."'>
+							<span class='fa-stack fa-lg'>
+								<i class='fa fa-lock fa-stack-1x'></i>
+								<i class='fa fa-ban fa-stack-2x red'></i>
+							</span>
+						</a>";
+					}
 				}
 			break;
 
@@ -614,57 +617,60 @@ class mf_site_manager
 			break;
 
 			case 'theme':
-				//$option_theme_saved = get_blog_option($id, 'option_theme_saved');
-
-				/* Get last parent update */
-				$restore_notice = $restore_url = "";
-
-				if(in_array(get_blog_option($id, 'template'), array('mf_parallax', 'mf_theme')))
+				if(get_blog_status($id, 'deleted') == 0)
 				{
-					switch_to_blog($id);
+					//$option_theme_saved = get_blog_option($id, 'option_theme_saved');
 
-					$obj_theme_core = new mf_theme_core();
-					$obj_theme_core->get_params();
-					$style_source = trim($obj_theme_core->options['style_source'], "/"); // Should fetch from $id theme mods
+					/* Get last parent update */
+					$restore_notice = $restore_url = "";
 
-					restore_current_blog();
-
-					if($style_source != '')
+					if(in_array(get_blog_option($id, 'template'), array('mf_parallax', 'mf_theme')))
 					{
-						if($style_source != get_site_url($id))
+						switch_to_blog($id);
+
+						$obj_theme_core = new mf_theme_core();
+						$obj_theme_core->get_params();
+						$style_source = trim($obj_theme_core->options['style_source'], "/"); // Should fetch from $id theme mods
+
+						restore_current_blog();
+
+						if($style_source != '')
 						{
-							$option_theme_source_style_url = get_blog_option($id, 'option_theme_source_style_url');
-
-							if($option_theme_source_style_url != '')
+							if($style_source != get_site_url($id))
 							{
-								$restore_notice = "&nbsp;<span class='update-plugins' title='".__("Theme Updates", 'lang_site_manager')."'>
-									<span>1</span>
-								</span>";
-								$restore_url = " | <a href='".get_admin_url($id, "themes.php?page=theme_options")."'>".__("Update", 'lang_site_manager')."</a>"; //."&btnThemeRestore&strFileName=".$option_theme_source_style_url
-							}
+								$option_theme_source_style_url = get_blog_option($id, 'option_theme_source_style_url');
 
-							else
-							{
-								$restore_notice .= "&nbsp;<i class='fa fa-check fa-lg green' title='".__("The theme design is up to date", 'lang_site_manager')."'></i>";
+								if($option_theme_source_style_url != '')
+								{
+									$restore_notice = "&nbsp;<span class='update-plugins' title='".__("Theme Updates", 'lang_site_manager')."'>
+										<span>1</span>
+									</span>";
+									$restore_url = " | <a href='".get_admin_url($id, "themes.php?page=theme_options")."'>".__("Update", 'lang_site_manager')."</a>"; //."&btnThemeRestore&strFileName=".$option_theme_source_style_url
+								}
+
+								else
+								{
+									$restore_notice .= "&nbsp;<i class='fa fa-check fa-lg green' title='".__("The theme design is up to date", 'lang_site_manager')."'></i>";
+								}
 							}
+						}
+
+						else
+						{
+							$restore_notice = "&nbsp;<span class='fa-stack'>
+								<i class='fa fa-recycle fa-stack-1x'></i>
+								<i class='fa fa-ban fa-stack-2x red'></i>
+							</span>";
 						}
 					}
 
-					else
-					{
-						$restore_notice = "&nbsp;<span class='fa-stack'>
-							<i class='fa fa-recycle fa-stack-1x'></i>
-							<i class='fa fa-ban fa-stack-2x red'></i>
-						</span>";
-					}
+					echo get_blog_option($id, 'stylesheet')
+					.$restore_notice
+					."<div class='row-actions'>"
+						."<a href='".get_admin_url($id, "admin.php?page=mf_site_manager/theme/index.php")."'>".__("Change", 'lang_site_manager')."</a>"
+						.$restore_url
+					."</div>";
 				}
-
-				echo get_blog_option($id, 'stylesheet')
-				.$restore_notice
-				."<div class='row-actions'>"
-					."<a href='".get_admin_url($id, "admin.php?page=mf_site_manager/theme/index.php")."'>".__("Change", 'lang_site_manager')."</a>"
-					.$restore_url
-				."</div>";
 			break;
 		}
 	}
