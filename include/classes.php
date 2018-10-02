@@ -1118,7 +1118,9 @@ class mf_site_manager
 
 	function get_server_ip()
 	{
-		$url = get_site_url()."/my_ip"; //"http://ipecho.net/plain"
+		$site_url = get_site_url();
+		//$url = (substr_count(trim($site_url, "/"), "/") > 2 ? $site_url."/wp-content/plugins/mf_base/include" : $site_url)."/my_ip"; //"http://ipecho.net/plain"
+		$url = $site_url."/wp-content/plugins/mf_base/include/my_ip";
 
 		$this->server_ip_old = get_option('setting_server_ip');
 		$this->server_ip_new = "";
@@ -1134,7 +1136,34 @@ class mf_site_manager
 			break;
 
 			default:
-				do_log("I could not get the IP from ".$url." (".htmlspecialchars(var_export($headers, true)).")");
+				if($headers['redirect_url'] == $headers['url'])
+				{
+					unset($headers['redirect_url']);
+				}
+
+				unset($headers['header_size']);
+				unset($headers['request_size']);
+				unset($headers['ssl_verify_result']);
+				unset($headers['redirect_count']);
+				unset($headers['size_upload']);
+				unset($headers['size_download']);
+				unset($headers['download_content_length']);
+				unset($headers['upload_content_length']);
+				unset($headers['filetime']);
+				unset($headers['total_time']);
+				unset($headers['namelookup_time']);
+				unset($headers['connect_time']);
+				unset($headers['pretransfer_time']);
+				unset($headers['speed_download']);
+				unset($headers['speed_upload']);
+				unset($headers['starttransfer_time']);
+				unset($headers['redirect_time']);
+				unset($headers['primary_ip']);
+				unset($headers['local_ip']);
+				unset($headers['local_port']);
+				unset($headers['request_header']);
+
+				do_log("I could not get the IP (".htmlspecialchars(var_export($headers, true)).")");
 			break;
 		}
 
