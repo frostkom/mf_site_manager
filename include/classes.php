@@ -120,7 +120,7 @@ class mf_site_manager
 		}
 
 		echo "<p>".$option."</p>
-		<div class='form_buttons'>"
+		<div>" // class='form_buttons'
 			.show_button(array('type' => 'button', 'name' => 'btnGetServerIP', 'text' => __("Get Server IP", 'lang_site_manager'), 'class' => 'button-secondary'))
 			//.show_button(array('type' => 'button', 'name' => 'btnGetMyIP', 'text' => __("Get My IP", 'lang_site_manager'), 'class' => 'button-secondary'))
 		."</div>
@@ -1118,7 +1118,7 @@ class mf_site_manager
 
 	function get_server_ip()
 	{
-		$site_url = get_site_url();
+		$site_url = get_home_url(); //get_site_url()
 		//$url = (substr_count(trim($site_url, "/"), "/") > 2 ? $site_url."/wp-content/plugins/mf_base/include" : $site_url)."/my_ip"; //"http://ipecho.net/plain"
 		$url = $site_url."/wp-content/plugins/mf_base/include/my_ip";
 
