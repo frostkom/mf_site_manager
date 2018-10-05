@@ -120,7 +120,7 @@ class mf_site_manager
 		}
 
 		echo "<p>".$option."</p>
-		<div>" // class='form_buttons'
+		<div>"
 			.show_button(array('type' => 'button', 'name' => 'btnGetServerIP', 'text' => __("Get Server IP", 'lang_site_manager'), 'class' => 'button-secondary'))
 			//.show_button(array('type' => 'button', 'name' => 'btnGetMyIP', 'text' => __("Get My IP", 'lang_site_manager'), 'class' => 'button-secondary'))
 		."</div>
