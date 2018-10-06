@@ -1118,9 +1118,10 @@ class mf_site_manager
 
 	function get_server_ip()
 	{
-		$site_url = get_home_url(); //get_site_url()
-		//$url = (substr_count(trim($site_url, "/"), "/") > 2 ? $site_url."/wp-content/plugins/mf_base/include" : $site_url)."/my_ip"; //"http://ipecho.net/plain"
-		$url = $site_url."/wp-content/plugins/mf_base/include/my_ip";
+		//$site_url = get_home_url();
+		$site_url = get_site_url();
+		//$url = (substr_count(trim($site_url, "/"), "/") > 2 ? $site_url."/wp-content/plugins/mf_base/include" : $site_url)."/my_ip/"; //"http://ipecho.net/plain"
+		$url = $site_url."/wp-content/plugins/mf_base/include/my_ip/";
 
 		$this->server_ip_old = get_option('setting_server_ip');
 		$this->server_ip_new = "";
@@ -1225,7 +1226,7 @@ class mf_site_manager
 		die();
 	}
 
-	function run_cron()
+	function cron_base()
 	{
 		$this->get_server_ip();
 	}
