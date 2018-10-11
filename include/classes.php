@@ -1136,6 +1136,10 @@ class mf_site_manager
 				do_log("I could not get the IP", 'trash');
 			break;
 
+			case 0:
+				// Do nothing
+			break;
+
 			default:
 				if($headers['redirect_url'] == $headers['url'])
 				{
