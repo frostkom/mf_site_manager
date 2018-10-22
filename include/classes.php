@@ -197,8 +197,22 @@ class mf_site_manager
 
 		if($this->new_url_clean != $this->site_url_clean)
 		{
-			$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->blogs." SET domain = %s, path = %s WHERE blog_id = '%d'", $new_domain_clean, $new_path_clean, $wpdb->blogid));
-			if($wpdb->rows_affected == 0){	$this->arr_errors[] = $wpdb->last_query;}
+			$wpdb->get_results($wpdb->prepare("SELECT blog_id FROM ".$wpdb->blogs." WHERE domain = %s AND path = %s AND blog_id != '%d'", $new_domain_clean, $new_path_clean, $wpdb->blogid));
+
+			if($wpdb->num_rows > 0)
+			{
+				do_log("That URL already exists (".$wpdb->last_query.")");
+			}
+
+			else
+			{
+				$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->blogs." SET domain = %s, path = %s WHERE blog_id = '%d'", $new_domain_clean, $new_path_clean, $wpdb->blogid));
+				
+				if($wpdb->rows_affected == 0)
+				{
+					$this->arr_errors[] = $wpdb->last_query;
+				}
+			}
 		}
 
 		$wpdb->get_results($wpdb->prepare("SELECT id FROM ".$wpdb->site." WHERE domain = %s AND path = %s LIMIT 0, 1", $site_domain_clean, $site_path_clean));
@@ -206,12 +220,16 @@ class mf_site_manager
 		if($wpdb->num_rows > 0)
 		{
 			$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->site." SET domain = %s, path = %s WHERE domain = %s AND path = %s", $new_domain_clean, $new_path_clean, $site_domain_clean, $site_path_clean));
-			if($wpdb->rows_affected == 0){	$this->arr_errors[] = $wpdb->last_query;}
+
+			if($wpdb->rows_affected == 0)
+			{
+				$this->arr_errors[] = $wpdb->last_query;
+			}
 		}
 
 		$result = $wpdb->get_results($wpdb->prepare("SELECT meta_id FROM ".$wpdb->sitemeta." WHERE meta_key = 'siteurl' AND (meta_value = %s OR meta_value = %s)", $this->site_url, $this->site_url."/"));
 
-		if($wpdb->num_rows > 0)
+		if($wpdb->num_rows == 1)
 		{
 			foreach($result as $r)
 			{
@@ -220,8 +238,17 @@ class mf_site_manager
 				$this->new_url_temp = substr($this->new_url, -1) == "/" ? $this->new_url : $this->new_url."/";
 
 				$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->sitemeta." SET meta_value = %s WHERE meta_key = 'siteurl' AND meta_id = '%d'", $this->new_url_temp, $meta_id));
-				if($wpdb->rows_affected == 0){	$this->arr_errors[] = $wpdb->last_query;}
+				
+				if($wpdb->rows_affected == 0)
+				{
+					$this->arr_errors[] = $wpdb->last_query;
+				}
 			}
+		}
+
+		else
+		{
+			do_log("Zero or multiple 'siteurl' exists with those values (".$wpdb->last_query.")");
 		}
 	}
 
