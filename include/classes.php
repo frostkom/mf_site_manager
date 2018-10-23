@@ -207,7 +207,7 @@ class mf_site_manager
 			else
 			{
 				$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->blogs." SET domain = %s, path = %s WHERE blog_id = '%d'", $new_domain_clean, $new_path_clean, $wpdb->blogid));
-				
+
 				if($wpdb->rows_affected == 0)
 				{
 					$this->arr_errors[] = $wpdb->last_query;
@@ -229,7 +229,12 @@ class mf_site_manager
 
 		$result = $wpdb->get_results($wpdb->prepare("SELECT meta_id FROM ".$wpdb->sitemeta." WHERE meta_key = 'siteurl' AND (meta_value = %s OR meta_value = %s)", $this->site_url, $this->site_url."/"));
 
-		if($wpdb->num_rows == 1)
+		if($wpdb->num_rows > 1)
+		{
+			do_log("Multiple 'siteurl' exists with those values (".$wpdb->last_query.")");
+		}
+
+		else
 		{
 			foreach($result as $r)
 			{
@@ -238,17 +243,12 @@ class mf_site_manager
 				$this->new_url_temp = substr($this->new_url, -1) == "/" ? $this->new_url : $this->new_url."/";
 
 				$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->sitemeta." SET meta_value = %s WHERE meta_key = 'siteurl' AND meta_id = '%d'", $this->new_url_temp, $meta_id));
-				
+
 				if($wpdb->rows_affected == 0)
 				{
 					$this->arr_errors[] = $wpdb->last_query;
 				}
 			}
-		}
-
-		else
-		{
-			do_log("Zero or multiple 'siteurl' exists with those values (".$wpdb->last_query.")");
 		}
 	}
 
