@@ -1109,7 +1109,6 @@ class mf_site_manager
 
 		else
 		{
-			//if(point2int($version_check) > point2int($version))
 			if(version_compare($version_check, $version, ">"))
 			{
 				$class = "fa fa-arrow-up green";
