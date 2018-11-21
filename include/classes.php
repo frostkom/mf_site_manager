@@ -1051,35 +1051,43 @@ class mf_site_manager
 
 		foreach($this->arr_sites as $site2)
 		{
-			foreach($array[$site2] as $key => $value)
+			if(is_array($array[$site2]))
 			{
-				$name = $value['name'];
-				$version = 0;
+				foreach($array[$site2] as $key => $value)
+				{
+					$name = $value['name'];
+					$version = 0;
 
-				echo "<tr>
-					<td>".$name."</td>
-					<td><em>(".__("does not exist", 'lang_site_manager').")</em></td>";
+					echo "<tr>
+						<td>".$name."</td>
+						<td><em>(".__("does not exist", 'lang_site_manager').")</em></td>";
 
-					foreach($this->arr_sites as $site)
-					{
-						if(isset($array[$site][$key]))
+						foreach($this->arr_sites as $site)
 						{
-							$version_check = $array[$site][$key]['version'];
+							if(isset($array[$site][$key]))
+							{
+								$version_check = $array[$site][$key]['version'];
 
-							echo $this->get_version_check_cell($version, $version_check);
+								echo $this->get_version_check_cell($version, $version_check);
 
-							unset($array[$site][$key]);
+								unset($array[$site][$key]);
+							}
+
+							else
+							{
+								echo "<td><a href='".$this->get_type_url($site, $name)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a></td>";
+							}
 						}
 
-						else
-						{
-							echo "<td><a href='".$this->get_type_url($site, $name)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a></td>";
-						}
-					}
+					echo "</tr>";
 
-				echo "</tr>";
+					$this->echoed = true;
+				}
+			}
 
-				$this->echoed = true;
+			else
+			{
+				do_log("check_version(): ".$site2." does not exist in ".var_export($array, true));
 			}
 		}
 
