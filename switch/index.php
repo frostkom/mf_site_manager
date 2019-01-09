@@ -129,7 +129,7 @@ if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_P
 
 			$user_data = get_userdata(get_current_user_id());
 
-			do_log(sprintf(__("%s switched %s with %s", 'lang_site_manager'), $user_data->display_name, $strBlogDomainFrom, $strBlogDomainTo), 'auto-draft');
+			do_log(sprintf(__("%s switched %s with %s", 'lang_site_manager'), $user_data->display_name, $strBlogDomainFrom, $strBlogDomainTo), 'notification');
 		}
 	}
 

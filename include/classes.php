@@ -385,7 +385,7 @@ class mf_site_manager
 
 					$user_data = get_userdata(get_current_user_id());
 
-					do_log(sprintf(__("%s changed the URL from %s to %s", 'lang_site_manager'), $user_data->display_name, $this->site_url, $this->new_url), 'auto-draft');
+					do_log(sprintf(__("%s changed the URL from %s to %s", 'lang_site_manager'), $user_data->display_name, $this->site_url, $this->new_url), 'notification');
 				}
 			}
 
@@ -576,7 +576,7 @@ class mf_site_manager
 
 						$user_data = get_userdata(get_current_user_id());
 
-						do_log(sprintf(__("%s cloned %s to %s", 'lang_site_manager'), $user_data->display_name, $strBlogDomainFrom, $strBlogDomainTo), 'auto-draft');
+						do_log(sprintf(__("%s cloned %s to %s", 'lang_site_manager'), $user_data->display_name, $strBlogDomainFrom, $strBlogDomainTo), 'notification');
 					}
 				}
 
