@@ -11,7 +11,7 @@ class mf_site_manager
 	{
 		if(!isset($data['exclude'])){	$data['exclude'] = array();}
 
-		$result = get_sites(array('site__not_in' => $data['exclude'], 'orderby' => 'domain'));
+		$result = get_sites(array('site__not_in' => $data['exclude'], 'deleted' => 0, 'orderby' => 'domain'));
 
 		$arr_data = array(
 			'' => "-- ".__("Choose Here", 'lang_site_manager')." --"
@@ -381,7 +381,7 @@ class mf_site_manager
 
 				else
 				{
-					$done_text = sprintf(__("I have changed the URL from %s to %s", 'lang_site_manager'), $this->site_url, "<a href='".$this->new_url."'>".$this->new_url."</a>");
+					$done_text = sprintf(__("I have changed the URL from %s to %s. Go to %sDashboard%s", 'lang_site_manager'), $this->site_url, "<a href='".$this->new_url."'>".$this->new_url."</a>", "<a href='".$this->new_url."/wp-admin"."'>", "</a>");
 
 					$user_data = get_userdata(get_current_user_id());
 
