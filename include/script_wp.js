@@ -50,36 +50,4 @@ jQuery(function($)
 			'selector': $('#ip_debug')
 		});
 	});
-
-	/*$(document).on('click', "button[name=btnGetMyIP]", function(e)
-	{
-		var url = script_site_manager.get_ip_url,
-			button = $(e.currentTarget),
-			selector = $('#ip_debug');
-
-		selector.html("<i class='fa fa-spinner fa-spin fa-2x'></i>");
-
-		$.ajax(
-		{
-			type: "post",
-			dataType: "json",
-			url: url,
-			success: function(data)
-			{
-				selector.empty();
-
-				button.attr('disabled', true);
-
-				if(data.success)
-				{
-					selector.html(data.message);
-				}
-
-				else
-				{
-					selector.html(data.error);
-				}
-			}
-		});
-	});*/
 });

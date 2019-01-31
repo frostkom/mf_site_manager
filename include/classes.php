@@ -79,7 +79,7 @@ class mf_site_manager
 			$plugin_include_url = plugin_dir_url(__FILE__);
 			$plugin_version = get_plugin_version(__FILE__);
 
-			mf_enqueue_script('script_site_manager', $plugin_include_url."script_wp.js", array('plugin_url' => $plugin_include_url, 'ajax_url' => admin_url('admin-ajax.php')), $plugin_version); //, 'get_ip_url' => get_site_url()."/my_ip" //"http://ipecho.net/plain"
+			mf_enqueue_script('script_site_manager', $plugin_include_url."script_wp.js", array('plugin_url' => $plugin_include_url, 'ajax_url' => admin_url('admin-ajax.php')), $plugin_version);
 		}
 	}
 
@@ -122,7 +122,6 @@ class mf_site_manager
 		echo "<p>".$option."</p>
 		<div>"
 			.show_button(array('type' => 'button', 'name' => 'btnGetServerIP', 'text' => __("Get Server IP", 'lang_site_manager'), 'class' => 'button-secondary'))
-			//.show_button(array('type' => 'button', 'name' => 'btnGetMyIP', 'text' => __("Get My IP", 'lang_site_manager'), 'class' => 'button-secondary'))
 		."</div>
 		<div id='ip_debug'></div>";
 	}
@@ -610,8 +609,6 @@ class mf_site_manager
 
 	function column_cell($col, $id)
 	{
-		global $wpdb;
-
 		switch($col)
 		{
 			case 'ssl':
@@ -788,8 +785,6 @@ class mf_site_manager
 
 	function get_sites($setting_site_comparison)
 	{
-		global $wpdb;
-
 		if($setting_site_comparison != '')
 		{
 			$this->arr_sites = array_map('trim', explode(",", $setting_site_comparison));
@@ -1152,10 +1147,7 @@ class mf_site_manager
 
 	function get_server_ip()
 	{
-		//$site_url = get_home_url();
-		$site_url = get_site_url();
-		//$url = (substr_count(trim($site_url, "/"), "/") > 2 ? $site_url."/wp-content/plugins/mf_base/include" : $site_url)."/my_ip/"; //"http://ipecho.net/plain"
-		$url = $site_url."/wp-content/plugins/mf_base/include/my_ip/";
+		$url = get_site_url()."/wp-content/plugins/mf_base/include/my_ip/";
 
 		$this->server_ip_old = get_option('setting_server_ip');
 		$this->server_ip_new = "";
