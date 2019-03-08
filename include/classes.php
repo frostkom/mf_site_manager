@@ -375,7 +375,7 @@ class mf_site_manager
 				{
 					$error_text = sprintf(__("I executed your request but there were %d errors so you need to manually update the database", 'lang_site_manager'), $count_temp);
 
-					do_log(__("Errors while changing URL", 'lang_site_manager').": ".var_export($this->arr_errors, true));
+					do_log("Errors while changing URL: ".var_export($this->arr_errors, true));
 				}
 
 				else
@@ -384,7 +384,7 @@ class mf_site_manager
 
 					$user_data = get_userdata(get_current_user_id());
 
-					do_log(sprintf(__("%s changed the URL from %s to %s", 'lang_site_manager'), $user_data->display_name, $this->site_url, $this->new_url), 'notification');
+					do_log(sprintf("%s changed the URL from %s to %s", $user_data->display_name, $this->site_url, $this->new_url), 'notification');
 				}
 			}
 
@@ -575,7 +575,7 @@ class mf_site_manager
 
 						$user_data = get_userdata(get_current_user_id());
 
-						do_log(sprintf(__("%s cloned %s to %s", 'lang_site_manager'), $user_data->display_name, $strBlogDomainFrom, $strBlogDomainTo), 'notification');
+						do_log(sprintf("%s cloned %s to %s", $user_data->display_name, $strBlogDomainFrom, $strBlogDomainTo), 'notification');
 					}
 				}
 
@@ -763,7 +763,7 @@ class mf_site_manager
 
 					$tbl_group->select_data(array(
 						'select' => "ID",
-						//'debug' => true,
+						'debug' => ($_SERVER['REMOTE_ADDR'] == ""),
 					));
 
 					$arr_data['value'] = count($tbl_group->data);
@@ -1206,7 +1206,7 @@ class mf_site_manager
 
 			if($this->server_ip_old != '')
 			{
-				do_log(sprintf(__("The server has changed IP address from %s to %s", 'lang_site_manager'), $this->server_ip_old, $this->server_ip_new));
+				do_log(sprintf("The server has changed IP address from %s to %s", $this->server_ip_old, $this->server_ip_new));
 			}
 
 			return $this->server_ip_new;

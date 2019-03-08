@@ -62,7 +62,7 @@ if(isset($_POST['btnSiteChangeTheme']))
 
 			$user_data = get_userdata(get_current_user_id());
 
-			do_log(sprintf(__("%s changed theme from %s to %s", 'lang_site_manager'), $user_data->display_name, $old_theme, $new_theme), 'notification');
+			do_log(sprintf("%s changed theme from %s to %s", $user_data->display_name, $old_theme, $new_theme), 'notification');
 		}
 	}
 }
