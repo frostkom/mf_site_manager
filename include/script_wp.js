@@ -41,13 +41,13 @@ jQuery(function($)
 		return false;
 	}
 
-	$(document).on('click', "button[name=btnGetServerIP]", function(e)
+	$(document).on('click', "button[name='btnGetServerIP']", function(e)
 	{
 		run_ajax(
 		{
 			'button': $(e.currentTarget),
 			'action': 'force_server_ip',
-			'selector': $('#ip_debug')
+			'selector': $("#ip_debug")
 		});
 	});
 });

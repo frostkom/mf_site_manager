@@ -669,7 +669,7 @@ class mf_site_manager
 									$restore_notice = "&nbsp;<span class='update-plugins' title='".__("Theme Updates", 'lang_site_manager')."'>
 										<span>1</span>
 									</span>";
-									$restore_url = " | <a href='".get_admin_url($id, "themes.php?page=theme_options")."'>".__("Update", 'lang_site_manager')."</a>"; //."&btnThemeRestore&strFileName=".$option_theme_source_style_url
+									$restore_url = " | <a href='".get_admin_url($id, "themes.php?page=theme_options")."'>".__("Update", 'lang_site_manager')."</a>";
 								}
 
 								else

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-10-02 05:11+0100\n"
+"POT-Creation-Date: 2019-03-22 09:52+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -15,14 +15,47 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: ..\n"
 
+msgid "Change URL"
+msgstr "Endre URL"
+
+msgid "Change to this URL"
+msgstr "Endre til denne URL"
+
+msgid "Clone Site"
+msgstr "Klone Nettstedet"
+
 msgid "From"
 msgstr "Fra"
 
 msgid "Name"
 msgstr "Navn"
 
+msgid "Version"
+msgstr "Versjon"
+
+msgid "Core"
+msgstr "Kjerne"
+
+msgid "Site"
+msgstr "Nettstedet"
+
+msgid "Error"
+msgstr "Feil"
+
+msgid "Wrong IP"
+msgstr "Feil IP"
+
 msgid "Choose Here"
 msgstr "Velg Her"
+
+msgid "Get Server IP"
+msgstr "Få Server IP"
+
+msgid "Change Theme"
+msgstr "Endre Temaet"
+
+msgid "All data was cloned"
+msgstr "Alle data ble klonet"
 
 msgid "E-mail"
 msgstr "E-post"
@@ -30,9 +63,21 @@ msgstr "E-post"
 msgid "Theme"
 msgstr "Tema"
 
+msgid "Theme Updates"
+msgstr "Tema-Oppdateringer"
+
 msgid "Update"
 msgstr "Oppdatering"
 
 msgid "Change"
 msgstr "Endre"
+
+msgid "does not exist"
+msgstr "finnes ikke"
+
+msgid "The IP (%s) is the same as before"
+msgstr "IP (%s) er den samme som før"
+
+msgid "Change to this Theme"
+msgstr "Endre til dette Temaet"
 
