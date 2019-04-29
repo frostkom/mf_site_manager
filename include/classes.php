@@ -660,7 +660,12 @@ class mf_site_manager
 
 						if($style_source != '')
 						{
-							if($style_source != get_site_url($id))
+							if($style_source == get_site_url($id))
+							{
+								$restore_notice .= "&nbsp;<i class='fas fa-star fa-lg yellow' title='".__("This is the template theme design", 'lang_site_manager')."'></i>";
+							}
+
+							else
 							{
 								$option_theme_source_style_url = get_blog_option($id, 'option_theme_source_style_url');
 
@@ -679,13 +684,13 @@ class mf_site_manager
 							}
 						}
 
-						else
+						/*else
 						{
 							$restore_notice = "&nbsp;<span class='fa-stack'>
 								<i class='fa fa-recycle fa-stack-1x'></i>
 								<i class='fa fa-ban fa-stack-2x red'></i>
 							</span>";
-						}
+						}*/
 					}
 
 					echo get_blog_option($id, 'stylesheet')
