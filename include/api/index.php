@@ -17,7 +17,7 @@ require_once("functions.php");*/
 {
 	$obj_cache = new mf_cache();
 	$obj_cache->fetch_request();
-	$obj_cache->get_or_set_file_content('json');
+	$obj_cache->get_or_set_file_content(array('suffix' => 'json'));
 }*/
 
 $json_output = array();
