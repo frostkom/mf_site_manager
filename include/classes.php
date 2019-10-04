@@ -45,31 +45,6 @@ class mf_site_manager
 		return $arr_data;
 	}
 
-	/*function get_or_set_transient($data)
-	{
-		$out = get_transient($data['key']);
-
-		if($out == "")
-		{
-			list($content, $headers) = get_url_content(array('url' => $data['url'], 'catch_head' => true));
-
-			if(!(isset($headers['http_code']) && $headers['http_code'] == 200))
-			{
-				if(ini_get('allow_url_fopen'))
-				{
-					$content = @file_get_contents($data['url']);
-				}
-			}
-
-			if($content != '')
-			{
-				set_transient($data['key'], $content, DAY_IN_SECONDS); //HOUR_IN_SECONDS, WEEK_IN_SECONDS
-			}
-		}
-
-		return $out;
-	}*/
-
 	function admin_init()
 	{
 		global $pagenow;
@@ -1202,8 +1177,6 @@ class mf_site_manager
 				do_log("I could not get the IP (".htmlspecialchars(var_export($headers, true)).")");
 			break;
 		}
-
-		//$this->server_ip_new = $this->get_or_set_transient(array('key' => 'server_ip_transient', 'url' => $url));
 
 		if($this->server_ip_new != '' && $this->server_ip_new != $this->server_ip_old)
 		{
