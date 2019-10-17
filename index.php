@@ -3,7 +3,7 @@
 Plugin Name: MF Site Manager
 Plugin URI: https://github.com/frostkom/mf_site_manager
 Description: 
-Version: 5.2.15
+Version: 5.2.16
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://frostkom.se
@@ -32,8 +32,8 @@ if(is_admin())
 
 	if(is_multisite())
 	{
-		add_filter('manage_sites-network_columns', array($obj_site_manager, 'column_header'), 5);
-		add_action('manage_sites_custom_column', array($obj_site_manager, 'column_cell'), 5, 2);
+		add_filter('manage_sites-network_columns', array($obj_site_manager, 'sites_column_header'), 5);
+		add_action('manage_sites_custom_column', array($obj_site_manager, 'sites_column_cell'), 5, 2);
 		add_filter('manage_sites_action_links', array($obj_site_manager, 'sites_row_actions'));
 
 		add_action('admin_footer', array($obj_site_manager, 'admin_footer'), 0);

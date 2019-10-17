@@ -570,19 +570,18 @@ class mf_site_manager
 
 	/* Admin */
 	###########################
-	function column_header($cols)
+	function sites_column_header($cols)
 	{
 		unset($cols['registered']);
 		unset($cols['lastupdated']);
 
 		$cols['ssl'] = __("SSL", 'lang_site_manager');
-		$cols['email'] = __("E-mail", 'lang_site_manager');
 		$cols['theme'] = __("Theme", 'lang_site_manager');
 
 		return $cols;
 	}
 
-	function column_cell($col, $id)
+	function sites_column_cell($col, $id)
 	{
 		switch($col)
 		{
@@ -603,15 +602,6 @@ class mf_site_manager
 							</span>
 						</a>";
 					}
-				}
-			break;
-
-			case 'email':
-				$admin_email = get_blog_option($id, 'admin_email');
-
-				if($admin_email != '')
-				{
-					echo "<a href='mailto:".$admin_email."'>".$admin_email."</a>";
 				}
 			break;
 
