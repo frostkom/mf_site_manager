@@ -3,7 +3,7 @@
 Plugin Name: MF Site Manager
 Plugin URI: https://github.com/frostkom/mf_site_manager
 Description: 
-Version: 5.2.17
+Version: 5.2.18
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://frostkom.se
@@ -18,12 +18,10 @@ include_once("include/classes.php");
 
 $obj_site_manager = new mf_site_manager();
 
-add_action('cron_base', 'activate_site_manager', mt_rand(1, 10));
 add_action('cron_base', array($obj_site_manager, 'cron_base'), mt_rand(1, 10));
 
 if(is_admin())
 {
-	register_activation_hook(__FILE__, 'activate_site_manager');
 	register_uninstall_hook(__FILE__, 'uninstall_site_manager');
 
 	add_action('admin_init', array($obj_site_manager, 'admin_init'), 0);
@@ -43,11 +41,6 @@ if(is_admin())
 }
 
 add_action('wp_ajax_force_server_ip', array($obj_site_manager, 'force_server_ip'));
-
-function activate_site_manager()
-{
-	replace_option(array('old' => 'mf_server_ip', 'new' => 'setting_server_ip'));
-}
 
 function uninstall_site_manager()
 {
