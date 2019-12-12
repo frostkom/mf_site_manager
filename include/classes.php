@@ -608,8 +608,6 @@ class mf_site_manager
 			case 'theme':
 				if(get_blog_status($id, 'deleted') == 0)
 				{
-					//$option_theme_saved = get_blog_option($id, 'option_theme_saved');
-
 					/* Get last parent update */
 					$restore_notice = $restore_url = "";
 
@@ -617,10 +615,9 @@ class mf_site_manager
 					{
 						switch_to_blog($id);
 
-						$obj_theme_core = new mf_theme_core();
-						$obj_theme_core->get_params();
-						//$style_source = trim($obj_theme_core->options['style_source'], "/"); // Should fetch from $id theme mods
-						$style_source = get_option('setting_base_template_site', (isset($obj_theme_core->options['style_source']) ? trim($obj_theme_core->options['style_source'], "/") : ""));
+						//$obj_theme_core = new mf_theme_core();
+						//$obj_theme_core->get_params();
+						$style_source = get_option('setting_base_template_site'); //, (isset($obj_theme_core->options['style_source']) ? trim($obj_theme_core->options['style_source'], "/") : "")
 
 						restore_current_blog();
 
