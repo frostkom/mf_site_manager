@@ -506,11 +506,29 @@ class mf_site_manager
 						$upload_path_global = WP_CONTENT_DIR."/uploads/";
 						$upload_url_global = WP_CONTENT_URL."/uploads/";
 
-						$upload_path_from = $upload_path_global."sites/".$wpdb->blogid."/";
-						$upload_url_from = $upload_url_global."sites/".$wpdb->blogid."/";
+						if($wpdb->blogid == 1)
+						{
+							$upload_path_from = $upload_path_global;
+							$upload_url_from = $upload_url_global;
+						}
 
-						$upload_path_to = $upload_path_global."sites/".$this->blog_id."/";
-						$upload_url_to = $upload_url_global."sites/".$this->blog_id."/";
+						else
+						{
+							$upload_path_from = $upload_path_global."sites/".$wpdb->blogid."/";
+							$upload_url_from = $upload_url_global."sites/".$wpdb->blogid."/";
+						}
+
+						if($this->blog_id == 1)
+						{
+							$upload_path_to = $upload_path_global;
+							$upload_url_to = $upload_url_global;
+						}
+
+						else
+						{
+							$upload_path_to = $upload_path_global."sites/".$this->blog_id."/";
+							$upload_url_to = $upload_url_global."sites/".$this->blog_id."/";
+						}
 
 						$arr_sizes = array('thumbnail', 'medium', 'large');
 
@@ -1224,6 +1242,9 @@ class mf_site_manager
 
 	function cron_base()
 	{
-		$this->get_server_ip();
+		if(is_main_site())
+		{
+			$this->get_server_ip();
+		}
 	}
 }
