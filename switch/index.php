@@ -127,9 +127,7 @@ if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_P
 			$done_text = __("I have switched all the data on the two domain as you requested.", 'lang_site_manager')." (".$strBasePrefixFrom." -> ".$strBasePrefixTo.")";
 			//$done_text .= " [".nl2br($str_queries)."]";
 
-			$user_data = get_userdata(get_current_user_id());
-
-			do_log(sprintf("%s switched %s with %s", $user_data->display_name, $strBlogDomainFrom, $strBlogDomainTo), 'notification');
+			do_log(sprintf("%s switched %s with %s", get_user_info(), $strBlogDomainFrom, $strBlogDomainTo), 'notification');
 		}
 	}
 

@@ -357,9 +357,7 @@ class mf_site_manager
 				{
 					$done_text = sprintf(__("I have changed the URL from %s to %s. Go to %sDashboard%s", 'lang_site_manager'), $this->site_url, "<a href='".$this->new_url."'>".$this->new_url."</a>", "<a href='".$this->new_url."/wp-admin"."'>", "</a>");
 
-					$user_data = get_userdata(get_current_user_id());
-
-					do_log(sprintf("%s changed the URL from %s to %s", $user_data->display_name, $this->site_url, $this->new_url), 'notification');
+					do_log(sprintf("%s changed the URL from %s to %s", get_user_info(), $this->site_url, $this->new_url), 'notification');
 				}
 			}
 
@@ -566,9 +564,7 @@ class mf_site_manager
 						//$done_text .= " (".$strBasePrefixFrom." -> ".$strBasePrefixTo.")";
 						//$done_text .= " [".nl2br($str_queries)."]";
 
-						$user_data = get_userdata(get_current_user_id());
-
-						do_log(sprintf("%s cloned %s to %s", $user_data->display_name, $strBlogDomainFrom, $strBlogDomainTo), 'notification');
+						do_log(sprintf("%s cloned %s to %s", get_user_info(), $strBlogDomainFrom, $strBlogDomainTo), 'notification');
 					}
 				}
 
