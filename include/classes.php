@@ -586,9 +586,6 @@ class mf_site_manager
 	###########################
 	function sites_column_header($cols)
 	{
-		unset($cols['registered']);
-		unset($cols['lastupdated']);
-
 		$cols['ssl'] = __("SSL", 'lang_site_manager');
 		$cols['theme'] = __("Theme", 'lang_site_manager');
 
@@ -627,13 +624,7 @@ class mf_site_manager
 
 					if(in_array(get_blog_option($id, 'template'), array('mf_parallax', 'mf_theme')))
 					{
-						switch_to_blog($id);
-
-						//$obj_theme_core = new mf_theme_core();
-						//$obj_theme_core->get_params();
-						$style_source = get_option('setting_base_template_site'); //, (isset($obj_theme_core->options['style_source']) ? trim($obj_theme_core->options['style_source'], "/") : "")
-
-						restore_current_blog();
+						$style_source = get_blog_option($id, 'setting_base_template_site');
 
 						if($style_source != '')
 						{
