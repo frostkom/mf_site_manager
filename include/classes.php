@@ -1229,9 +1229,17 @@ class mf_site_manager
 
 	function cron_base()
 	{
-		if(is_main_site())
+		$obj_cron = new mf_cron();
+		$obj_cron->start(__CLASS__);
+
+		if($obj_cron->is_running == false)
 		{
-			$this->get_server_ip();
+			if(is_main_site())
+			{
+				$this->get_server_ip();
+			}
 		}
+
+		$obj_cron->end();
 	}
 }
