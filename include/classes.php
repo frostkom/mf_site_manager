@@ -35,9 +35,9 @@ class mf_site_manager
 	{
 		$arr_data = array();
 
-		$themes = wp_get_themes(array('errors' => false, 'allowed' => true));
+		$arr_themes = wp_get_themes(array('errors' => false, 'allowed' => true));
 
-		foreach($themes as $key => $value)
+		foreach($arr_themes as $key => $value)
 		{
 			$arr_data[$key] = $value['Name'];
 		}
