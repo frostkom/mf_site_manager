@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-05 13:49+0100\n"
+"POT-Creation-Date: 2020-11-21 13:49+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -16,8 +16,8 @@ msgstr ""
 "X-Poedit-SearchPath-0: ..\n"
 
 #: ../change/index.php:8
-#: ../include/classes.php:153
-#: ../include/classes.php:692
+#: ../include/classes.php:158
+#: ../include/classes.php:644
 msgid "Change URL"
 msgstr "Ändra URL"
 
@@ -31,13 +31,13 @@ msgstr "Är du helt säker? Detta kommer att byta URL för webbplatsen"
 
 #: ../change/index.php:15
 #: ../clone/index.php:31
-#: ../switch/index.php:158
-#: ../theme/index.php:82
+#: ../switch/index.php:156
+#: ../theme/index.php:80
 msgid "Perform"
 msgstr "Genomför"
 
 #: ../clone/index.php:8
-#: ../include/classes.php:145
+#: ../include/classes.php:150
 msgid "Clone Site"
 msgstr "Klona webbsida"
 
@@ -74,7 +74,7 @@ msgid "You have to have a MultiSite to be able to clone this site"
 msgstr "Du måste ha en MultiSite för att kunna byta domän mellan två webbplatser"
 
 #: ../compare/index.php:13
-#: ../include/classes.php:133
+#: ../include/classes.php:138
 msgid "Compare Sites"
 msgstr "Jämför webbsidor"
 
@@ -115,120 +115,96 @@ msgstr "Jag kunde inte hitta några webbplatser att jämföra med. Konvertera ti
 msgid "Choose Here"
 msgstr "Välj här"
 
-#: ../include/classes.php:70
+#: ../include/classes.php:75
 msgid "Server IP"
 msgstr "Server-IP"
 
-#: ../include/classes.php:71
+#: ../include/classes.php:76
 msgid "Server IPs allowed"
 msgstr "Tillåtna server-IP"
 
-#: ../include/classes.php:72
+#: ../include/classes.php:77
 msgid "Sites to compare with"
 msgstr "Webbplatser att jämföra med"
 
-#: ../include/classes.php:82
-#: ../include/classes.php:128
+#: ../include/classes.php:87
+#: ../include/classes.php:133
 msgid "Site Manager"
 msgstr ""
 
-#: ../include/classes.php:99
+#: ../include/classes.php:104
 msgid "Get Server IP"
 msgstr "Hämta Server-IP"
 
-#: ../include/classes.php:148
-#: ../switch/index.php:143
+#: ../include/classes.php:153
+#: ../switch/index.php:141
 msgid "Switch Sites"
 msgstr "Byt webbsidor"
 
-#: ../include/classes.php:156
-#: ../theme/index.php:71
+#: ../include/classes.php:161
+#: ../theme/index.php:69
 msgid "Change Theme"
 msgstr "Byt tema"
 
-#: ../include/classes.php:351
+#: ../include/classes.php:356
 #: ../theme/index.php:54
 #, php-format
 msgid "I executed your request but there were %d errors so you need to manually update the database"
 msgstr "Jag genomförde din förfrågan men det uppkom %d fel så du behöver uppdatera databasen manuellt"
 
-#: ../include/classes.php:358
+#: ../include/classes.php:363
 #, php-format
 msgid "I have changed the URL from %s to %s. Go to %sDashboard%s"
 msgstr "Jag har ändrat URLen från %s till %s. Gå till %sPanel%s"
 
-#: ../include/classes.php:368
+#: ../include/classes.php:371
 msgid "You have to choose another URL than the current one"
 msgstr "Du måste välja en annan URL än den nuvarande"
 
-#: ../include/classes.php:439
+#: ../include/classes.php:442
 msgid "There appears to be no tables on the source site"
 msgstr "Det verkar inte finnas någon tabell på källwebbplatsen"
 
-#: ../include/classes.php:547
+#: ../include/classes.php:568
 msgid "All data was cloned"
 msgstr "All data klonades"
 
-#: ../include/classes.php:559
+#: ../include/classes.php:578
 msgid "The backup was not successful so I could not clone the site for you"
 msgstr "Backupen lyckades inte så jag kan inte klona webbplatsen åt dig"
 
-#: ../include/classes.php:565
-#: ../switch/index.php:138
+#: ../include/classes.php:584
+#: ../switch/index.php:136
 msgid "You have to choose a site other than this site"
 msgstr "Du måste välja en annan webbplats än denna"
 
-#: ../include/classes.php:578
+#: ../include/classes.php:594
 msgid "SSL"
 msgstr ""
 
-#: ../include/classes.php:579
-msgid "Theme"
-msgstr "Tema"
-
-#: ../include/classes.php:631
-msgid "This is the template theme design"
-msgstr "Detta är mallen för temadesign"
-
-#: ../include/classes.php:640
-msgid "Theme Updates"
-msgstr "Temauppdateringar"
-
-#: ../include/classes.php:643
-msgid "Update"
-msgstr "Uppdatera"
-
-#: ../include/classes.php:648
-msgid "The theme design is up to date"
-msgstr "Temadesignen är uppdaterad"
-
-#: ../include/classes.php:665
-msgid "Change"
-msgstr "Byt"
-
-#: ../include/classes.php:820
+#: ../include/classes.php:772
 msgid "domain"
 msgstr "domän"
 
-#: ../include/classes.php:880
-#: ../include/classes.php:922
+#: ../include/classes.php:832
+#: ../include/classes.php:874
+#: ../include/classes.php:948
+#: ../include/classes.php:981
 #: ../include/classes.php:996
-#: ../include/classes.php:1029
-#: ../include/classes.php:1044
 msgid "does not exist"
 msgstr "finns inte"
 
-#: ../include/classes.php:1197
+#: ../include/classes.php:1149
 #, php-format
 msgid "I successfully fetched the server IP (%s) for you"
 msgstr "Jag lyckades hämta Server-IP (%s) åt dig"
 
-#: ../include/classes.php:1202
+#: ../include/classes.php:1154
 #, php-format
 msgid "The IP (%s) is the same as before"
 msgstr "IPt (%s) är samma som innan"
 
-#: ../include/classes.php:1207
+#: ../include/classes.php:1159
 #, php-format
 msgid "I could not fetch the server IP (%s) for you"
 msgstr "Jag kunde inte hämta Server-IP (%s) åt dig"
@@ -249,23 +225,23 @@ msgstr "Det verkar inte finnas några tabeller på sidorna"
 msgid "I have switched all the data on the two domain as you requested."
 msgstr "Jag har bytt all data mellan de två domänerna som du efterfrågade."
 
-#: ../switch/index.php:148
+#: ../switch/index.php:146
 msgid "Switch this site..."
 msgstr "Byt denna webbplats..."
 
-#: ../switch/index.php:156
+#: ../switch/index.php:154
 msgid "...with this"
 msgstr "...med denna"
 
-#: ../switch/index.php:157
+#: ../switch/index.php:155
 msgid "Are you really sure? This will switch domain for the two sites."
 msgstr "Är du helt säker? Detta kommer att byta domän för de två webbplatserna."
 
-#: ../switch/index.php:164
+#: ../switch/index.php:162
 msgid "I could not find any sites to switch to"
 msgstr "Jag kunde inte hitta några webbplatser att byta till"
 
-#: ../switch/index.php:170
+#: ../switch/index.php:168
 msgid "You have to have a MultiSite to be able to switch sites"
 msgstr "Du måste ha en MultiSite för att kunna byta domän mellan två webbplatser"
 
@@ -290,18 +266,36 @@ msgstr "Du måste välja ett annat tema än den nuvarande"
 msgid "I have changed the Theme from %s to %s"
 msgstr "Jag har ändrat temat från %s till %s"
 
-#: ../theme/index.php:77
+#: ../theme/index.php:75
 msgid "Change to this Theme"
 msgstr "Ändra till detta tema"
 
-#: ../theme/index.php:81
+#: ../theme/index.php:79
 msgid "Are you really sure? This will change the Theme of the site but not clear menus, widgets and theme modifications like the built-in changer does"
 msgstr "Är du helt säker? Detta kommer att byta tema för webbplatsen men inte rensa menyer, widgets och temaändringar så som den inbyggda funktionen gör"
 
-#: ../theme/index.php:88
+#: ../theme/index.php:86
 #, php-format
 msgid "There are no other themes activated for this site. %sPlease, add another theme%s"
 msgstr "Det finns inga andra teman aktiverade för denna webbplats. %sVar vänlig, lägg till ett annat tema%s"
+
+#~ msgid "Theme"
+#~ msgstr "Tema"
+
+#~ msgid "This is the template theme design"
+#~ msgstr "Detta är mallen för temadesign"
+
+#~ msgid "Theme Updates"
+#~ msgstr "Temauppdateringar"
+
+#~ msgid "Update"
+#~ msgstr "Uppdatera"
+
+#~ msgid "The theme design is up to date"
+#~ msgstr "Temadesignen är uppdaterad"
+
+#~ msgid "Change"
+#~ msgstr "Byt"
 
 #~ msgid "E-mail"
 #~ msgstr "E-post"

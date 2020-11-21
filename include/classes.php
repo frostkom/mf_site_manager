@@ -592,7 +592,6 @@ class mf_site_manager
 	function sites_column_header($cols)
 	{
 		$cols['ssl'] = __("SSL", 'lang_site_manager');
-		$cols['theme'] = __("Theme", 'lang_site_manager');
 
 		return $cols;
 	}
@@ -618,60 +617,6 @@ class mf_site_manager
 							</span>
 						</a>";
 					}
-				}
-			break;
-
-			case 'theme':
-				if(get_blog_status($id, 'deleted') == 0)
-				{
-					/* Get last parent update */
-					$restore_notice = $restore_url = "";
-
-					if(in_array(get_blog_option($id, 'template'), array('mf_parallax', 'mf_theme')))
-					{
-						$style_source = get_blog_option($id, 'setting_base_template_site');
-
-						if($style_source != '')
-						{
-							if($style_source == get_site_url($id))
-							{
-								$restore_notice .= "&nbsp;<i class='fas fa-star fa-lg yellow' title='".__("This is the template theme design", 'lang_site_manager')."'></i>";
-							}
-
-							else
-							{
-								$option_theme_source_style_url = get_blog_option($id, 'option_theme_source_style_url');
-
-								if($option_theme_source_style_url != '')
-								{
-									$restore_notice = "&nbsp;<span class='update-plugins' title='".__("Theme Updates", 'lang_site_manager')."'>
-										<span>1</span>
-									</span>";
-									$restore_url = " | <a href='".get_admin_url($id, "themes.php?page=theme_options")."'>".__("Update", 'lang_site_manager')."</a>";
-								}
-
-								else
-								{
-									$restore_notice .= "&nbsp;<i class='fa fa-check fa-lg green' title='".__("The theme design is up to date", 'lang_site_manager')."'></i>";
-								}
-							}
-						}
-
-						/*else
-						{
-							$restore_notice = "&nbsp;<span class='fa-stack'>
-								<i class='fa fa-recycle fa-stack-1x'></i>
-								<i class='fa fa-ban fa-stack-2x red'></i>
-							</span>";
-						}*/
-					}
-
-					echo get_blog_option($id, 'stylesheet')
-					.$restore_notice
-					."<div class='row-actions'>"
-						."<a href='".get_admin_url($id, "admin.php?page=mf_site_manager/theme/index.php")."'>".__("Change", 'lang_site_manager')."</a>"
-						.$restore_url
-					."</div>";
 				}
 			break;
 		}
