@@ -27,9 +27,18 @@ echo "<div class='wrap'>
 
 						echo show_checkbox(array('name' => 'intSiteKeepTitle', 'text' => __("Would you like to keep the original title of the receiving site?", 'lang_site_manager'), 'value' => 1))
 						.show_checkbox(array('name' => 'intSiteEmptyPlugins', 'text' => __("Would you like to empty Active Plugins field?", 'lang_site_manager'), 'value' => 1))
-						.show_checkbox(array('name' => 'intSiteCloneAccept', 'text' => __("Are you really sure? This will erase all previous data on the recieving site.", 'lang_site_manager'), 'value' => 1, 'required' => true))
-						.show_button(array('name' => 'btnSiteClone', 'text' => __("Perform", 'lang_site_manager')))
-						.wp_nonce_field('site_clone_'.$wpdb->blogid.'_'.get_current_user_id(), '_wpnonce_site_clone', true, false);
+						.show_checkbox(array('name' => 'intSiteCloneAccept', 'text' => __("Are you really sure? This will erase all previous data on the recieving site.", 'lang_site_manager'), 'value' => 1, 'required' => true));
+
+						if(is_plugin_active("mf_theme_core/index.php"))
+						{
+							echo show_button(array('name' => 'btnSiteClone', 'text' => __("Perform", 'lang_site_manager')))
+							.wp_nonce_field('site_clone_'.$wpdb->blogid.'_'.get_current_user_id(), '_wpnonce_site_clone', true, false);
+						}
+
+						else
+						{
+							require_plugin("mf_theme_core/index.php", "MF Theme Core");
+						}
 					}
 
 					else

@@ -504,7 +504,12 @@ class mf_site_manager
 
 						/* Clone Files */
 						#######################
-						$obj_theme_core = new mf_theme_core();
+						global $obj_theme_core;
+
+						if(!isset($obj_theme_core))
+						{
+							$obj_theme_core = new mf_theme_core();
+						}
 
 						$upload_path_global = WP_CONTENT_DIR."/uploads/";
 						$upload_url_global = WP_CONTENT_URL."/uploads/";
