@@ -26,8 +26,6 @@ class mf_site_manager
 			$arr_data[$blog_id] = get_blog_option($blog_id, 'blogname')." (".trim($domain.$path, "/").")";
 		}
 
-		//$arr_data = array_sort(array('array' => $arr_data, 'keep_index' => true));
-
 		return $arr_data;
 	}
 
@@ -603,11 +601,11 @@ class mf_site_manager
 
 	function sites_column_cell($col, $id)
 	{
-		switch($col)
+		if(get_blog_status($id, 'deleted') == 0)
 		{
-			case 'ssl':
-				if(get_blog_status($id, 'deleted') == 0)
-				{
+			switch($col)
+			{
+				case 'ssl':
 					if(substr(get_home_url($id, '/'), 0, 5) == 'https')
 					{
 						echo "<i class='fa fa-lock fa-2x green'></i>";
@@ -622,8 +620,8 @@ class mf_site_manager
 							</span>
 						</a>";
 					}
-				}
-			break;
+				break;
+			}
 		}
 	}
 
