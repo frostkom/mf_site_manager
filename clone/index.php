@@ -20,7 +20,7 @@ echo "<div class='wrap'>
 					{
 						echo show_select(array('data' => $arr_data, 'name' => 'intBlogID', 'value' => $obj_site_manager->blog_id, 'text' => __("To", 'lang_site_manager'), 'required' => true));
 
-						if(is_plugin_active('mf_backup/index.php'))
+						if(is_plugin_active("mf_backup/index.php"))
 						{
 							echo show_checkbox(array('name' => 'intSiteBackup', 'text' => __("Would you like to perform a backup of the old site before replacing it?", 'lang_site_manager'), 'compare' => 1, 'value' => $obj_site_manager->site_backup));
 						}

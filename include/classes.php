@@ -302,11 +302,19 @@ class mf_site_manager
 		{
 			foreach($arr_theme_mods as $key => $value)
 			{
-				$value_new = str_replace($this->site_url, $this->new_url, $value);
-
-				if($value_new != $value)
+				if(is_object($value) || is_array($value))
 				{
-					set_theme_mod($key, $value_new);
+					// What now?
+				}
+
+				else
+				{
+					$value_new = str_replace($this->site_url, $this->new_url, $value);
+
+					if($value_new != $value)
+					{
+						set_theme_mod($key, $value_new);
+					}
 				}
 			}
 		}
@@ -374,7 +382,7 @@ class mf_site_manager
 		{
 			if($this->blog_id > 0 && $this->blog_id != $wpdb->blogid)
 			{
-				if($this->site_backup == 1 && is_plugin_active('mf_backup/index.php'))
+				if($this->site_backup == 1 && is_plugin_active("mf_backup/index.php"))
 				{
 					$obj_backup = new mf_backup();
 
