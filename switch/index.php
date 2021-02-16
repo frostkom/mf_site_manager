@@ -47,7 +47,7 @@ if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_P
 
 		if(count($arr_tables_from) == 0 || count($arr_tables_to) == 0)
 		{
-			$error_text = __("There appears to be no tables on either of the sites", 'lang_site_manager')." (".$strBasePrefixFrom.": ".count($arr_tables_from)." -> ".$strBasePrefixTo.": ".count($arr_tables_to).")";
+			$error_text = __("There appears to be no tables on either of the sites", $obj_site_manager->lang_key)." (".$strBasePrefixFrom.": ".count($arr_tables_from)." -> ".$strBasePrefixTo.": ".count($arr_tables_to).")";
 		}
 
 		else
@@ -124,7 +124,7 @@ if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_P
 				}
 			}
 
-			$done_text = __("I have switched all the data on the two domain as you requested.", 'lang_site_manager')." (".$strBasePrefixFrom." -> ".$strBasePrefixTo.")";
+			$done_text = __("I have switched all the data on the two domain as you requested.", $obj_site_manager->lang_key)." (".$strBasePrefixFrom." -> ".$strBasePrefixTo.")";
 			//$done_text .= " [".nl2br($str_queries)."]";
 
 			do_log(sprintf("%s switched %s with %s", get_user_info(), $strBlogDomainFrom, $strBlogDomainTo), 'notification');
@@ -133,17 +133,17 @@ if(isset($_POST['btnSiteSwitch']) && isset($_POST['intSiteSwitchAccept']) && $_P
 
 	else
 	{
-		$error_text = __("You have to choose a site other than this site", 'lang_site_manager');
+		$error_text = __("You have to choose a site other than this site", $obj_site_manager->lang_key);
 	}
 }
 
 echo "<div class='wrap'>
-	<h2>".__("Switch Sites", 'lang_site_manager')."</h2>"
+	<h2>".__("Switch Sites", $obj_site_manager->lang_key)."</h2>"
 	.get_notification()
 	."<div id='poststuff' class='postbox'>
 		<div class='inside'>
 			<form method='post' action='' class='mf_form'>"
-				.show_textfield(array('name' => 'intBlogID_old', 'text' => __("Switch this site...", 'lang_site_manager'), 'value' => get_site_url_clean(), 'xtra' => "readonly"));
+				.show_textfield(array('name' => 'intBlogID_old', 'text' => __("Switch this site...", $obj_site_manager->lang_key), 'value' => get_site_url_clean(), 'xtra' => "readonly"));
 
 				if(is_multisite())
 				{
@@ -151,21 +151,21 @@ echo "<div class='wrap'>
 
 					if(count($arr_data) > 1)
 					{
-						echo show_select(array('data' => $arr_data, 'name' => 'intBlogID', 'value' => $intBlogID, 'text' => __("...with this", 'lang_site_manager'), 'required' => true))
-						.show_checkbox(array('name' => 'intSiteSwitchAccept', 'text' => __("Are you really sure? This will switch domain for the two sites.", 'lang_site_manager'), 'value' => 1, 'required' => true))
-						.show_button(array('name' => 'btnSiteSwitch', 'text' => __("Perform", 'lang_site_manager')))
+						echo show_select(array('data' => $arr_data, 'name' => 'intBlogID', 'value' => $intBlogID, 'text' => __("...with this", $obj_site_manager->lang_key), 'required' => true))
+						.show_checkbox(array('name' => 'intSiteSwitchAccept', 'text' => __("Are you really sure? This will switch domain for the two sites.", $obj_site_manager->lang_key), 'value' => 1, 'required' => true))
+						.show_button(array('name' => 'btnSiteSwitch', 'text' => __("Perform", $obj_site_manager->lang_key)))
 						.wp_nonce_field('site_switch_'.$wpdb->blogid.'_'.get_current_user_id(), '_wpnonce_site_switch', true, false);
 					}
 
 					else
 					{
-						echo "<em>".__("I could not find any sites to switch to", 'lang_site_manager')."</em>";
+						echo "<em>".__("I could not find any sites to switch to", $obj_site_manager->lang_key)."</em>";
 					}
 				}
 
 				else
 				{
-					echo __("You have to have a MultiSite to be able to switch sites", 'lang_site_manager');
+					echo __("You have to have a MultiSite to be able to switch sites", $obj_site_manager->lang_key);
 				}
 
 			echo "</form>

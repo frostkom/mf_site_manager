@@ -10,7 +10,7 @@ if($setting_site_comparison == '')
 $obj_site_manager = new mf_site_manager();
 
 echo "<div class='wrap'>
-	<h2>".__("Compare Sites", 'lang_site_manager')."</h2>"
+	<h2>".__("Compare Sites", $obj_site_manager->lang_key)."</h2>"
 	.get_notification();
 
 	$obj_site_manager->get_content_versions();
@@ -20,8 +20,8 @@ echo "<div class='wrap'>
 	{
 		echo "<table class='widefat striped'>";
 
-			$arr_header[] = __("Name", 'lang_site_manager');
-			$arr_header[] = __("Version", 'lang_site_manager');
+			$arr_header[] = __("Name", $obj_site_manager->lang_key);
+			$arr_header[] = __("Version", $obj_site_manager->lang_key);
 
 			foreach($obj_site_manager->arr_sites as $site)
 			{
@@ -40,7 +40,7 @@ echo "<div class='wrap'>
 				$version = $obj_site_manager->arr_core['this']['version'];
 
 				$out = "<tr>
-					<td>".__("Core", 'lang_site_manager')."</td>
+					<td>".__("Core", $obj_site_manager->lang_key)."</td>
 					<td>".$version."</td>";
 
 					foreach($obj_site_manager->arr_sites as $site)
@@ -60,7 +60,7 @@ echo "<div class='wrap'>
 
 						else
 						{
-							$out .= "<td>".__("Really old version...", 'lang_site_manager')."</td>";
+							$out .= "<td>".__("Really old version...", $obj_site_manager->lang_key)."</td>";
 
 							$has_equal_version = false;
 						}
@@ -95,7 +95,7 @@ echo "<div class='wrap'>
 
 				if($has_echoed == false)
 				{
-					echo "<tr><td colspan='".count($arr_header)."'>".__("I could not find any differences", 'lang_site_manager')."</td></tr>";
+					echo "<tr><td colspan='".count($arr_header)."'>".__("I could not find any differences", $obj_site_manager->lang_key)."</td></tr>";
 				}
 
 			echo "</tbody>
@@ -109,8 +109,8 @@ echo "<div class='wrap'>
 
 			$arr_header = array();
 
-			$arr_header[] = __("Site", 'lang_site_manager');
-			$arr_header[] = __("Error", 'lang_site_manager');
+			$arr_header[] = __("Site", $obj_site_manager->lang_key);
+			$arr_header[] = __("Error", $obj_site_manager->lang_key);
 
 			echo show_table_header($arr_header)
 			."<tbody>";
@@ -129,7 +129,7 @@ echo "<div class='wrap'>
 
 	else if(count($obj_site_manager->arr_sites) == 0)
 	{
-		echo "<em>".sprintf(__("I could not find any sites to compare with. Convert to MultiSite and add sites or add external ones in %sMy Settings%s", 'lang_site_manager'), "<a href='".admin_url("options-general.php?page=settings_mf_base#settings_site_manager")."'>", "</a>")."</em>";
+		echo "<em>".sprintf(__("I could not find any sites to compare with. Convert to MultiSite and add sites or add external ones in %sMy Settings%s", $obj_site_manager->lang_key), "<a href='".admin_url("options-general.php?page=settings_mf_base#settings_site_manager")."'>", "</a>")."</em>";
 	}
 
 echo "</div>";

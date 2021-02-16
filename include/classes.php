@@ -5,6 +5,8 @@ class mf_site_manager
 	function __construct()
 	{
 		$this->arr_core = $this->arr_themes = $this->arr_plugins = $this->arr_sites = $this->arr_sites_error = array();
+
+		$this->lang_key = 'lang_site_manager';
 	}
 
 	function get_sites_for_select($data = array())
@@ -14,7 +16,7 @@ class mf_site_manager
 		$result = get_sites(array('site__not_in' => $data['exclude'], 'deleted' => 0, 'orderby' => 'domain'));
 
 		$arr_data = array(
-			'' => "-- ".__("Choose Here", 'lang_site_manager')." --"
+			'' => "-- ".__("Choose Here", $this->lang_key)." --"
 		);
 
 		foreach($result as $r)
@@ -70,9 +72,9 @@ class mf_site_manager
 			add_settings_section($options_area, "", array($this, $options_area.'_callback'), BASE_OPTIONS_PAGE);
 
 			$arr_settings = array();
-			$arr_settings['setting_server_ip'] = __("Server IP", 'lang_site_manager');
-			$arr_settings['setting_server_ips_allowed'] = __("Server IPs allowed", 'lang_site_manager');
-			$arr_settings['setting_site_comparison'] = __("Sites to compare with", 'lang_site_manager');
+			$arr_settings['setting_server_ip'] = __("Server IP", $this->lang_key);
+			$arr_settings['setting_server_ips_allowed'] = __("Server IPs allowed", $this->lang_key);
+			$arr_settings['setting_site_comparison'] = __("Sites to compare with", $this->lang_key);
 
 			show_settings_fields(array('area' => $options_area, 'object' => $this, 'settings' => $arr_settings));
 		}
@@ -82,7 +84,7 @@ class mf_site_manager
 	{
 		$setting_key = get_setting_key(__FUNCTION__);
 
-		echo settings_header($setting_key, __("Site Manager", 'lang_site_manager'));
+		echo settings_header($setting_key, __("Site Manager", $this->lang_key));
 	}
 
 	function setting_server_ip_callback()
@@ -99,7 +101,7 @@ class mf_site_manager
 
 		echo "<p>".$option."</p>
 		<div>"
-			.show_button(array('type' => 'button', 'name' => 'btnGetServerIP', 'text' => __("Get Server IP", 'lang_site_manager'), 'class' => 'button-secondary'))
+			.show_button(array('type' => 'button', 'name' => 'btnGetServerIP', 'text' => __("Get Server IP", $this->lang_key), 'class' => 'button-secondary'))
 		."</div>
 		<div id='ip_debug'></div>";
 	}
@@ -128,12 +130,12 @@ class mf_site_manager
 		$menu_start = $menu_root."compare/index.php";
 		$menu_capability = override_capability(array('page' => $menu_start, 'default' => 'update_core'));
 
-		$menu_title = __("Site Manager", 'lang_site_manager');
+		$menu_title = __("Site Manager", $this->lang_key);
 		add_menu_page($menu_title, $menu_title, $menu_capability, $menu_start, '', 'dashicons-images-alt2', 100);
 
 		if(get_option('setting_site_comparison') != '')
 		{
-			$menu_title = __("Compare Sites", 'lang_site_manager');
+			$menu_title = __("Compare Sites", $this->lang_key);
 			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."compare/index.php");
 		}
 
@@ -145,18 +147,18 @@ class mf_site_manager
 
 			if($wpdb->num_rows > 1)
 			{
-				$menu_title = __("Clone Site", 'lang_site_manager');
+				$menu_title = __("Clone Site", $this->lang_key);
 				add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."clone/index.php");
 
-				$menu_title = __("Switch Sites", 'lang_site_manager');
+				$menu_title = __("Switch Sites", $this->lang_key);
 				add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."switch/index.php");
 			}
 		}
 
-		$menu_title = __("Change URL", 'lang_site_manager');
+		$menu_title = __("Change URL", $this->lang_key);
 		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."change/index.php");
 
-		$menu_title = __("Change Theme", 'lang_site_manager');
+		$menu_title = __("Change Theme", $this->lang_key);
 		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."theme/index.php");
 	}
 
@@ -326,7 +328,14 @@ class mf_site_manager
 	{
 		// Clone
 		$this->blog_id = check_var('intBlogID');
-		$this->site_backup = check_var('intSiteBackup', 'int', true, '1');
+
+		if(is_plugin_active("mf_backup/index.php"))
+		{
+			$this->site_backup = check_var('intSiteBackup', 'int', true);
+		}
+		
+		$this->keep_title = check_var('intSiteKeepTitle', 'int', true);
+		$this->empty_plugins = check_var('intSiteEmptyPlugins', 'int', true);
 
 		// Change URL
 		$this->site_url = get_home_url();
@@ -359,14 +368,14 @@ class mf_site_manager
 
 				if($count_temp > 0)
 				{
-					$error_text = sprintf(__("I executed your request but there were %d errors so you need to manually update the database", 'lang_site_manager'), $count_temp);
+					$error_text = sprintf(__("I executed your request but there were %d errors so you need to manually update the database", $this->lang_key), $count_temp);
 
 					do_log("Errors while changing URL: ".var_export($this->arr_errors, true));
 				}
 
 				else
 				{
-					$done_text = sprintf(__("I have changed the URL from %s to %s. Go to %sDashboard%s", 'lang_site_manager'), $this->site_url, "<a href='".$this->new_url."'>".$this->new_url."</a>", "<a href='".$this->new_url."/wp-admin"."'>", "</a>");
+					$done_text = sprintf(__("I have changed the URL from %s to %s. Go to %sDashboard%s", $this->lang_key), $this->site_url, "<a href='".$this->new_url."'>".$this->new_url."</a>", "<a href='".$this->new_url."/wp-admin"."'>", "</a>");
 
 					do_log(sprintf("%s changed the URL from %s to %s", get_user_info(), $this->site_url, $this->new_url), 'notification');
 				}
@@ -374,7 +383,7 @@ class mf_site_manager
 
 			else
 			{
-				$error_text = __("You have to choose another URL than the current one", 'lang_site_manager');
+				$error_text = __("You have to choose another URL than the current one", $this->lang_key);
 			}
 		}
 
@@ -384,7 +393,12 @@ class mf_site_manager
 			{
 				if($this->site_backup == 1 && is_plugin_active("mf_backup/index.php"))
 				{
-					$obj_backup = new mf_backup();
+					global $obj_backup;
+
+					if(!isset($obj_backup))
+					{
+						$obj_backup = new mf_backup();
+					}
 
 					$success = $obj_backup->do_backup(array('site' => $this->blog_id));
 				}
@@ -445,7 +459,7 @@ class mf_site_manager
 
 					if(count($arr_tables_from) == 0) // || count($arr_tables_to) == 0
 					{
-						$error_text = __("There appears to be no tables on the source site", 'lang_site_manager')." (".$strBasePrefixFrom.": ".count($arr_tables_from)." -> ".$strBasePrefixTo.": ".count($arr_tables_to).")";
+						$error_text = __("There appears to be no tables on the source site", $this->lang_key)." (".$strBasePrefixFrom.": ".count($arr_tables_from)." -> ".$strBasePrefixTo.": ".count($arr_tables_to).")";
 					}
 
 					else
@@ -576,7 +590,7 @@ class mf_site_manager
 						}
 						#######################
 
-						$done_text = __("All data was cloned", 'lang_site_manager');
+						$done_text = __("All data was cloned", $this->lang_key);
 						//$done_text .= " (".$strBasePrefixFrom." -> ".$strBasePrefixTo.")";
 						//$done_text .= " [".nl2br($str_queries)."]";
 
@@ -586,13 +600,13 @@ class mf_site_manager
 
 				else
 				{
-					$error_text = __("The backup was not successful so I could not clone the site for you", 'lang_site_manager');
+					$error_text = __("The backup was not successful so I could not clone the site for you", $this->lang_key);
 				}
 			}
 
 			else
 			{
-				$error_text = __("You have to choose a site other than this site", 'lang_site_manager');
+				$error_text = __("You have to choose a site other than this site", $this->lang_key);
 			}
 		}
 	}
@@ -602,7 +616,7 @@ class mf_site_manager
 	###########################
 	function sites_column_header($cols)
 	{
-		$cols['ssl'] = __("SSL", 'lang_site_manager');
+		$cols['ssl'] = __("SSL", $this->lang_key);
 
 		return $cols;
 	}
@@ -652,7 +666,7 @@ class mf_site_manager
 			$plugin_include_url = plugin_dir_url(__FILE__);
 			$plugin_version = get_plugin_version(__FILE__);
 
-			mf_enqueue_script('script_site_manager_url', $plugin_include_url."script_wp_url.js", array('change_url_link' => get_admin_url($blog_id, "admin.php?page=mf_site_manager/change/index.php"), 'change_url_text' => __("Change URL", 'lang_site_manager')), $plugin_version);
+			mf_enqueue_script('script_site_manager_url', $plugin_include_url."script_wp_url.js", array('change_url_link' => get_admin_url($blog_id, "admin.php?page=mf_site_manager/change/index.php"), 'change_url_text' => __("Change URL", $this->lang_key)), $plugin_version);
 		}
 	}
 	###########################
@@ -780,7 +794,7 @@ class mf_site_manager
 		$url = remove_protocol(array('url' => $url));
 		$domain = remove_protocol(array('url' => $domain));
 
-		$url = str_replace($domain, "[".__("domain", 'lang_site_manager')."]", $url);
+		$url = str_replace($domain, "[".__("domain", $this->lang_key)."]", $url);
 
 		return $url;
 	}
@@ -840,7 +854,7 @@ class mf_site_manager
 
 					else
 					{
-						$out .= "<td><a href='".$this->get_type_url($site, $name)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a></td>";
+						$out .= "<td><a href='".$this->get_type_url($site, $name)."' class='italic'>(".__("does not exist", $this->lang_key).")</a></td>";
 
 						$has_equal_version = false;
 					}
@@ -882,7 +896,7 @@ class mf_site_manager
 
 							else
 							{
-								$out .= "<td><a href='".$this->get_type_url($site)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a></td>";
+								$out .= "<td><a href='".$this->get_type_url($site)."' class='italic'>(".__("does not exist", $this->lang_key).")</a></td>";
 
 								$has_equal_version = false;
 							}
@@ -956,7 +970,7 @@ class mf_site_manager
 
 							else
 							{
-								$out .= "<td><a href='".$this->get_type_url($site)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a></td>";
+								$out .= "<td><a href='".$this->get_type_url($site)."' class='italic'>(".__("does not exist", $this->lang_key).")</a></td>";
 
 								$has_equal_version = false;
 							}
@@ -989,7 +1003,7 @@ class mf_site_manager
 
 					echo "<tr>
 						<td>".$name."</td>
-						<td><em>(".__("does not exist", 'lang_site_manager').")</em></td>";
+						<td><em>(".__("does not exist", $this->lang_key).")</em></td>";
 
 						foreach($this->arr_sites as $site)
 						{
@@ -1004,7 +1018,7 @@ class mf_site_manager
 
 							else
 							{
-								echo "<td><a href='".$this->get_type_url($site, $name)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a></td>";
+								echo "<td><a href='".$this->get_type_url($site, $name)."' class='italic'>(".__("does not exist", $this->lang_key).")</a></td>";
 							}
 						}
 
@@ -1157,17 +1171,17 @@ class mf_site_manager
 
 		if($this->server_ip_new != '' && $this->server_ip_new != $this->server_ip_old)
 		{
-			$done_text = sprintf(__("I successfully fetched the server IP (%s) for you", 'lang_site_manager'), $this->server_ip_old." -> ".$this->server_ip_new);
+			$done_text = sprintf(__("I successfully fetched the server IP (%s) for you", $this->lang_key), $this->server_ip_old." -> ".$this->server_ip_new);
 		}
 
 		else if($this->server_ip_new == $this->server_ip_old)
 		{
-			$done_text = sprintf(__("The IP (%s) is the same as before", 'lang_site_manager'), $this->server_ip_new);
+			$done_text = sprintf(__("The IP (%s) is the same as before", $this->lang_key), $this->server_ip_new);
 		}
 
 		else
 		{
-			$error_text = sprintf(__("I could not fetch the server IP (%s) for you", 'lang_site_manager'), $this->server_ip_old." -> ".$this->server_ip_new);
+			$error_text = sprintf(__("I could not fetch the server IP (%s) for you", $this->lang_key), $this->server_ip_old." -> ".$this->server_ip_new);
 		}
 
 		$out = get_notification();

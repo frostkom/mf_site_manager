@@ -22,6 +22,8 @@ add_action('cron_base', array($obj_site_manager, 'cron_base'), mt_rand(1, 10));
 
 if(is_admin())
 {
+	load_plugin_textdomain('lang_site_manager', false, dirname(plugin_basename(__FILE__))."/lang/");
+
 	register_uninstall_hook(__FILE__, 'uninstall_site_manager');
 
 	add_action('admin_init', array($obj_site_manager, 'admin_init'), 0);
@@ -36,8 +38,6 @@ if(is_admin())
 
 		add_action('admin_footer', array($obj_site_manager, 'admin_footer'), 0);
 	}
-
-	load_plugin_textdomain('lang_site_manager', false, dirname(plugin_basename(__FILE__))."/lang/");
 }
 
 add_action('wp_ajax_force_server_ip', array($obj_site_manager, 'force_server_ip'));

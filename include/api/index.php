@@ -11,6 +11,8 @@ if(!defined('ABSPATH'))
 
 //do_action('run_cache', array('suffix' => 'json'));
 
+$obj_site_manager = new mf_site_manager();
+
 $json_output = array();
 
 $type = check_var('type', 'char');
@@ -42,7 +44,7 @@ if($setting_server_ips_allowed != '' && $setting_server_ips_allowed == $strDataI
 	{
 		header("Status: 503 Unknown action");
 
-		$json_output['error'] = __("Wrong Type", 'lang_site_manager').": ".$type_action;
+		$json_output['error'] = __("Wrong Type", $obj_site_manager->lang_key).": ".$type_action;
 	}
 }
 
@@ -50,7 +52,7 @@ else
 {
 	header("Status: 503 Unknown IP-address");
 
-	$json_output['error'] = __("Wrong IP", 'lang_site_manager').": ".$strDataIP;
+	$json_output['error'] = __("Wrong IP", $obj_site_manager->lang_key).": ".$strDataIP;
 }
 
 echo json_encode($json_output);
