@@ -333,7 +333,7 @@ class mf_site_manager
 		{
 			$this->site_backup = check_var('intSiteBackup', 'int', true);
 		}
-		
+
 		$this->keep_title = check_var('intSiteKeepTitle', 'int', true);
 		$this->empty_plugins = check_var('intSiteEmptyPlugins', 'int', true);
 
@@ -391,7 +391,7 @@ class mf_site_manager
 		{
 			if($this->blog_id > 0 && $this->blog_id != $wpdb->blogid)
 			{
-				if($this->site_backup == 1 && is_plugin_active("mf_backup/index.php"))
+				if(is_plugin_active("mf_backup/index.php") && $this->site_backup == 1)
 				{
 					global $obj_backup;
 
