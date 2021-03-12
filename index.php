@@ -32,6 +32,12 @@ if(is_admin())
 
 	if(is_multisite())
 	{
+		if(IS_SUPER_ADMIN)
+		{
+			add_action('manage_plugins_columns', array($obj_site_manager, 'manage_plugins_columns'));
+			add_action('manage_plugins_custom_column', array($obj_site_manager, 'manage_plugins_custom_column'), 10, 3);
+		}
+
 		add_filter('manage_sites-network_columns', array($obj_site_manager, 'sites_column_header'), 5);
 		add_action('manage_sites_custom_column', array($obj_site_manager, 'sites_column_cell'), 5, 2);
 		add_filter('manage_sites_action_links', array($obj_site_manager, 'sites_row_actions'));

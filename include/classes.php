@@ -614,6 +614,59 @@ class mf_site_manager
 
 	/* Admin */
 	###########################
+	function manage_plugins_columns($cols)
+	{
+		$cols['activated'] = __("Activated On", $this->lang_key);
+
+		return $cols;
+	}
+
+	function manage_plugins_custom_column($column_name, $plugin_file, $plugin_data)
+	{
+		switch($column_name)
+		{
+			case 'activated':
+				if(is_plugin_active_for_network($plugin_file))
+				{
+					//echo "<span class='grey'>".__("All Sites", $this->lang_key)."<span>";
+				}
+
+				else
+				{
+					$arr_sites = array();
+
+					$result = get_sites();
+
+					foreach($result as $r)
+					{
+						switch_to_blog($r->blog_id);
+
+						if(is_plugin_active($plugin_file))
+						{
+							$arr_sites[] = $r->domain.$r->path;
+						}
+
+						restore_current_blog();
+					}
+
+					$site_amount = count($arr_sites);
+
+					if($site_amount > 0)
+					{
+						echo "<span title='".implode("\n", $arr_sites)."'>";
+					}
+
+						echo $site_amount;
+
+					if($site_amount > 0)
+					{
+						echo "</span>";
+					}
+				}
+			break;
+		}
+	}
+
 	function sites_column_header($cols)
 	{
 		$cols['ssl'] = __("SSL", $this->lang_key);
