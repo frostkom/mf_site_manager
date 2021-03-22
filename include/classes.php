@@ -169,7 +169,7 @@ class mf_site_manager
 		global $wpdb;
 
 		@list($new_domain_clean, $new_path_clean) = explode("/", $this->new_url_clean, 2);
-		$new_path_clean = "/".$new_path_clean;
+		$new_path_clean = "/".($new_path_clean != '' ? trim($new_path_clean, "/")."/" : ''); // Make sure that the path is "/" or "/chosen-path/"
 
 		@list($site_domain_clean, $site_path_clean) = explode("/", $this->site_url_clean, 2);
 		$site_path_clean = "/".$site_path_clean;
