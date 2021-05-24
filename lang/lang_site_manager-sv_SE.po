@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-11 15:02+0100\n"
+"POT-Creation-Date: 2021-05-24 13:18+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -16,8 +16,8 @@ msgstr ""
 "X-Poedit-SearchPath-0: ..\n"
 
 #: ../change/index.php:8
-#: ../include/classes.php:158
-#: ../include/classes.php:722
+#: ../include/classes.php:151
+#: ../include/classes.php:726
 msgid "Change URL"
 msgstr "Ändra URL"
 
@@ -37,7 +37,7 @@ msgid "Perform"
 msgstr "Genomför"
 
 #: ../clone/index.php:8
-#: ../include/classes.php:150
+#: ../include/classes.php:143
 msgid "Clone Site"
 msgstr "Klona webbsida"
 
@@ -74,7 +74,7 @@ msgid "You have to have a MultiSite to be able to clone this site"
 msgstr "Du måste ha en MultiSite för att kunna byta domän mellan två webbplatser"
 
 #: ../compare/index.php:13
-#: ../include/classes.php:138
+#: ../include/classes.php:131
 msgid "Compare Sites"
 msgstr "Jämför webbsidor"
 
@@ -111,104 +111,108 @@ msgstr "Fel"
 msgid "I could not find any sites to compare with. Convert to MultiSite and add sites or add external ones in %sMy Settings%s"
 msgstr "Jag kunde inte hitta några webbplatser att jämföra med. Konvertera till MultiSite och lägga till webbplatser eller lägg till externa via %sMina inställningar%s"
 
-#: ../include/classes.php:19
+#: ../include/classes.php:17
 msgid "Choose Here"
 msgstr "Välj här"
 
-#: ../include/classes.php:75
+#: ../include/classes.php:68
 msgid "Server IP"
 msgstr "Server-IP"
 
-#: ../include/classes.php:76
+#: ../include/classes.php:69
 msgid "Server IPs allowed"
 msgstr "Tillåtna server-IP"
 
-#: ../include/classes.php:77
+#: ../include/classes.php:70
 msgid "Sites to compare with"
 msgstr "Webbplatser att jämföra med"
 
-#: ../include/classes.php:87
-#: ../include/classes.php:133
+#: ../include/classes.php:80
+#: ../include/classes.php:126
 msgid "Site Manager"
 msgstr ""
 
-#: ../include/classes.php:104
+#: ../include/classes.php:97
 msgid "Get Server IP"
 msgstr "Hämta Server-IP"
 
-#: ../include/classes.php:153
+#: ../include/classes.php:146
 #: ../switch/index.php:141
 msgid "Switch Sites"
 msgstr "Byt webbsidor"
 
-#: ../include/classes.php:161
+#: ../include/classes.php:154
 #: ../theme/index.php:69
 msgid "Change Theme"
 msgstr "Byt tema"
 
-#: ../include/classes.php:371
+#: ../include/classes.php:364
 #: ../theme/index.php:54
 #, php-format
 msgid "I executed your request but there were %d errors so you need to manually update the database"
 msgstr "Jag genomförde din förfrågan men det uppkom %d fel så du behöver uppdatera databasen manuellt"
 
-#: ../include/classes.php:378
+#: ../include/classes.php:371
 #, php-format
 msgid "I have changed the URL from %s to %s. Go to %sDashboard%s"
 msgstr "Jag har ändrat URLen från %s till %s. Gå till %sPanel%s"
 
-#: ../include/classes.php:386
+#: ../include/classes.php:379
 msgid "You have to choose another URL than the current one"
 msgstr "Du måste välja en annan URL än den nuvarande"
 
-#: ../include/classes.php:462
+#: ../include/classes.php:455
 msgid "There appears to be no tables on the source site"
 msgstr "Det verkar inte finnas någon tabell på källwebbplatsen"
 
-#: ../include/classes.php:593
+#: ../include/classes.php:586
 msgid "All data was cloned"
 msgstr "All data klonades"
 
-#: ../include/classes.php:603
+#: ../include/classes.php:596
 msgid "The backup was not successful so I could not clone the site for you"
 msgstr "Backupen lyckades inte så jag kan inte klona webbplatsen åt dig"
 
-#: ../include/classes.php:609
+#: ../include/classes.php:602
 #: ../switch/index.php:136
 msgid "You have to choose a site other than this site"
 msgstr "Du måste välja en annan webbplats än denna"
 
-#: ../include/classes.php:619
+#: ../include/classes.php:614
 msgid "Activated On"
 msgstr "Aktiverad på"
 
-#: ../include/classes.php:672
+#: ../include/classes.php:671
 msgid "SSL"
 msgstr ""
 
-#: ../include/classes.php:850
+#: ../include/classes.php:672
+msgid "Settings"
+msgstr "Inställningar"
+
+#: ../include/classes.php:854
 msgid "domain"
 msgstr "domän"
 
-#: ../include/classes.php:910
-#: ../include/classes.php:952
-#: ../include/classes.php:1026
-#: ../include/classes.php:1059
-#: ../include/classes.php:1074
+#: ../include/classes.php:914
+#: ../include/classes.php:956
+#: ../include/classes.php:1030
+#: ../include/classes.php:1063
+#: ../include/classes.php:1078
 msgid "does not exist"
 msgstr "finns inte"
 
-#: ../include/classes.php:1227
+#: ../include/classes.php:1231
 #, php-format
 msgid "I successfully fetched the server IP (%s) for you"
 msgstr "Jag lyckades hämta Server-IP (%s) åt dig"
 
-#: ../include/classes.php:1232
+#: ../include/classes.php:1236
 #, php-format
 msgid "The IP (%s) is the same as before"
 msgstr "IPt (%s) är samma som innan"
 
-#: ../include/classes.php:1237
+#: ../include/classes.php:1241
 #, php-format
 msgid "I could not fetch the server IP (%s) for you"
 msgstr "Jag kunde inte hämta Server-IP (%s) åt dig"

@@ -669,13 +669,14 @@ class mf_site_manager
 	function sites_column_header($cols)
 	{
 		$cols['ssl'] = __("SSL", 'lang_site_manager');
+		$cols['settings'] = __("Settings", 'lang_site_manager');
 
 		return $cols;
 	}
 
 	function sites_column_cell($col, $id)
 	{
-		if(get_blog_status($id, 'deleted') == 0)
+		if(get_blog_status($id, 'deleted') == 0 && get_blog_status($id, 'archived') == 0)
 		{
 			switch($col)
 			{
@@ -693,6 +694,43 @@ class mf_site_manager
 								<i class='fa fa-ban fa-stack-2x red'></i>
 							</span>
 						</a>";
+					}
+				break;
+
+				case 'settings':
+					$arr_settings_types = apply_filters('filter_sites_table_settings', array());
+
+					foreach($arr_settings_types as $type_key => $arr_settings)
+					{
+						foreach($arr_settings as $key => $arr_value)
+						{
+							if(is_multisite() && is_main_site($id) || $arr_value['global'] == false)
+							{
+								$html_temp = "";
+
+								$option = ($arr_value['global'] ? get_site_option($key) : get_blog_option($id, $key));
+
+								switch($arr_value['type'])
+								{
+									case 'bool':
+										$html_temp .= " <i class='".$arr_value['icon']." ".($option == 'yes' ? "green" : "red")."' title='".$arr_value['name']."'></i>";
+									break;
+
+									case 'posts':
+										$html_temp .= " <i class='".$arr_value['icon']." ".(is_array($option) && count($option) > 0 ? "green" : "red")."' title='".$arr_value['name']."'></i>";
+									break;
+
+									default:
+										do_log("filter_sites_table_settings - Unknown type: ".$arr_value['type']);
+									break;
+								}
+
+								if($html_temp != '')
+								{
+									echo "<a href='".get_admin_url($id, "options-general.php?page=settings_mf_base#".$type_key)."'>".$html_temp."</a>";
+								}
+							}
+						}
 					}
 				break;
 			}
