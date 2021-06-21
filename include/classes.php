@@ -332,7 +332,7 @@ class mf_site_manager
 
 		// Change URL
 		$this->site_url = get_home_url();
-		$this->new_url = check_var('strBlogUrl', 'char', true, $this->site_url);
+		$this->new_url = check_var('strBlogUrl', 'url', true, $this->site_url);
 
 		$this->site_url_clean = remove_protocol(array('url' => $this->site_url, 'clean' => true));
 		$this->new_url_clean = remove_protocol(array('url' => $this->new_url, 'clean' => true));

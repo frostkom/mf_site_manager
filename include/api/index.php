@@ -11,7 +11,10 @@ if(!defined('ABSPATH'))
 
 //do_action('run_cache', array('suffix' => 'json'));
 
-$obj_site_manager = new mf_site_manager();
+if(!isset($obj_site_manager))
+{
+	$obj_site_manager = new mf_site_manager();
+}
 
 $json_output = array();
 
