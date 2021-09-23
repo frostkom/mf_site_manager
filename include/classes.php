@@ -720,6 +720,13 @@ class mf_site_manager
 										$html_temp .= " <i class='".$arr_value['icon']." ".(is_array($option) && count($option) > 0 ? "green" : "red")."' title='".$arr_value['name']."'></i>";
 									break;
 
+									case 'string':
+										if($option != '')
+										{
+											$html_temp .= " <i class='".$arr_value['icon']." ".($option != '' ? "green" : "red")."' title='".$arr_value['name']."'></i>";
+										}
+									break;
+
 									default:
 										do_log("filter_sites_table_settings - Unknown type: ".$arr_value['type']);
 									break;
