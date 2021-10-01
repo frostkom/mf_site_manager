@@ -808,7 +808,6 @@ class mf_site_manager
 
 					$tbl_group->select_data(array(
 						'select' => "ID",
-						'debug' => ($_SERVER['REMOTE_ADDR'] == ""),
 					));
 
 					$arr_data['value'] = count($tbl_group->data);
@@ -1192,7 +1191,7 @@ class mf_site_manager
 
 	function get_server_ip()
 	{
-		$url = get_site_url()."/wp-content/plugins/mf_base/include/my_ip/";
+		$url = get_site_url()."/wp-content/plugins/mf_base/include/api/?type=my_ip";
 
 		$this->server_ip_old = get_option('setting_server_ip');
 		$this->server_ip_new = "";
@@ -1202,7 +1201,8 @@ class mf_site_manager
 		switch($headers['http_code'])
 		{
 			case 200:
-				$this->server_ip_new = $content;
+				$json_content = json_decode($content, true);
+				$this->server_ip_new = $json_content['ip'];
 
 				do_log("I could not get the IP", 'trash');
 			break;
