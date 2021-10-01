@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-01 08:38+0100\n"
+"POT-Creation-Date: 2021-10-01 08:53+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -190,29 +190,29 @@ msgstr ""
 msgid "Settings"
 msgstr "Inställningar"
 
-#: ../include/classes.php:894
+#: ../include/classes.php:893
 msgid "domain"
 msgstr "domän"
 
-#: ../include/classes.php:954
-#: ../include/classes.php:996
-#: ../include/classes.php:1070
-#: ../include/classes.php:1103
-#: ../include/classes.php:1118
+#: ../include/classes.php:953
+#: ../include/classes.php:995
+#: ../include/classes.php:1069
+#: ../include/classes.php:1102
+#: ../include/classes.php:1117
 msgid "does not exist"
 msgstr "finns inte"
 
-#: ../include/classes.php:1272
+#: ../include/classes.php:1271
 #, php-format
 msgid "I successfully fetched the server IP (%s) for you"
 msgstr "Jag lyckades hämta Server-IP (%s) åt dig"
 
-#: ../include/classes.php:1277
+#: ../include/classes.php:1276
 #, php-format
 msgid "The IP (%s) is the same as before"
 msgstr "IP-adressen (%s) är samma som innan"
 
-#: ../include/classes.php:1282
+#: ../include/classes.php:1281
 #, php-format
 msgid "I could not fetch the server IP (%s) for you"
 msgstr "Jag kunde inte hämta Server-IP (%s) åt dig"

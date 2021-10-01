@@ -624,12 +624,7 @@ class mf_site_manager
 			switch($column_name)
 			{
 				case 'activated':
-					if(is_plugin_active_for_network($plugin_file))
-					{
-						//echo "<span class='grey'>".__("All Sites", 'lang_site_manager')."<span>";
-					}
-
-					else
+					if(!is_plugin_active_for_network($plugin_file))
 					{
 						$arr_sites = array();
 
