@@ -25,7 +25,7 @@ $arr_input = explode("/", $type);
 $type_action = $arr_input[0];
 $type_table = isset($arr_input[1]) ? $arr_input[1] : "";
 
-$strDataIP = $_SERVER['REMOTE_ADDR'];
+$strDataIP = get_current_visitor_ip();
 
 $setting_server_ips_allowed = get_option('setting_server_ips_allowed');
 
