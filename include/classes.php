@@ -1233,6 +1233,7 @@ class mf_site_manager
 				unset($headers['local_ip']);
 				unset($headers['local_port']);
 				unset($headers['request_header']);
+				unset($headers['Date']);
 
 				do_log("I could not get the IP (".htmlspecialchars(var_export($headers, true)).")");
 			break;
