@@ -695,30 +695,32 @@ class mf_site_manager
 				case 'settings':
 					$arr_settings_types = apply_filters('filter_sites_table_settings', array());
 
+					$out_temp = "";
+
 					foreach($arr_settings_types as $type_key => $arr_settings)
 					{
 						foreach($arr_settings as $key => $arr_value)
 						{
 							if(is_multisite() && is_main_site($id) || $arr_value['global'] == false)
 							{
-								$html_temp = "";
+								$out_setting_temp = "";
 
 								$option = ($arr_value['global'] ? get_site_option($key) : get_blog_option($id, $key));
 
 								switch($arr_value['type'])
 								{
 									case 'bool':
-										$html_temp .= " <i class='".$arr_value['icon']." ".($option == 'yes' ? "green" : "red")."' title='".$arr_value['name']."'></i>";
+										$out_setting_temp .= " <i class='".$arr_value['icon']." ".($option == 'yes' ? "green" : "red")."' title='".$arr_value['name']."'></i>";
 									break;
 
 									case 'posts':
-										$html_temp .= " <i class='".$arr_value['icon']." ".(is_array($option) && count($option) > 0 ? "green" : "red")."' title='".$arr_value['name']."'></i>";
+										$out_setting_temp .= " <i class='".$arr_value['icon']." ".(is_array($option) && count($option) > 0 ? "green" : "red")."' title='".$arr_value['name']."'></i>";
 									break;
 
 									case 'string':
 										if($option != '')
 										{
-											$html_temp .= " <i class='".$arr_value['icon']." ".($option != '' ? "green" : "red")."' title='".$arr_value['name']."'></i>";
+											$out_setting_temp .= " <i class='".$arr_value['icon']." ".($option != '' ? "green" : "red")."' title='".$arr_value['name']."'></i>";
 										}
 									break;
 
@@ -727,12 +729,17 @@ class mf_site_manager
 									break;
 								}
 
-								if($html_temp != '')
+								if($out_setting_temp != '')
 								{
-									echo "<a href='".get_admin_url($id, "options-general.php?page=settings_mf_base#".$type_key)."'>".$html_temp."</a>";
+									$out_temp .= "<a href='".get_admin_url($id, "options-general.php?page=settings_mf_base#".$type_key)."'>".$out_setting_temp."</a>";
 								}
 							}
 						}
+					}
+
+					if($out_temp != '')
+					{
+						echo "<div class='nowrap'>".$out_temp."</div>";
 					}
 				break;
 			}
