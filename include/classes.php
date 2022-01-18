@@ -69,6 +69,11 @@ class mf_site_manager
 			$arr_settings['setting_server_ips_allowed'] = __("Server IPs allowed", 'lang_site_manager');
 			$arr_settings['setting_site_comparison'] = __("Sites to compare with", 'lang_site_manager');
 
+			if(get_option('setting_site_comparison') != '')
+			{
+				$arr_settings['setting_site_clone_path'] = __("Path to Clone to", 'lang_site_manager');
+			}
+
 			show_settings_fields(array('area' => $options_area, 'object' => $this, 'settings' => $arr_settings));
 		}
 	}
@@ -115,6 +120,14 @@ class mf_site_manager
 		$site_url = remove_protocol(array('url' => get_option('siteurl'), 'clean' => true));
 
 		echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => $site_url.", test.".$site_url));
+	}
+
+	function setting_site_clone_path_callback()
+	{
+		$setting_key = get_setting_key(__FUNCTION__);
+		$option = get_option($setting_key);
+
+		echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => "/live, /test", 'description' => __("The absolute path to receiving WP root", 'lang_site_manager')));
 	}
 
 	function admin_menu()
@@ -336,6 +349,10 @@ class mf_site_manager
 
 		$this->site_url_clean = remove_protocol(array('url' => $this->site_url, 'clean' => true));
 		$this->new_url_clean = remove_protocol(array('url' => $this->new_url, 'clean' => true));
+
+		// Copy Diff
+		$this->site_url = check_var('strSiteURL');
+		$this->site_key = check_var('intSiteKey');
 	}
 
 	function save_data()
@@ -602,6 +619,28 @@ class mf_site_manager
 				$error_text = __("You have to choose a site other than this site", 'lang_site_manager');
 			}
 		}
+
+		else if(isset($_REQUEST['btnDifferencesCopy']))
+		{
+			if($this->site_key != '' && wp_verify_nonce($_REQUEST['_wpnonce_differences_copy'], 'differences_copy_'.$this->site_key))
+			{
+				$setting_site_clone_path = get_option('setting_site_clone_path');
+
+				if($setting_site_clone_path != '')
+				{
+					$arr_setting_site_clone_path = array_map('trim', explode(",", $setting_site_clone_path));
+
+					$this->setting_site_clone_path = $arr_setting_site_clone_path[$this->site_key];
+
+					if(substr($this->setting_site_clone_path, -1) != "/")
+					{
+						$this->setting_site_clone_path .= "/";
+					}
+
+					//$done_text = sprintf(__("I am going to copy the differences into %s", 'lang_site_manager'), $arr_setting_site_clone_path[$this->site_key]);
+				}
+			}
+		}
 	}
 	###########################
 
@@ -792,6 +831,7 @@ class mf_site_manager
 
 			$arr_themes_this_site[$key] = array(
 				'name' => $value->Name,
+				'dir' => $key,
 				'version' => $value->Version,
 				'data' => $arr_data,
 			);
@@ -817,8 +857,11 @@ class mf_site_manager
 				break;
 			}
 
+			list($plugin_dir, $plugin_file) = explode("/", $key);
+
 			$arr_plugins_this_site[$key] = array(
 				'name' => $value['Name'],
+				'dir' => $plugin_dir,
 				'version' => $value['Version'],
 				'data' => $arr_data,
 			);
@@ -850,7 +893,7 @@ class mf_site_manager
 
 				if($headers['http_code'] != 200) //Fallback until all sites are updated
 				{
-					$site_ajax = $site."/wp-content/plugins/mf_site_manager/include/ajax.php?type=compare";
+					$site_ajax = $site."/wp-content/plugins/mf_site_manager/include/api/?type=compare";
 
 					list($content, $headers) = get_url_content(array('url' => $site_ajax, 'catch_head' => true));
 				}
@@ -932,30 +975,36 @@ class mf_site_manager
 
 				foreach($this->arr_sites as $site)
 				{
-					if(isset($array[$site][$key]))
-					{
-						$version_check = $array[$site][$key]['version'];
-						$this->is_multisite = $this->arr_core[$site]['is_multisite'];
+					$out .= "<td>";
 
-						$out .= $this->get_version_check_cell($version, $version_check, $this->get_type_url($site));
-
-						if($version_check != $version)
+						if(isset($array[$site][$key]))
 						{
+							$version_check = $array[$site][$key]['version'];
+							$this->is_multisite = $this->arr_core[$site]['is_multisite'];
+
+							$out .= $this->get_version_check_cell(array('version' => $version, 'version_check' => $version_check, 'link' => $this->get_type_url($site), 'dir' => $this->type."/".$array[$site][$key]['dir']));
+
+							if($version_check != $version)
+							{
+								$has_equal_version = false;
+							}
+
+							if(count($arr_data) == 0)
+							{
+								unset($array[$site][$key]);
+							}
+						}
+
+						else
+						{
+							$out .= "<a href='".$this->get_type_url($site, $name)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a>";
+
 							$has_equal_version = false;
+
+							$out .= $this->copy_differences(array('dir' => $this->type."/".$value['dir']));
 						}
 
-						if(count($arr_data) == 0)
-						{
-							unset($array[$site][$key]);
-						}
-					}
-
-					else
-					{
-						$out .= "<td><a href='".$this->get_type_url($site, $name)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a></td>";
-
-						$has_equal_version = false;
-					}
+					$out .= "</td>";
 				}
 
 			$out .= "</tr>";
@@ -1105,19 +1154,25 @@ class mf_site_manager
 
 						foreach($this->arr_sites as $site)
 						{
-							if(isset($array[$site][$key]))
-							{
-								$version_check = $array[$site][$key]['version'];
+							echo "<td>";
 
-								echo $this->get_version_check_cell($version, $version_check);
+								if(isset($array[$site][$key]))
+								{
+									$version_check = $array[$site][$key]['version'];
 
-								unset($array[$site][$key]);
-							}
+									echo $this->get_version_check_cell(array('version' => $version, 'version_check' => $version_check, 'dir' => $this->type."/".$array[$site][$key]['dir']));
 
-							else
-							{
-								echo "<td><a href='".$this->get_type_url($site, $name)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a></td>";
-							}
+									unset($array[$site][$key]);
+								}
+
+								else
+								{
+									echo "<a href='".$this->get_type_url($site, $name)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a>";
+
+									echo $this->copy_differences(array('dir' => $this->type."/".$value['dir']));
+								}
+
+							echo "</td>";
 						}
 
 					echo "</tr>";
@@ -1148,9 +1203,11 @@ class mf_site_manager
 		}
 	}
 
-	function get_version_check_cell($version, $version_check, $link = '')
+	function get_version_check_cell($data)
 	{
-		if($version_check == $version)
+		$out = "";
+
+		if($data['version_check'] == $data['version'])
 		{
 			$class = "fa fa-check green";
 			$version_out = "";
@@ -1158,7 +1215,7 @@ class mf_site_manager
 
 		else
 		{
-			if(version_compare($version_check, $version, ">"))
+			if(version_compare($data['version_check'], $data['version'], ">"))
 			{
 				$class = "fa fa-arrow-up green";
 			}
@@ -1168,25 +1225,88 @@ class mf_site_manager
 				$class = "fa fa-arrow-down red";
 			}
 
-			$version_out = $version_check;
+			$version_out = $data['version_check'];
 		}
 
-		$out = "<td>"
-			."<i class='".$class." fa-lg'></i> ";
+		$out .= "<i class='".$class." fa-lg'></i> ";
 
-			if($version_check != $version && $link != '')
-			{
-				$out .= "<a href='".$link."'>";
-			}
+		if($data['version_check'] != $data['version'] && $data['link'] != '')
+		{
+			$out .= "<a href='".$data['link']."'>";
+		}
 
-				$out .= $version_out;
+			$out .= $version_out;
 
-			if($version_check != $version && $link != '')
+		if($data['version_check'] != $data['version'])
+		{
+			if($data['link'] != '')
 			{
 				$out .= "</a>";
 			}
 
-		$out .= "</td>";
+			$out .= $this->copy_differences($data);
+		}
+
+		return $out;
+	}
+
+	function custom_copy($src, $dst)
+	{
+		// open the source directory
+		$dir = opendir($src); 
+
+		// Make the destination directory if not exist
+		if(!is_dir($dst) && !is_file($dst))
+		{
+			if(!mkdir($dst, 0755, true))
+			{
+				echo "Could not create folder (".$dst.")";
+			}
+		}
+
+		// Loop through the files in source directory
+		while( $file = readdir($dir) )
+		{
+			if (( $file != '.' ) && ( $file != '..' ))
+			{
+				if ( is_dir($src . '/' . $file) )
+				{
+					// Recursively calling custom copy function for sub directory 
+					$this->custom_copy($src . '/' . $file, $dst . '/' . $file);
+				}
+
+				else
+				{
+					copy($src . '/' . $file, $dst . '/' . $file);
+				}
+			}
+		}
+
+		closedir($dir);
+	}
+
+	function copy_differences($data = array())
+	{
+		if(!isset($data['dir'])){	$data['dir'] = "";}
+
+		$out = "";
+		//$out .= "Test (".$this->setting_site_clone_path.")";
+
+		if($this->setting_site_clone_path != '')
+		{
+			$source_path = ABSPATH."wp-content/";
+			
+			if($data['dir'] != '')
+			{
+				$source_path .= $data['dir'];
+			}
+
+			$destination_path = str_replace(ABSPATH, $this->setting_site_clone_path, $source_path);
+
+			$this->custom_copy($source_path, $destination_path);
+			//$out .= "Copied ".$source_path." -> ".$destination_path;
+			//$xtra .= var_export($obj_site_manager->arr_core[$site], true);
+		}
 
 		return $out;
 	}

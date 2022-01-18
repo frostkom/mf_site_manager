@@ -8,6 +8,8 @@ if($setting_site_comparison == '')
 }
 
 $obj_site_manager = new mf_site_manager();
+$obj_site_manager->fetch_request();
+$obj_site_manager->save_data();
 
 echo "<div class='wrap'>
 	<h2>".__("Compare Sites", 'lang_site_manager')."</h2>"
@@ -45,25 +47,29 @@ echo "<div class='wrap'>
 
 					foreach($obj_site_manager->arr_sites as $site)
 					{
-						if(isset($obj_site_manager->arr_core[$site]))
-						{
-							$version_check = $obj_site_manager->arr_core[$site]['version'];
-							$obj_site_manager->is_multisite = $obj_site_manager->arr_core[$site]['is_multisite'];
+						$out .= "<td>";
 
-							$out .= $obj_site_manager->get_version_check_cell($version, $version_check, validate_url($site."/wp-admin".($obj_site_manager->is_multisite ? "/network" : "")."/update-core.php"));
-
-							if($version_check != $version)
+							if(isset($obj_site_manager->arr_core[$site]))
 							{
+								$version_check = $obj_site_manager->arr_core[$site]['version'];
+								$obj_site_manager->is_multisite = $obj_site_manager->arr_core[$site]['is_multisite'];
+
+								$out .= $obj_site_manager->get_version_check_cell(array('version' => $version, 'version_check' => $version_check, 'link' => validate_url($site."/wp-admin".($obj_site_manager->is_multisite ? "/network" : "")."/update-core.php")));
+
+								if($version_check != $version)
+								{
+									$has_equal_version = false;
+								}
+							}
+
+							else
+							{
+								$out .= __("Really old version...", 'lang_site_manager');
+
 								$has_equal_version = false;
 							}
-						}
 
-						else
-						{
-							$out .= "<td>".__("Really old version...", 'lang_site_manager')."</td>";
-
-							$has_equal_version = false;
-						}
+						$out .= "</td>";
 					}
 
 				$out .= "</tr>
@@ -93,7 +99,48 @@ echo "<div class='wrap'>
 					$has_echoed = true;
 				}
 
-				if($has_echoed == false)
+				if($has_echoed == true)
+				{
+					$setting_site_clone_path = get_option('setting_site_clone_path');
+
+					if($setting_site_clone_path != '')
+					{
+						$arr_setting_site_clone_path = array_map('trim', explode(",", $setting_site_clone_path));
+
+						echo "<tr>
+							<td>".__("Copy differences", 'lang_site_manager')."</td>
+							<td></td>";
+
+							$i = 0;
+
+							foreach($obj_site_manager->arr_sites as $site)
+							{
+								$site_key = (count($arr_setting_site_clone_path) > 1 ? $i : 0);
+
+								echo "<td>";
+
+									if($obj_site_manager->site_url == $site)
+									{
+										echo sprintf(__("The differences were copied into %s", 'lang_site_manager'), $arr_setting_site_clone_path[$site_key]);
+									}
+
+									else
+									{
+										echo "<a href='".wp_nonce_url(admin_url("admin.php?page=".check_var('page')."&btnDifferencesCopy&strSiteURL=".$site."&intSiteKey=".$site_key), 'differences_copy_'.$site_key, '_wpnonce_differences_copy')."' class='button' rel='confirm'>"
+											.sprintf(__("Copy Differences Into %s", 'lang_site_manager'), $arr_setting_site_clone_path[$site_key])
+										."</a>";
+									}
+
+								echo "</td>";
+
+								$i++;
+							}
+							
+						echo "</tr>";
+					}
+				}
+
+				else
 				{
 					echo "<tr><td colspan='".count($arr_header)."'>".__("I could not find any differences", 'lang_site_manager')."</td></tr>";
 				}
@@ -119,7 +166,7 @@ echo "<div class='wrap'>
 				{
 					echo "<tr>
 						<td>".$key."</td>
-						<td>".$value['headers']['http_code']." (".$value['content'].")</td>
+						<td>".$value['headers']['http_code']." (".var_export($value, true).")</td>
 					</tr>";
 				}
 

@@ -28,8 +28,9 @@ $type_table = isset($arr_input[1]) ? $arr_input[1] : "";
 $strDataIP = get_current_visitor_ip();
 
 $setting_server_ips_allowed = get_option('setting_server_ips_allowed');
+$arr_setting_server_ips_allowed = array_map('trim', explode(",", $setting_server_ips_allowed));
 
-if($setting_server_ips_allowed != '' && $setting_server_ips_allowed == $strDataIP)
+if(count($arr_setting_server_ips_allowed) > 0 && in_array($strDataIP, $arr_setting_server_ips_allowed))
 {
 	if($type_action == "compare")
 	{

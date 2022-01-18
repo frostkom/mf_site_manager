@@ -3,7 +3,7 @@
 Plugin Name: MF Site Manager
 Plugin URI: https://github.com/frostkom/mf_site_manager
 Description: 
-Version: 5.3.8
+Version: 5.4.0
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://frostkom.se
@@ -14,7 +14,7 @@ Depends: MF Base
 GitHub Plugin URI: frostkom/mf_site_manager
 */
 
-if(function_exists('is_plugin_active') && is_plugin_active("mf_base/index.php"))
+if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') && is_plugin_active("mf_base/index.php"))
 {
 	include_once("include/classes.php");
 
@@ -50,7 +50,7 @@ if(function_exists('is_plugin_active') && is_plugin_active("mf_base/index.php"))
 	function uninstall_site_manager()
 	{
 		mf_uninstall_plugin(array(
-			'options' => array('setting_server_ip', 'setting_server_ips_allowed', 'setting_site_comparison'),
+			'options' => array('setting_server_ip', 'setting_server_ips_allowed', 'setting_site_comparison', 'setting_site_clone_path'),
 		));
 	}
 }
