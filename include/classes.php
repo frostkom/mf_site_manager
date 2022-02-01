@@ -351,8 +351,8 @@ class mf_site_manager
 		$this->new_url_clean = remove_protocol(array('url' => $this->new_url, 'clean' => true));
 
 		// Copy Diff
-		$this->site_url = check_var('strSiteURL');
-		$this->site_key = check_var('intSiteKey');
+		$this->compare_site_url = check_var('strSiteURL');
+		$this->compare_site_key = check_var('intSiteKey');
 	}
 
 	function save_data()
@@ -622,7 +622,7 @@ class mf_site_manager
 
 		else if(isset($_REQUEST['btnDifferencesCopy']))
 		{
-			if($this->site_key != '' && wp_verify_nonce($_REQUEST['_wpnonce_differences_copy'], 'differences_copy_'.$this->site_key))
+			if($this->compare_site_key != '' && wp_verify_nonce($_REQUEST['_wpnonce_differences_copy'], 'differences_copy_'.$this->compare_site_key))
 			{
 				$setting_site_clone_path = get_option('setting_site_clone_path');
 
@@ -630,14 +630,14 @@ class mf_site_manager
 				{
 					$arr_setting_site_clone_path = array_map('trim', explode(",", $setting_site_clone_path));
 
-					$this->setting_site_clone_path = $arr_setting_site_clone_path[$this->site_key];
+					$this->setting_site_clone_path = $arr_setting_site_clone_path[$this->compare_site_key];
 
 					if(substr($this->setting_site_clone_path, -1) != "/")
 					{
 						$this->setting_site_clone_path .= "/";
 					}
 
-					//$done_text = sprintf(__("I am going to copy the differences into %s", 'lang_site_manager'), $arr_setting_site_clone_path[$this->site_key]);
+					//$done_text = sprintf(__("I am going to copy the differences into %s", 'lang_site_manager'), $arr_setting_site_clone_path[$this->compare_site_key]);
 				}
 			}
 		}
@@ -1295,7 +1295,7 @@ class mf_site_manager
 		if($this->setting_site_clone_path != '')
 		{
 			$source_path = ABSPATH."wp-content/";
-			
+
 			if($data['dir'] != '')
 			{
 				$source_path .= $data['dir'];

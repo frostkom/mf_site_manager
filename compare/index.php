@@ -27,7 +27,7 @@ echo "<div class='wrap'>
 
 			foreach($obj_site_manager->arr_sites as $site)
 			{
-				$arr_header[] = $site;
+				$arr_header[] = remove_protocol(array('url' => $site, 'clean' => true));
 			}
 
 			echo show_table_header($arr_header)
@@ -119,7 +119,7 @@ echo "<div class='wrap'>
 
 								echo "<td>";
 
-									if($obj_site_manager->site_url == $site)
+									if($obj_site_manager->compare_site_url == $site)
 									{
 										echo sprintf(__("The differences were copied into %s", 'lang_site_manager'), $arr_setting_site_clone_path[$site_key]);
 									}
@@ -135,7 +135,7 @@ echo "<div class='wrap'>
 
 								$i++;
 							}
-							
+
 						echo "</tr>";
 					}
 				}
