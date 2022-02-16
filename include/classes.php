@@ -622,6 +622,8 @@ class mf_site_manager
 
 		else if(isset($_REQUEST['btnDifferencesCopy']))
 		{
+			$this->setting_site_clone_path = "";
+
 			if($this->compare_site_key != '' && wp_verify_nonce($_REQUEST['_wpnonce_differences_copy'], 'differences_copy_'.$this->compare_site_key))
 			{
 				$setting_site_clone_path = get_option('setting_site_clone_path');
@@ -1205,6 +1207,8 @@ class mf_site_manager
 
 	function get_version_check_cell($data)
 	{
+		if(!isset($data['link'])){		$data['link'] = "";}
+
 		$out = "";
 
 		if($data['version_check'] == $data['version'])
@@ -1265,19 +1269,19 @@ class mf_site_manager
 		}
 
 		// Loop through the files in source directory
-		while( $file = readdir($dir) )
+		while($file = readdir($dir))
 		{
-			if (( $file != '.' ) && ( $file != '..' ))
+			if(($file != '.') && ($file != '..'))
 			{
-				if ( is_dir($src . '/' . $file) )
+				if(is_dir($src."/".$file))
 				{
-					// Recursively calling custom copy function for sub directory 
-					$this->custom_copy($src . '/' . $file, $dst . '/' . $file);
+					// Recursively calling custom copy function for sub directory
+					$this->custom_copy($src."/".$file, $dst."/".$file);
 				}
 
 				else
 				{
-					copy($src . '/' . $file, $dst . '/' . $file);
+					copy($src."/".$file, $dst."/".$file);
 				}
 			}
 		}
@@ -1290,9 +1294,8 @@ class mf_site_manager
 		if(!isset($data['dir'])){	$data['dir'] = "";}
 
 		$out = "";
-		//$out .= "Test (".$this->setting_site_clone_path.")";
 
-		if($this->setting_site_clone_path != '')
+		if(isset($_REQUEST['btnDifferencesCopy']) && $this->setting_site_clone_path != '')
 		{
 			$source_path = ABSPATH."wp-content/";
 
@@ -1304,8 +1307,6 @@ class mf_site_manager
 			$destination_path = str_replace(ABSPATH, $this->setting_site_clone_path, $source_path);
 
 			$this->custom_copy($source_path, $destination_path);
-			//$out .= "Copied ".$source_path." -> ".$destination_path;
-			//$xtra .= var_export($obj_site_manager->arr_core[$site], true);
 		}
 
 		return $out;
