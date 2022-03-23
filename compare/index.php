@@ -35,7 +35,7 @@ echo "<div class='wrap'>
 
 				$has_echoed = false;
 
-				//Core
+				// Core
 				##############################
 				$has_equal_version = true;
 
@@ -64,7 +64,7 @@ echo "<div class='wrap'>
 
 							else
 							{
-								$out .= __("Really old version...", 'lang_site_manager');
+								$out .= __("Does not support this", 'lang_site_manager');
 
 								$has_equal_version = false;
 							}
@@ -93,6 +93,83 @@ echo "<div class='wrap'>
 				}
 
 				$obj_site_manager->check_version('plugins');
+
+				if($obj_site_manager->echoed == true)
+				{
+					$has_echoed = true;
+
+					echo "<tr><td colspan='".count($arr_header)."'></td></tr>";
+				}
+
+				// Media
+				##############################
+				$has_equal_version = true;
+
+				$uploads_amount = $obj_site_manager->arr_core['this']['uploads'];
+
+				$out = "<tr>
+					<td>".__("Media", 'lang_site_manager')."</td>
+					<td>".$uploads_amount."</td>";
+
+					foreach($obj_site_manager->arr_sites as $site)
+					{
+						$out .= "<td>";
+
+							if(isset($obj_site_manager->arr_core[$site]) && isset($obj_site_manager->arr_core[$site]['uploads']))
+							{
+								$uploads_amount_check = $obj_site_manager->arr_core[$site]['uploads'];
+
+								if($uploads_amount_check == $uploads_amount)
+								{
+									$class = "fa fa-check green";
+									$version_out = "";
+								}
+
+								else
+								{
+									if($uploads_amount_check > $uploads_amount)
+									{
+										$class = "fa fa-less-than green";
+									}
+
+									else
+									{
+										$class = "fa fa-greater-than red";
+									}
+
+									$version_out = $uploads_amount_check;
+
+									$has_equal_version = false;
+								}
+
+								$out .= "<i class='".$class." fa-lg'></i> ".$version_out;
+
+								if($uploads_amount_check != $uploads_amount)
+								{
+									$out .= $obj_site_manager->copy_differences(array('dir' => 'uploads'));
+								}
+							}
+
+							else
+							{
+								$out .= __("Does not support this", 'lang_site_manager');
+
+								$has_equal_version = false;
+							}
+
+						$out .= "</td>";
+					}
+
+				$out .= "</tr>
+				<tr><td colspan='".count($arr_header)."'></td></tr>";
+
+				if($has_equal_version == false)
+				{
+					echo $out;
+
+					$has_echoed = true;
+				}
+				##############################
 
 				if($obj_site_manager->echoed == true)
 				{
@@ -126,8 +203,12 @@ echo "<div class='wrap'>
 
 									else
 									{
-										echo "<a href='".wp_nonce_url(admin_url("admin.php?page=".check_var('page')."&btnDifferencesCopy&strSiteURL=".$site."&intSiteKey=".$site_key), 'differences_copy_'.$site_key, '_wpnonce_differences_copy')."' class='button' rel='confirm'>"
-											.sprintf(__("Copy Differences Into %s", 'lang_site_manager'), $arr_setting_site_clone_path[$site_key])
+										echo "<a href='".wp_nonce_url(admin_url("admin.php?page=".check_var('page')."&btnDifferencesCopy&strSiteURL=".$site."&intSiteKey=".$site_key), 'differences_copy_'.$site_key, '_wpnonce_differences_copy')."' class='button' rel='confirm' title='".sprintf(__("Copy Differences Into %s", 'lang_site_manager'), $arr_setting_site_clone_path[$site_key])."'>"
+											.__("Copy Differences", 'lang_site_manager')
+										."</a>";
+
+										echo " <a href='".wp_nonce_url(admin_url("admin.php?page=".check_var('page')."&btnDifferencesCopy&type=debug_copy&strSiteURL=".$site."&intSiteKey=".$site_key), 'differences_copy_'.$site_key, '_wpnonce_differences_copy')."' class='button'>"
+											.__("Test Copy", 'lang_site_manager')
 										."</a>";
 									}
 

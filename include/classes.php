@@ -811,12 +811,26 @@ class mf_site_manager
 	}
 	###########################
 
+	function count_uploads_callback($data)
+	{
+		$this->uploads_amount++;
+	}
+
 	function get_content_versions()
 	{
-		$core_version = get_bloginfo('version');
-		$arr_themes = wp_get_themes();
-		$arr_plugins = get_plugins();
+		list($upload_path, $upload_url) = get_uploads_folder();
 
+		$this->uploads_amount = 0;
+		get_file_info(array('path' => $upload_path, 'callback' => array($this, 'count_uploads_callback')));
+
+		$this->arr_core['this'] = array(
+			'version' => get_bloginfo('version'),
+			'is_multisite' => is_multisite(),
+			'uploads' => $this->uploads_amount,
+		);
+
+		// Themes
+		$arr_themes = wp_get_themes();
 		$arr_themes_this_site = array();
 
 		foreach($arr_themes as $key => $value)
@@ -839,6 +853,10 @@ class mf_site_manager
 			);
 		}
 
+		$this->arr_themes['this'] = $arr_themes_this_site;
+
+		// Plugins
+		$arr_plugins = get_plugins();
 		$arr_plugins_this_site = array();
 
 		foreach($arr_plugins as $key => $value)
@@ -869,8 +887,6 @@ class mf_site_manager
 			);
 		}
 
-		$this->arr_core['this'] = array('version' => $core_version, 'is_multisite' => is_multisite());
-		$this->arr_themes['this'] = $arr_themes_this_site;
 		$this->arr_plugins['this'] = $arr_plugins_this_site;
 	}
 
@@ -1221,12 +1237,12 @@ class mf_site_manager
 		{
 			if(version_compare($data['version_check'], $data['version'], ">"))
 			{
-				$class = "fa fa-arrow-up green";
+				$class = "fa fa-less-than green";
 			}
 
 			else
 			{
-				$class = "fa fa-arrow-down red";
+				$class = "fa fa-greater-than red";
 			}
 
 			$version_out = $data['version_check'];
@@ -1254,7 +1270,7 @@ class mf_site_manager
 		return $out;
 	}
 
-	function custom_copy($src, $dst)
+	function custom_copy($src, $dst, $debug_copy)
 	{
 		// open the source directory
 		$dir = opendir($src); 
@@ -1262,9 +1278,17 @@ class mf_site_manager
 		// Make the destination directory if not exist
 		if(!is_dir($dst) && !is_file($dst))
 		{
-			if(!mkdir($dst, 0755, true))
+			if($debug_copy)
 			{
-				echo "Could not create folder (".$dst.")";
+				$this->debug_copy .= "<li>".$dst."</li>";
+			}
+
+			else
+			{
+				if(!mkdir($dst, 0755, true))
+				{
+					echo "Could not create folder (".$dst.")";
+				}
 			}
 		}
 
@@ -1276,12 +1300,33 @@ class mf_site_manager
 				if(is_dir($src."/".$file))
 				{
 					// Recursively calling custom copy function for sub directory
-					$this->custom_copy($src."/".$file, $dst."/".$file);
+					$this->custom_copy($src."/".$file, $dst."/".$file, $debug_copy);
 				}
 
 				else
 				{
-					copy($src."/".$file, $dst."/".$file);
+					$copy_file = true;
+
+					if(file_exists($dst."/".$file))
+					{
+						if(filesize($src."/".$file) == filesize($dst."/".$file) && filemtime($src."/".$file) <= filemtime($dst."/".$file))
+						{
+							$copy_file = false;
+						}
+					}
+
+					if($copy_file)
+					{
+						if($debug_copy)
+						{
+							$this->debug_copy .= "<li>".$file." -> ".$dst."</li>";
+						}
+
+						else
+						{
+							copy($src."/".$file, $dst."/".$file);
+						}
+					}
 				}
 			}
 		}
@@ -1291,12 +1336,16 @@ class mf_site_manager
 
 	function copy_differences($data = array())
 	{
+		global $error_notice;
+
 		if(!isset($data['dir'])){	$data['dir'] = "";}
 
 		$out = "";
 
 		if(isset($_REQUEST['btnDifferencesCopy']) && $this->setting_site_clone_path != '')
 		{
+			$debug_copy = (isset($_GET['type']) && $_GET['type'] == 'debug_copy');
+
 			$source_path = ABSPATH."wp-content/";
 
 			if($data['dir'] != '')
@@ -1306,7 +1355,18 @@ class mf_site_manager
 
 			$destination_path = str_replace(ABSPATH, $this->setting_site_clone_path, $source_path);
 
-			$this->custom_copy($source_path, $destination_path);
+			if($debug_copy)
+			{
+				$this->debug_copy = "";
+			}
+
+			$this->custom_copy($source_path, $destination_path, $debug_copy);
+
+			if($debug_copy && $this->debug_copy != '')
+			{
+				$out .= "<br><strong>".__("I would have copied:", 'lang_site_manager')."</strong>
+				<ul>".$this->debug_copy."</ul>";
+			}
 		}
 
 		return $out;

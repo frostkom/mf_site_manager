@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-18 13:40+0100\n"
+"POT-Creation-Date: 2022-03-23 10:59+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -17,7 +17,7 @@ msgstr ""
 
 #: ../change/index.php:8
 #: ../include/classes.php:164
-#: ../include/classes.php:807
+#: ../include/classes.php:809
 msgid "Change URL"
 msgstr "Ändra URL"
 
@@ -91,36 +91,49 @@ msgid "Core"
 msgstr "Kärna"
 
 #: ../compare/index.php:67
-msgid "Really old version..."
-msgstr "Riktigt gammal version..."
+#: ../compare/index.php:157
+msgid "Does not support this"
+msgstr "Har inte support för detta"
 
 #: ../compare/index.php:111
+msgid "Media"
+msgstr ""
+
+#: ../compare/index.php:190
 msgid "Copy differences"
 msgstr "Kopiera skillnader"
 
-#: ../compare/index.php:124
+#: ../compare/index.php:203
 #, php-format
 msgid "The differences were copied into %s"
 msgstr "Skillnaderna kopierades till %s"
 
-#: ../compare/index.php:130
+#: ../compare/index.php:208
 #, php-format
 msgid "Copy Differences Into %s"
 msgstr "Kopiera skillnader till %s"
 
-#: ../compare/index.php:145
+#: ../compare/index.php:209
+msgid "Copy Differences"
+msgstr "Kopiera skillnader"
+
+#: ../compare/index.php:213
+msgid "Test Copy"
+msgstr "Testa kopiering"
+
+#: ../compare/index.php:228
 msgid "I could not find any differences"
 msgstr "Jag kunde inte hitta några skillnader"
 
-#: ../compare/index.php:159
+#: ../compare/index.php:242
 msgid "Site"
 msgstr "Webbplats"
 
-#: ../compare/index.php:160
+#: ../compare/index.php:243
 msgid "Error"
 msgstr "Fel"
 
-#: ../compare/index.php:179
+#: ../compare/index.php:262
 #, php-format
 msgid "I could not find any sites to compare with. Convert to MultiSite and add sites or add external ones in %sMy Settings%s"
 msgstr "Jag kunde inte hitta några webbplatser att jämföra med. Konvertera till MultiSite och lägga till webbplatser eller lägg till externa via %sMina inställningar%s"
@@ -200,41 +213,45 @@ msgstr "Backupen lyckades inte så jag kan inte klona webbplatsen åt dig"
 msgid "You have to choose a site other than this site"
 msgstr "Du måste välja en annan webbplats än denna"
 
-#: ../include/classes.php:653
+#: ../include/classes.php:655
 msgid "Activated On"
 msgstr "Aktiverad på"
 
-#: ../include/classes.php:705
+#: ../include/classes.php:707
 msgid "SSL"
 msgstr ""
 
-#: ../include/classes.php:706
+#: ../include/classes.php:708
 msgid "Settings"
 msgstr "Inställningar"
 
-#: ../include/classes.php:938
+#: ../include/classes.php:956
 msgid "domain"
 msgstr "domän"
 
-#: ../include/classes.php:1000
-#: ../include/classes.php:1046
-#: ../include/classes.php:1120
-#: ../include/classes.php:1153
-#: ../include/classes.php:1170
+#: ../include/classes.php:1018
+#: ../include/classes.php:1064
+#: ../include/classes.php:1138
+#: ../include/classes.php:1171
+#: ../include/classes.php:1188
 msgid "does not exist"
 msgstr "finns inte"
 
-#: ../include/classes.php:1394
+#: ../include/classes.php:1354
+msgid "I would have copied:"
+msgstr "Jag hade kopierat:"
+
+#: ../include/classes.php:1442
 #, php-format
 msgid "I successfully fetched the server IP (%s) for you"
 msgstr "Jag lyckades hämta Server-IP (%s) åt dig"
 
-#: ../include/classes.php:1399
+#: ../include/classes.php:1447
 #, php-format
 msgid "The IP (%s) is the same as before"
 msgstr "IP-adressen (%s) är samma som innan"
 
-#: ../include/classes.php:1404
+#: ../include/classes.php:1452
 #, php-format
 msgid "I could not fetch the server IP (%s) for you"
 msgstr "Jag kunde inte hämta Server-IP (%s) åt dig"
@@ -308,6 +325,15 @@ msgstr "Är du helt säker? Detta kommer att byta tema för webbplatsen men inte
 #, php-format
 msgid "There are no other themes activated for this site. %sPlease, add another theme%s"
 msgstr "Det finns inga andra teman aktiverade för denna webbplats. %sVar vänlig, lägg till ett annat tema%s"
+
+#~ msgid "I would have created %s"
+#~ msgstr "Jag hade skapat %s"
+
+#~ msgid "Debug Copy Differences"
+#~ msgstr "Testa att kopiera skillnader"
+
+#~ msgid "Really old version..."
+#~ msgstr "Riktigt gammal version..."
 
 #~ msgid "I am going to copy the differences into %s"
 #~ msgstr "Jag kommer att kopiera skillnaderna till %s"
