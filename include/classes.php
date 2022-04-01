@@ -443,7 +443,7 @@ class mf_site_manager
 
 					/* Get To Table */
 					####################
-					$strBasePrefixTo = $this->blog_id > 1 ? $wpdb->base_prefix.$this->blog_id."_" : $wpdb->base_prefix;
+					$strBasePrefixTo = ($this->blog_id > 1 ? $wpdb->base_prefix.$this->blog_id."_" : $wpdb->base_prefix);
 					$strBlogDomainTo = get_site_url_clean(array('id' => $this->blog_id, 'trim' => "/"));
 
 					$arr_tables_to = array();
@@ -599,6 +599,8 @@ class mf_site_manager
 							}
 						}
 						#######################
+
+						do_action('do_clone_site', array('from' => $wpdb->blogid, 'to' => $this->blog_id));
 
 						$done_text = __("All data was cloned", 'lang_site_manager');
 						//$done_text .= " (".$strBasePrefixFrom." -> ".$strBasePrefixTo.")";
