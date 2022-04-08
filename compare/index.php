@@ -245,6 +245,8 @@ echo "<div class='wrap'>
 
 				foreach($obj_site_manager->arr_sites_error as $key => $value)
 				{
+					$value['content'] = htmlspecialchars($value['content']);
+
 					echo "<tr>
 						<td>".$key."</td>
 						<td>".$value['headers']['http_code']." (".var_export($value, true).")</td>
