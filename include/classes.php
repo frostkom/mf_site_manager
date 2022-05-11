@@ -1274,66 +1274,71 @@ class mf_site_manager
 
 	function custom_copy($src, $dst, $debug_copy)
 	{
-		// open the source directory
-		$dir = opendir($src); 
-
-		// Make the destination directory if not exist
-		if(!is_dir($dst) && !is_file($dst))
+		if(is_dir($src))
 		{
-			if($debug_copy)
+			if($dir = opendir($src))
 			{
-				$this->debug_copy .= "<li>".$dst."</li>";
-			}
-
-			else
-			{
-				if(!mkdir($dst, 0755, true))
+				if(!is_dir($dst) && !is_file($dst))
 				{
-					echo "Could not create folder (".$dst.")";
-				}
-			}
-		}
-
-		// Loop through the files in source directory
-		while($file = readdir($dir))
-		{
-			if(($file != '.') && ($file != '..'))
-			{
-				if(is_dir($src."/".$file))
-				{
-					// Recursively calling custom copy function for sub directory
-					$this->custom_copy($src."/".$file, $dst."/".$file, $debug_copy);
-				}
-
-				else
-				{
-					$copy_file = true;
-
-					if(file_exists($dst."/".$file))
+					if($debug_copy)
 					{
-						if(filesize($src."/".$file) == filesize($dst."/".$file) && filemtime($src."/".$file) <= filemtime($dst."/".$file))
-						{
-							$copy_file = false;
-						}
+						$this->debug_copy .= "<li>".$dst."</li>";
 					}
 
-					if($copy_file)
+					else
 					{
-						if($debug_copy)
+						if(!mkdir($dst, 0755, true))
 						{
-							$this->debug_copy .= "<li>".$file." -> ".$dst."</li>";
+							echo "Could not create folder (".$dst.")";
+						}
+					}
+				}
+
+				while($file = readdir($dir))
+				{
+					if(($file != '.') && ($file != '..'))
+					{
+						if(is_dir($src."/".$file))
+						{
+							$this->custom_copy($src."/".$file, $dst."/".$file, $debug_copy);
 						}
 
 						else
 						{
-							copy($src."/".$file, $dst."/".$file);
+							$copy_file = true;
+
+							if(file_exists($dst."/".$file))
+							{
+								if(filesize($src."/".$file) == filesize($dst."/".$file) && filemtime($src."/".$file) <= filemtime($dst."/".$file))
+								{
+									$copy_file = false;
+								}
+							}
+
+							if($copy_file)
+							{
+								if($debug_copy)
+								{
+									$this->debug_copy .= "<li>".$file." -> ".$dst."</li>";
+								}
+
+								else
+								{
+									copy($src."/".$file, $dst."/".$file);
+								}
+							}
 						}
 					}
 				}
+
+				closedir($dir);
+			}
+
+			else
+			{
+				// Log error?
 			}
 		}
-
-		closedir($dir);
 	}
 
 	function copy_differences($data = array())
