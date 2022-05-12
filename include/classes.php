@@ -744,10 +744,10 @@ class mf_site_manager
 					{
 						foreach($arr_settings as $key => $arr_value)
 						{
+							$out_setting_temp = "";
+
 							if(is_multisite() && is_main_site($id) || $arr_value['global'] == false)
 							{
-								$out_setting_temp = "";
-
 								$option = ($arr_value['global'] ? get_site_option($key) : get_blog_option($id, $key));
 
 								switch($arr_value['type'])
@@ -761,21 +761,23 @@ class mf_site_manager
 									break;
 
 									case 'string':
-										if($option != '')
-										{
-											$out_setting_temp .= " <i class='".$arr_value['icon']." ".($option != '' ? "green" : "red")."' title='".$arr_value['name']."'></i>";
-										}
+										$out_setting_temp .= " <i class='".$arr_value['icon']." ".($option != '' ? "green" : "red")."' title='".$arr_value['name']."'></i>";
 									break;
 
 									default:
 										do_log("filter_sites_table_settings - Unknown type: ".$arr_value['type']);
 									break;
 								}
+							}
 
-								if($out_setting_temp != '')
-								{
-									$out_temp .= "<a href='".get_admin_url($id, "options-general.php?page=settings_mf_base#".$type_key)."'>".$out_setting_temp."</a>";
-								}
+							else
+							{
+								$out_setting_temp .= " <i class='".$arr_value['icon']." grey' title='".$arr_value['name']." (".__("This can only be saved on the main site", 'lang_site_manager').")'></i>";
+							}
+
+							if($out_setting_temp != '')
+							{
+								$out_temp .= "<a href='".get_admin_url($id, "options-general.php?page=settings_mf_base#".$type_key)."'>".$out_setting_temp."</a>";
 							}
 						}
 					}
