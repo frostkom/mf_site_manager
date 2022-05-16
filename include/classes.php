@@ -47,12 +47,35 @@ class mf_site_manager
 	{
 		global $pagenow;
 
-		if($pagenow == 'options-general.php' && check_var('page') == 'settings_mf_base')
+		switch($pagenow)
 		{
-			$plugin_include_url = plugin_dir_url(__FILE__);
-			$plugin_version = get_plugin_version(__FILE__);
+			case 'my-sites.php':
+				if(is_multisite() && IS_SUPER_ADMIN)
+				{
+					mf_redirect(network_admin_url("sites.php")); //?status=public
+				}
+			break;
 
-			mf_enqueue_script('script_site_manager', $plugin_include_url."script_wp.js", array('plugin_url' => $plugin_include_url, 'ajax_url' => admin_url('admin-ajax.php')), $plugin_version);
+			case 'options-general.php':
+				if(check_var('page') == 'settings_mf_base')
+				{
+					$plugin_include_url = plugin_dir_url(__FILE__);
+					$plugin_version = get_plugin_version(__FILE__);
+
+					mf_enqueue_script('script_site_manager', $plugin_include_url."script_wp_settings.js", array('plugin_url' => $plugin_include_url, 'ajax_url' => admin_url('admin-ajax.php')), $plugin_version);
+				}
+			break;
+
+			case 'sites.php':
+				$plugin_include_url = plugin_dir_url(__FILE__);
+				$plugin_version = get_plugin_version(__FILE__);
+
+				mf_enqueue_script('script_site_manager', $plugin_include_url."script_wp_sites.js", array('plugin_url' => $plugin_include_url, 'ajax_url' => admin_url('admin-ajax.php')), $plugin_version);
+			break;
+
+			default:
+				//do_log("Unknown page: ".$pagenow);
+			break;
 		}
 	}
 
@@ -744,7 +767,7 @@ class mf_site_manager
 					{
 						foreach($arr_settings as $key => $arr_value)
 						{
-							$out_setting_temp = "";
+							$color = $icon = $title = ""; //$out_setting_temp = 
 
 							if(is_multisite() && is_main_site($id) || $arr_value['global'] == false)
 							{
@@ -753,15 +776,24 @@ class mf_site_manager
 								switch($arr_value['type'])
 								{
 									case 'bool':
-										$out_setting_temp .= " <i class='".$arr_value['icon']." ".($option == 'yes' ? "green" : "red")."' title='".$arr_value['name']."'></i>";
+										$color = ($option == 'yes' ? "green" : "red");
+										$icon = $arr_value['icon'];
+										$title = $arr_value['name'];
+										//$out_setting_temp .= " <i class='".$arr_value['icon']." ".$color."' title='".$title."'></i>";
 									break;
 
 									case 'posts':
-										$out_setting_temp .= " <i class='".$arr_value['icon']." ".(is_array($option) && count($option) > 0 ? "green" : "red")."' title='".$arr_value['name']."'></i>";
+										$color = (is_array($option) && count($option) > 0 ? "green" : "red");
+										$icon = $arr_value['icon'];
+										$title = $arr_value['name'];
+										//$out_setting_temp .= " <i class='".$arr_value['icon']." ".$color."' title='".$arr_value['name']."'></i>";
 									break;
 
 									case 'string':
-										$out_setting_temp .= " <i class='".$arr_value['icon']." ".($option != '' ? "green" : "red")."' title='".$arr_value['name']."'></i>";
+										$color = ($option != '' ? "green" : "red");
+										$icon = $arr_value['icon'];
+										$title = $arr_value['name'];
+										//$out_setting_temp .= " <i class='".$arr_value['icon']." ".$color."' title='".$arr_value['name']."'></i>";
 									break;
 
 									default:
@@ -772,19 +804,28 @@ class mf_site_manager
 
 							else
 							{
-								$out_setting_temp .= " <i class='".$arr_value['icon']." grey' title='".$arr_value['name']." (".__("This can only be saved on the main site", 'lang_site_manager').")'></i>";
+								$color = "grey";
+								$icon = $arr_value['icon'];
+								$title = $arr_value['name']." (".__("This can only be saved on the main site", 'lang_site_manager').")";
+								//$out_setting_temp .= " <i class='".$arr_value['icon']." ".$color."' title='".$arr_value['name']." (".__("This can only be saved on the main site", 'lang_site_manager').")'></i>";
 							}
 
-							if($out_setting_temp != '')
+							if($color != '' || $title != '')
 							{
-								$out_temp .= "<a href='".get_admin_url($id, "options-general.php?page=settings_mf_base#".$type_key)."'>".$out_setting_temp."</a>";
+								$out_temp .= "<a href='".get_admin_url($id, "options-general.php?page=settings_mf_base#".$type_key)."' data-setting='".$key."' data-color='".$color."'>"
+									//.$out_setting_temp
+									." <i class='".$arr_value['icon']." ".$color."' title='".$title."'></i>"
+								."</a>";
 							}
 						}
 					}
 
 					if($out_temp != '')
 					{
-						echo "<div class='nowrap'>".$out_temp."</div>";
+						echo "<div class='nowrap'>".$out_temp."</div>
+						<div class='row-actions'>"
+							."<a class='toggle_all' href='#'>".__("Toggle All", 'lang_site_manager')."</a>"
+						."</div>";
 					}
 				break;
 			}
