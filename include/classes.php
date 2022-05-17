@@ -189,6 +189,9 @@ class mf_site_manager
 
 		$menu_title = __("Change Theme", 'lang_site_manager');
 		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."theme/index.php");
+
+		$menu_title = __("Settings", 'lang_site_manager');
+		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, admin_url("options-general.php?page=settings_mf_base#settings_site_manager"));
 	}
 
 	/* Change URL */
