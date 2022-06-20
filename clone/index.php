@@ -38,7 +38,7 @@ echo "<div class='wrap'>
 						else
 						{
 							//require_plugin("mf_theme_core/index.php", "MF Theme Core");
-							//echo "<em>".__("I need MF Theme Core to work properly...or something like that...", 'lang_site_manager')."</em>";
+							//echo "<em>".sprintf(__("I need %s to work properly...or something like that...", 'lang_site_manager'), "MF THeme Core")."</em>";
 						}
 					}
 

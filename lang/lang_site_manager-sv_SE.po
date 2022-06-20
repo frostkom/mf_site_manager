@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-16 12:12+0100\n"
+"POT-Creation-Date: 2022-06-20 15:01+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -15,363 +15,216 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../change/index.php:8
-#: ../include/classes.php:187
-#: ../include/classes.php:854
-msgid "Change URL"
-msgstr "Ändra URL"
-
-#: ../change/index.php:13
-msgid "Change to this URL"
-msgstr "Ändra till denna URL"
-
-#: ../change/index.php:14
-msgid "Are you really sure? This will change the URL of the site"
-msgstr "Är du helt säker? Detta kommer att byta URL för webbplatsen"
-
-#: ../change/index.php:15
-#: ../clone/index.php:34
-#: ../switch/index.php:158
-#: ../theme/index.php:80
-msgid "Perform"
-msgstr "Genomför"
-
-#: ../clone/index.php:8
-#: ../include/classes.php:179
-msgid "Clone Site"
-msgstr "Klona webbsida"
-
-#: ../clone/index.php:13
-msgid "From"
-msgstr "Från"
-
-#: ../clone/index.php:21
-msgid "To"
-msgstr "Till"
-
-#: ../clone/index.php:25
-msgid "Would you like to perform a backup of the old site before replacing it?"
-msgstr "Vill du ta en backup på den gamla webbplatsen innan du ersätter den?"
-
-#: ../clone/index.php:28
-msgid "Would you like to keep the original title of the receiving site?"
-msgstr "Vill du behålla originaltiteln på den mottagande webbplatsen?"
-
-#: ../clone/index.php:29
-msgid "Would you like to empty Active Plugins field?"
-msgstr "Vill du inaktivera alla tillägg?"
-
-#: ../clone/index.php:30
-msgid "Are you really sure? This will erase all previous data on the recieving site."
-msgstr "Är du helt säker? Detta kommer att radera all tidigare data på den mottagande webbplatsen."
-
-#: ../clone/index.php:47
-msgid "I could not find any sites to clone to"
-msgstr "Jag kunde inte hitta några webbplatser att klona till"
-
-#: ../clone/index.php:53
-msgid "You have to have a MultiSite to be able to clone this site"
-msgstr "Du måste ha en MultiSite för att kunna byta domän mellan två webbplatser"
-
-#: ../compare/index.php:15
-#: ../include/classes.php:167
-msgid "Compare Sites"
-msgstr "Jämför webbsidor"
-
-#: ../compare/index.php:25
-msgid "Name"
-msgstr "Namn"
-
-#: ../compare/index.php:26
-msgid "Version"
-msgstr ""
-
-#: ../compare/index.php:45
-msgid "Core"
-msgstr "Kärna"
-
-#: ../compare/index.php:67
-#: ../compare/index.php:155
-msgid "Does not support this"
-msgstr "Har inte support för detta"
-
-#: ../compare/index.php:111
-msgid "Media"
-msgstr ""
-
-#: ../compare/index.php:188
-msgid "Copy differences"
-msgstr "Kopiera skillnader"
-
-#: ../compare/index.php:201
-#, php-format
-msgid "The differences were copied into %s"
-msgstr "Skillnaderna kopierades till %s"
-
-#: ../compare/index.php:206
-#, php-format
-msgid "Copy Differences Into %s"
-msgstr "Kopiera skillnader till %s"
-
-#: ../compare/index.php:207
-msgid "Copy Differences"
-msgstr "Kopiera skillnader"
-
-#: ../compare/index.php:211
-msgid "Test Copy"
-msgstr "Testa kopiering"
-
-#: ../compare/index.php:226
-msgid "I could not find any differences"
-msgstr "Jag kunde inte hitta några skillnader"
-
-#: ../compare/index.php:240
-msgid "Site"
-msgstr "Webbplats"
-
-#: ../compare/index.php:241
-msgid "Error"
-msgstr "Fel"
-
-#: ../compare/index.php:262
-#, php-format
-msgid "I could not find any sites to compare with. Convert to MultiSite and add sites or add external ones in %sMy Settings%s"
-msgstr "Jag kunde inte hitta några webbplatser att jämföra med. Konvertera till MultiSite och lägga till webbplatser eller lägg till externa via %sMina inställningar%s"
-
-#: ../include/classes.php:17
-msgid "Choose Here"
-msgstr "Välj här"
-
-#: ../include/classes.php:91
-msgid "Server IP"
-msgstr "Server-IP"
-
-#: ../include/classes.php:92
-msgid "Server IPs allowed"
-msgstr "Tillåtna server-IP"
-
-#: ../include/classes.php:93
-msgid "Sites to compare with"
-msgstr "Webbplatser att jämföra med"
-
-#: ../include/classes.php:97
-msgid "Path to Clone to"
-msgstr "Sökväg att klona till"
-
-#: ../include/classes.php:108
-#: ../include/classes.php:162
-msgid "Site Manager"
-msgstr ""
-
-#: ../include/classes.php:125
-msgid "Get Server IP"
-msgstr "Hämta Server-IP"
-
-#: ../include/classes.php:153
-msgid "The absolute path to receiving WP root"
-msgstr "Den absoluta sökvägen till mottagande WP-rot"
-
-#: ../include/classes.php:182
-#: ../switch/index.php:143
-msgid "Switch Sites"
-msgstr "Byt webbsidor"
-
-#: ../include/classes.php:190
-#: ../theme/index.php:69
-msgid "Change Theme"
-msgstr "Byt tema"
-
-#: ../include/classes.php:404
-#: ../theme/index.php:54
-#, php-format
-msgid "I executed your request but there were %d errors so you need to manually update the database"
-msgstr "Jag genomförde din förfrågan men det uppkom %d fel så du behöver uppdatera databasen manuellt"
-
-#: ../include/classes.php:411
-#, php-format
-msgid "I have changed the URL from %s to %s. Go to %sDashboard%s"
-msgstr "Jag har ändrat URLen från %s till %s. Gå till %sPanel%s"
-
-#: ../include/classes.php:419
-msgid "You have to choose another URL than the current one"
-msgstr "Du måste välja en annan URL än den nuvarande"
-
-#: ../include/classes.php:495
-msgid "There appears to be no tables on the source site"
-msgstr "Det verkar inte finnas någon tabell på källwebbplatsen"
-
-#: ../include/classes.php:628
-msgid "All data was cloned"
-msgstr "All data klonades"
-
-#: ../include/classes.php:638
-msgid "The backup was not successful so I could not clone the site for you"
-msgstr "Backupen lyckades inte så jag kan inte klona webbplatsen åt dig"
-
-#: ../include/classes.php:644
-#: ../switch/index.php:138
-msgid "You have to choose a site other than this site"
-msgstr "Du måste välja en annan webbplats än denna"
-
-#: ../include/classes.php:680
-msgid "Activated On"
-msgstr "Aktiverad på"
-
-#: ../include/classes.php:732
-msgid "SSL"
-msgstr ""
-
-#: ../include/classes.php:733
-msgid "Settings"
-msgstr "Inställningar"
-
-#: ../include/classes.php:809
-msgid "This can only be saved on the main site"
-msgstr "Detta kan endast sparas på huvudsidan"
-
-#: ../include/classes.php:827
-msgid "Toggle All"
-msgstr "Visa/dölj alla"
-
-#: ../include/classes.php:1001
-msgid "domain"
-msgstr "domän"
-
-#: ../include/classes.php:1063
-#: ../include/classes.php:1109
-#: ../include/classes.php:1183
-#: ../include/classes.php:1216
-#: ../include/classes.php:1233
-msgid "does not exist"
-msgstr "finns inte"
-
-#: ../include/classes.php:1417
-msgid "I would have copied:"
-msgstr "Jag hade kopierat:"
-
-#: ../include/classes.php:1505
-#, php-format
-msgid "I successfully fetched the server IP (%s) for you"
-msgstr "Jag lyckades hämta Server-IP (%s) åt dig"
-
-#: ../include/classes.php:1510
-#, php-format
-msgid "The IP (%s) is the same as before"
-msgstr "IP-adressen (%s) är samma som innan"
-
-#: ../include/classes.php:1515
-#, php-format
-msgid "I could not fetch the server IP (%s) for you"
-msgstr "Jag kunde inte hämta Server-IP (%s) åt dig"
-
-#: ../include/api/index.php:51
-msgid "Wrong Type"
-msgstr "Fel typ"
-
-#: ../include/api/index.php:59
-msgid "Wrong IP"
-msgstr "Fel IP"
-
-#: ../switch/index.php:50
 msgid "There appears to be no tables on either of the sites"
 msgstr "Det verkar inte finnas några tabeller på sidorna"
 
-#: ../switch/index.php:129
 msgid "I have switched all the data on the two domain as you requested."
 msgstr "Jag har bytt all data mellan de två domänerna som du efterfrågade."
 
-#: ../switch/index.php:148
+msgid "You have to choose a site other than this site"
+msgstr "Du måste välja en annan webbplats än denna"
+
+msgid "Switch Sites"
+msgstr "Byt webbsidor"
+
 msgid "Switch this site..."
 msgstr "Byt denna webbplats..."
 
-#: ../switch/index.php:156
 msgid "...with this"
 msgstr "...med denna"
 
-#: ../switch/index.php:157
 msgid "Are you really sure? This will switch domain for the two sites."
 msgstr "Är du helt säker? Detta kommer att byta domän för de två webbplatserna."
 
-#: ../switch/index.php:164
+msgid "Perform"
+msgstr "Genomför"
+
 msgid "I could not find any sites to switch to"
 msgstr "Jag kunde inte hitta några webbplatser att byta till"
 
-#: ../switch/index.php:170
 msgid "You have to have a MultiSite to be able to switch sites"
 msgstr "Du måste ha en MultiSite för att kunna byta domän mellan två webbplatser"
 
-#: ../theme/index.php:18
+msgid "Change URL"
+msgstr "Ändra URL"
+
+msgid "Change to this URL"
+msgstr "Ändra till denna URL"
+
+msgid "Are you really sure? This will change the URL of the site"
+msgstr "Är du helt säker? Detta kommer att byta URL för webbplatsen"
+
+msgid "Clone Site"
+msgstr "Klona webbsida"
+
+msgid "From"
+msgstr "Från"
+
+msgid "To"
+msgstr "Till"
+
+msgid "Would you like to perform a backup of the old site before replacing it?"
+msgstr "Vill du ta en backup på den gamla webbplatsen innan du ersätter den?"
+
+msgid "Would you like to keep the original title of the receiving site?"
+msgstr "Vill du behålla originaltiteln på den mottagande webbplatsen?"
+
+msgid "Would you like to empty Active Plugins field?"
+msgstr "Vill du inaktivera alla tillägg?"
+
+msgid "Are you really sure? This will erase all previous data on the recieving site."
+msgstr "Är du helt säker? Detta kommer att radera all tidigare data på den mottagande webbplatsen."
+
+msgid "I need %s to work properly...or something like that..."
+msgstr "Jag behöver %s för att fungera...eller något sånt..."
+
+msgid "I could not find any sites to clone to"
+msgstr "Jag kunde inte hitta några webbplatser att klona till"
+
+msgid "You have to have a MultiSite to be able to clone this site"
+msgstr "Du måste ha en MultiSite för att kunna byta domän mellan två webbplatser"
+
+msgid "Wrong Type"
+msgstr "Fel typ"
+
+msgid "Wrong IP"
+msgstr "Fel IP"
+
+msgid "Choose Here"
+msgstr "Välj här"
+
+msgid "Server IP"
+msgstr "Server-IP"
+
+msgid "Server IPs allowed"
+msgstr "Tillåtna server-IP"
+
+msgid "Sites to compare with"
+msgstr "Webbplatser att jämföra med"
+
+msgid "Path to Clone to"
+msgstr "Sökväg att klona till"
+
+msgid "Get Server IP"
+msgstr "Hämta Server-IP"
+
+msgid "The absolute path to receiving WP root"
+msgstr "Den absoluta sökvägen till mottagande WP-rot"
+
+msgid "Compare Sites"
+msgstr "Jämför webbsidor"
+
+msgid "Change Theme"
+msgstr "Byt tema"
+
+msgid "Settings"
+msgstr "Inställningar"
+
+msgid "I executed your request but there were %d errors so you need to manually update the database"
+msgstr "Jag genomförde din förfrågan men det uppkom %d fel så du behöver uppdatera databasen manuellt"
+
+msgid "I have changed the URL from %s to %s. Go to %sDashboard%s"
+msgstr "Jag har ändrat URLen från %s till %s. Gå till %sPanel%s"
+
+msgid "You have to choose another URL than the current one"
+msgstr "Du måste välja en annan URL än den nuvarande"
+
+msgid "There appears to be no tables on the source site"
+msgstr "Det verkar inte finnas någon tabell på källwebbplatsen"
+
+msgid "All data was cloned"
+msgstr "All data klonades"
+
+msgid "The backup was not successful so I could not clone the site for you"
+msgstr "Backupen lyckades inte så jag kan inte klona webbplatsen åt dig"
+
+msgid "I am going to copy the differences into %s"
+msgstr "Jag kommer att kopiera skillnaderna till %s"
+
+msgid "Activated On"
+msgstr "Aktiverad på"
+
+msgid "This can only be saved on the main site"
+msgstr "Detta kan endast sparas på huvudsidan"
+
+msgid "Toggle All"
+msgstr "Visa/dölj alla"
+
+msgid "domain"
+msgstr "domän"
+
+msgid "does not exist"
+msgstr "finns inte"
+
+msgid "I would have copied:"
+msgstr "Jag hade kopierat:"
+
+msgid "I successfully fetched the server IP (%s) for you"
+msgstr "Jag lyckades hämta Server-IP (%s) åt dig"
+
+msgid "The IP (%s) is the same as before"
+msgstr "IP-adressen (%s) är samma som innan"
+
+msgid "I could not fetch the server IP (%s) for you"
+msgstr "Jag kunde inte hämta Server-IP (%s) åt dig"
+
 msgid "You have to check the box to agree that the theme should be changed"
 msgstr "Du måste kryssa i att du går med på att temat ska bytas ut"
 
-#: ../theme/index.php:23
 msgid "I could not verify that you were allowed to switch theme on this site. I this problem persists, please contact an admin"
 msgstr "Jag kunde inte verifiera att du är tillåten att ändra tema på den här webbplatsen. Om problemet kvarstår, var vänlig kontakta en admin"
 
-#: ../theme/index.php:28
 msgid "You have to choose a theme that is allowed for this site"
 msgstr "Du måste välja ett tema som är tillåtet för denna webbplats"
 
-#: ../theme/index.php:33
 msgid "You have to choose another Theme than the current one"
 msgstr "Du måste välja ett annat tema än den nuvarande"
 
-#: ../theme/index.php:61
-#, php-format
 msgid "I have changed the Theme from %s to %s"
 msgstr "Jag har ändrat temat från %s till %s"
 
-#: ../theme/index.php:75
+msgid "Site"
+msgstr "Webbplats"
+
 msgid "Change to this Theme"
 msgstr "Ändra till detta tema"
 
-#: ../theme/index.php:79
 msgid "Are you really sure? This will change the Theme of the site but not clear menus, widgets and theme modifications like the built-in changer does"
 msgstr "Är du helt säker? Detta kommer att byta tema för webbplatsen men inte rensa menyer, widgets och temaändringar så som den inbyggda funktionen gör"
 
-#: ../theme/index.php:86
-#, php-format
 msgid "There are no other themes activated for this site. %sPlease, add another theme%s"
 msgstr "Det finns inga andra teman aktiverade för denna webbplats. %sVar vänlig, lägg till ett annat tema%s"
 
-#~ msgid "I would have created %s"
-#~ msgstr "Jag hade skapat %s"
+msgid "Name"
+msgstr "Namn"
 
-#~ msgid "Debug Copy Differences"
-#~ msgstr "Testa att kopiera skillnader"
+msgid "Core"
+msgstr "Kärna"
 
-#~ msgid "Really old version..."
-#~ msgstr "Riktigt gammal version..."
+msgid "Does not support this"
+msgstr "Har inte support för detta"
 
-#~ msgid "I am going to copy the differences into %s"
-#~ msgstr "Jag kommer att kopiera skillnaderna till %s"
+msgid "Copy differences"
+msgstr "Kopiera skillnader"
 
-#~ msgid "Copy Changes Into %s"
-#~ msgstr "Kopiera ändringar till %s"
+msgid "The differences were copied into %s"
+msgstr "Skillnaderna kopierades till %s"
 
-#~ msgid "All Sites"
-#~ msgstr "Alla webbplatser"
+msgid "Copy Differences Into %s"
+msgstr "Kopiera skillnader till %s"
 
-#~ msgid "%d Sites"
-#~ msgstr "%d webbplatser"
+msgid "Copy Differences"
+msgstr "Kopiera skillnader"
 
-#~ msgid "Theme"
-#~ msgstr "Tema"
+msgid "Test Copy"
+msgstr "Testa kopiering"
 
-#~ msgid "This is the template theme design"
-#~ msgstr "Detta är mallen för temadesign"
+msgid "I could not find any differences"
+msgstr "Jag kunde inte hitta några skillnader"
 
-#~ msgid "Theme Updates"
-#~ msgstr "Temauppdateringar"
+msgid "Error"
+msgstr "Fel"
 
-#~ msgid "Update"
-#~ msgstr "Uppdatera"
+msgid "I could not find any sites to compare with. Convert to MultiSite and add sites or add external ones in %sMy Settings%s"
+msgstr "Jag kunde inte hitta några webbplatser att jämföra med. Konvertera till MultiSite och lägga till webbplatser eller lägg till externa via %sMina inställningar%s"
 
-#~ msgid "The theme design is up to date"
-#~ msgstr "Temadesignen är uppdaterad"
-
-#~ msgid "Change"
-#~ msgstr "Byt"
-
-#~ msgid "E-mail"
-#~ msgstr "E-post"

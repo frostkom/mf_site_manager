@@ -770,7 +770,7 @@ class mf_site_manager
 					{
 						foreach($arr_settings as $key => $arr_value)
 						{
-							$color = $icon = $title = ""; //$out_setting_temp = 
+							$color = $icon = $title = "";
 
 							if(is_multisite() && is_main_site($id) || $arr_value['global'] == false)
 							{
@@ -782,21 +782,18 @@ class mf_site_manager
 										$color = ($option == 'yes' ? "green" : "red");
 										$icon = $arr_value['icon'];
 										$title = $arr_value['name'];
-										//$out_setting_temp .= " <i class='".$arr_value['icon']." ".$color."' title='".$title."'></i>";
 									break;
 
 									case 'posts':
 										$color = (is_array($option) && count($option) > 0 ? "green" : "red");
 										$icon = $arr_value['icon'];
 										$title = $arr_value['name'];
-										//$out_setting_temp .= " <i class='".$arr_value['icon']." ".$color."' title='".$arr_value['name']."'></i>";
 									break;
 
 									case 'string':
 										$color = ($option != '' ? "green" : "red");
 										$icon = $arr_value['icon'];
 										$title = $arr_value['name'];
-										//$out_setting_temp .= " <i class='".$arr_value['icon']." ".$color."' title='".$arr_value['name']."'></i>";
 									break;
 
 									default:
@@ -810,13 +807,11 @@ class mf_site_manager
 								$color = "grey";
 								$icon = $arr_value['icon'];
 								$title = $arr_value['name']." (".__("This can only be saved on the main site", 'lang_site_manager').")";
-								//$out_setting_temp .= " <i class='".$arr_value['icon']." ".$color."' title='".$arr_value['name']." (".__("This can only be saved on the main site", 'lang_site_manager').")'></i>";
 							}
 
 							if($color != '' || $title != '')
 							{
 								$out_temp .= "<a href='".get_admin_url($id, "options-general.php?page=settings_mf_base#".$type_key)."' data-setting='".$key."' data-color='".$color."'>"
-									//.$out_setting_temp
 									." <i class='".$arr_value['icon']." ".$color."' title='".$title."'></i>"
 								."</a>";
 							}
