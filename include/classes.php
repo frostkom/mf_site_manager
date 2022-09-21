@@ -62,7 +62,7 @@ class mf_site_manager
 					$plugin_include_url = plugin_dir_url(__FILE__);
 					$plugin_version = get_plugin_version(__FILE__);
 
-					mf_enqueue_script('script_site_manager', $plugin_include_url."script_wp_settings.js", array('plugin_url' => $plugin_include_url, 'ajax_url' => admin_url('admin-ajax.php')), $plugin_version);
+					mf_enqueue_script('script_site_manager_settings', $plugin_include_url."script_wp_settings.js", array('plugin_url' => $plugin_include_url, 'ajax_url' => admin_url('admin-ajax.php')), $plugin_version);
 				}
 			break;
 
@@ -70,7 +70,15 @@ class mf_site_manager
 				$plugin_include_url = plugin_dir_url(__FILE__);
 				$plugin_version = get_plugin_version(__FILE__);
 
-				mf_enqueue_script('script_site_manager', $plugin_include_url."script_wp_sites.js", array('plugin_url' => $plugin_include_url, 'ajax_url' => admin_url('admin-ajax.php')), $plugin_version);
+				mf_enqueue_script('script_site_manager_sites', $plugin_include_url."script_wp_sites.js", array('plugin_url' => $plugin_include_url, 'ajax_url' => admin_url('admin-ajax.php')), $plugin_version);
+			break;
+
+			case 'themes.php':
+				$plugin_include_url = plugin_dir_url(__FILE__);
+				$plugin_version = get_plugin_version(__FILE__);
+
+				// Disable changing theme
+				mf_enqueue_style('style_site_manager_themes', $plugin_include_url."style_wp_themes.css", $plugin_version);
 			break;
 
 			default:
@@ -963,7 +971,7 @@ class mf_site_manager
 				{
 					$arr_content = json_decode($content, true);
 
-					$this->arr_core[$site] = isset($arr_content['core']) ? $arr_content['core'] : "";
+					$this->arr_core[$site] = (isset($arr_content['core']) ? $arr_content['core'] : '');
 					$this->arr_themes[$site] = $arr_content['themes'];
 					$this->arr_plugins[$site] = $arr_content['plugins'];
 				}
@@ -1026,7 +1034,7 @@ class mf_site_manager
 		{
 			$name = $value['name'];
 			$version = $value['version'];
-			$arr_data = isset($value['data']) ? $value['data'] : array();
+			$arr_data = (isset($value['data']) ? $value['data'] : array());
 
 			$has_equal_version = true;
 
@@ -1081,7 +1089,7 @@ class mf_site_manager
 
 						foreach($this->arr_sites as $site)
 						{
-							$arr_data_check = isset($array[$site][$key]['data']) ? $array[$site][$key]['data'] : array();
+							$arr_data_check = (isset($array[$site][$key]['data']) ? $array[$site][$key]['data'] : array());
 
 							if(count($arr_data_check) > 0)
 							{
@@ -1121,7 +1129,7 @@ class mf_site_manager
 
 						foreach($this->arr_sites as $site)
 						{
-							$arr_data_check = isset($array[$site][$key]['data']) ? $array[$site][$key]['data'] : array();
+							$arr_data_check = (isset($array[$site][$key]['data']) ? $array[$site][$key]['data'] : array());
 
 							if(count($arr_data_check) > 0)
 							{
@@ -1129,7 +1137,7 @@ class mf_site_manager
 
 								foreach($arr_data['array'] as $key2 => $value2)
 								{
-									$value_check = isset($arr_data_check['array'][$key2]) ? $arr_data_check['array'][$key2] : "";
+									$value_check = (isset($arr_data_check['array'][$key2]) ? $arr_data_check['array'][$key2] : '');
 
 									$value2 = $this->clear_domain_from_urls($value2, get_site_url());
 									$value_check = $this->clear_domain_from_urls($value_check, "//".$site);
@@ -1146,7 +1154,7 @@ class mf_site_manager
 
 								foreach($arr_data_check['array'] as $key2 => $value2)
 								{
-									$value_check = isset($arr_data['array'][$key2]) ? $arr_data['array'][$key2] : "";
+									$value_check = (isset($arr_data['array'][$key2]) ? $arr_data['array'][$key2] : '');
 
 									$value2 = $this->clear_domain_from_urls($value2, get_site_url());
 									$value_check = $this->clear_domain_from_urls($value_check, "//".$site);
