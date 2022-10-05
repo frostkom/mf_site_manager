@@ -32,19 +32,21 @@ jQuery(function($)
 		return false;
 	});
 
-	/*$(document).on('mouseover', ".wp-list-table tbody tr .settings.column-settings", function()
-	{
-
-		$(this).find(".nowrap a.hide").addClass('was_hidden').removeClass('hide');
-	})
-	.on('mouseout', ".wp-list-table tbody tr .settings.column-settings", function()
-	{
-
-		$(this).find(".nowrap a.was_hidden").addClass('hide').removeClass('was_hidden');
-	});*/
-
 	$(document).on('click', ".wp-list-table tbody tr .settings.column-settings .toggle_all", function()
 	{
-		$(this).parents(".column-settings").find(".nowrap > a").toggleClass('was_hidden hide');
+		$(this).parents(".column-settings").find(".nowrap > a").each(function()
+		{
+			var dom_obj = $(this);
+
+			if(dom_obj.hasClass('hide'))
+			{
+				dom_obj.addClass('was_hidden').removeClass('hide');
+			}
+
+			else if(dom_obj.hasClass('was_hidden'))
+			{
+				dom_obj.addClass('hide').removeClass('was_hidden');
+			}
+		});
 	})
 });
