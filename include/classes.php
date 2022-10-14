@@ -74,11 +74,24 @@ class mf_site_manager
 			break;
 
 			case 'themes.php':
-				$plugin_include_url = plugin_dir_url(__FILE__);
-				$plugin_version = get_plugin_version(__FILE__);
+				if(is_plugin_active("mf_theme_core/index.php"))
+				{
+					global $obj_theme_core;
 
-				// Disable changing theme
-				mf_enqueue_style('style_site_manager_themes', $plugin_include_url."style_wp_themes.css", $plugin_version);
+					if(!isset($obj_theme_core))
+					{
+						$obj_theme_core = new mf_theme_core();
+					}
+
+					if($obj_theme_core->is_theme_active())
+					{
+						$plugin_include_url = plugin_dir_url(__FILE__);
+						$plugin_version = get_plugin_version(__FILE__);
+
+						// Disable changing theme
+						mf_enqueue_style('style_site_manager_themes', $plugin_include_url."style_wp_themes.css", $plugin_version);
+					}
+				}
 			break;
 
 			default:

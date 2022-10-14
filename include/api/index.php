@@ -25,12 +25,12 @@ $arr_input = explode("/", $type);
 $type_action = $arr_input[0];
 $type_table = (isset($arr_input[1]) ? $arr_input[1] : '');
 
-$strDataIP = get_current_visitor_ip();
+$remote_server_ip = get_current_visitor_ip();
 
 $setting_server_ips_allowed = get_option('setting_server_ips_allowed');
 $arr_setting_server_ips_allowed = array_map('trim', explode(",", $setting_server_ips_allowed));
 
-if(count($arr_setting_server_ips_allowed) > 0 && in_array($strDataIP, $arr_setting_server_ips_allowed))
+if(count($arr_setting_server_ips_allowed) > 0 && in_array($remote_server_ip, $arr_setting_server_ips_allowed))
 {
 	if($type_action == "compare")
 	{
@@ -56,7 +56,7 @@ else
 {
 	header("Status: 503 Unknown IP-address");
 
-	$json_output['error'] = __("Wrong IP", 'lang_site_manager').": ".$strDataIP;
+	$json_output['error'] = __("Wrong IP", 'lang_site_manager').": ".$remote_server_ip;
 }
 
 echo json_encode($json_output);
