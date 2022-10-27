@@ -288,7 +288,8 @@ class mf_site_manager
 	{
 		global $wpdb;
 
-		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->options." SET option_value = replace(option_value, %s, %s) WHERE option_name = 'home' OR option_name = 'siteurl'", $this->site_url, $this->new_url));
+		//$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->options." SET option_value = REPLACE(option_value, %s, %s) WHERE (option_name = 'home' OR option_name = 'siteurl')", $this->site_url, $this->new_url));
+		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->options." SET option_value = REPLACE(option_value, %s, %s) WHERE (option_name = 'home' OR option_name = 'siteurl')", $this->site_url_clean, $this->new_url_clean));
 		if($wpdb->rows_affected == 0){	$this->arr_errors[] = $wpdb->last_query;}
 
 		$wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." WHERE guid LIKE %s", "%".$this->site_url."% LIMIT 0, 1"));
