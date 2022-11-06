@@ -1457,13 +1457,15 @@ class mf_site_manager
 
 		list($content, $headers) = get_url_content(array('url' => $url, 'catch_head' => true));
 
+		$log_message = "I could not get the IP";
+
 		switch($headers['http_code'])
 		{
 			case 200:
 				$json_content = json_decode($content, true);
 				$this->server_ip_new = $json_content['ip'];
 
-				do_log("I could not get the IP", 'trash');
+				do_log($log_message, 'trash');
 			break;
 
 			case 0:
@@ -1499,7 +1501,7 @@ class mf_site_manager
 				unset($headers['request_header']);
 				unset($headers['Date']);
 
-				do_log("I could not get the IP (".htmlspecialchars(var_export($headers, true)).")");
+				do_log($log_message." (".htmlspecialchars(var_export($headers, true)).")");
 			break;
 		}
 
