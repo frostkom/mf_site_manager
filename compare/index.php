@@ -198,7 +198,15 @@ echo "<div class='wrap'>
 
 									if($obj_site_manager->compare_site_url == $site)
 									{
-										echo sprintf(__("The differences were copied into %s", 'lang_site_manager'), $arr_setting_site_clone_path[$site_key]);
+										if(isset($_GET['type']) && $_GET['type'] == 'debug_copy')
+										{
+											echo sprintf(__("The differences were test copied into %s", 'lang_site_manager'), $arr_setting_site_clone_path[$site_key]);
+										}
+
+										else
+										{
+											echo sprintf(__("The differences were copied into %s", 'lang_site_manager'), $arr_setting_site_clone_path[$site_key]);
+										}
 									}
 
 									else

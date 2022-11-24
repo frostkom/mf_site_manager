@@ -1343,6 +1343,16 @@ class mf_site_manager
 
 	function custom_copy($src, $dst, $debug_copy)
 	{
+		if(strpos($src, "//"))
+		{
+			$src = str_replace("//", "/", $src);
+		}
+
+		if(strpos($dst, "//"))
+		{
+			$dst = str_replace("//", "/", $dst);
+		}
+
 		if(is_dir($src))
 		{
 			if($dir = opendir($src))
@@ -1367,18 +1377,31 @@ class mf_site_manager
 				{
 					if(($file != '.') && ($file != '..'))
 					{
-						if(is_dir($src."/".$file))
+						$source_file = $src.(substr($src, -1, 1) != "/" ? "/" : "").$file;
+						$destination_file = $dst.(substr($dst, -1, 1) != "/" ? "/" : "").$file;
+
+						if(is_dir($source_file))
 						{
-							$this->custom_copy($src."/".$file, $dst."/".$file, $debug_copy);
+							$this->custom_copy($source_file, $destination_file, $debug_copy);
 						}
 
 						else
 						{
 							$copy_file = true;
 
-							if(file_exists($dst."/".$file))
+							if(strpos($source_file, "//"))
 							{
-								if(filesize($src."/".$file) == filesize($dst."/".$file) && filemtime($src."/".$file) <= filemtime($dst."/".$file))
+								do_log("The source contained //: ".$src." + ".$file." -> ".$source_file);
+							}
+
+							if(strpos($destination_file, "//"))
+							{
+								do_log("The destination contained //: ".$dst." + ".$file." -> ".$destination_file);
+							}
+
+							if(file_exists($destination_file))
+							{
+								if(filesize($source_file) == filesize($destination_file) && filemtime($source_file) <= filemtime($destination_file))
 								{
 									$copy_file = false;
 								}
@@ -1393,7 +1416,7 @@ class mf_site_manager
 
 								else
 								{
-									copy($src."/".$file, $dst."/".$file);
+									copy($source_file, $destination_file);
 								}
 							}
 						}
