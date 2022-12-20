@@ -25,8 +25,8 @@ echo "<div class='wrap'>
 							echo show_checkbox(array('name' => 'intSiteBackup', 'text' => __("Would you like to perform a backup of the old site before replacing it?", 'lang_site_manager'), 'compare' => 1, 'value' => $obj_site_manager->site_backup));
 						}
 
-						echo show_checkbox(array('name' => 'intSiteKeepTitle', 'text' => __("Would you like to keep the original title of the receiving site?", 'lang_site_manager'), 'compare' => 1, 'value' => $obj_site_manager->keep_title))
-						.show_checkbox(array('name' => 'intSiteEmptyPlugins', 'text' => __("Would you like to empty Active Plugins field?", 'lang_site_manager'), 'compare' => 1, 'value' => $obj_site_manager->empty_plugins))
+						echo show_select(array('data' => get_yes_no_for_select(), 'name' => 'strSiteKeepTitle', 'text' => __("Would you like to keep the original title of the receiving site?", 'lang_site_manager'), 'value' => $obj_site_manager->keep_title))
+						.show_select(array('data' => get_yes_no_for_select(), 'name' => 'strSiteEmptyPlugins', 'text' => __("Would you like to empty Active Plugins field?", 'lang_site_manager'), 'value' => $obj_site_manager->empty_plugins))
 						.show_checkbox(array('name' => 'intSiteCloneAccept', 'text' => __("Are you really sure? This will erase all previous data on the recieving site.", 'lang_site_manager'), 'value' => 1, 'required' => true));
 
 						if(is_plugin_active("mf_theme_core/index.php"))

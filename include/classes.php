@@ -385,11 +385,11 @@ class mf_site_manager
 
 		if(is_plugin_active("mf_backup/index.php"))
 		{
-			$this->site_backup = check_var('intSiteBackup', 'int', true);
+			$this->site_backup = check_var('intSiteBackup');
 		}
 
-		$this->keep_title = check_var('intSiteKeepTitle', 'int', true);
-		$this->empty_plugins = check_var('intSiteEmptyPlugins', 'int', true);
+		$this->keep_title = check_var('strSiteKeepTitle', 'char', true, 'yes');
+		$this->empty_plugins = check_var('strSiteEmptyPlugins', 'char', true, 'no');
 
 		// Change URL
 		$this->site_url = get_home_url();
@@ -536,7 +536,7 @@ class mf_site_manager
 							{
 								if($table_name_prefixless == "options")
 								{
-									if(isset($_POST['intSiteKeepTitle']) && $_POST['intSiteKeepTitle'] == 1)
+									if($this->keep_title == 'yes')
 									{
 										$strBlogName_orig = $wpdb->get_var("SELECT option_value FROM ".$table_name_to." WHERE option_name = 'blogname'");
 									}
@@ -559,13 +559,13 @@ class mf_site_manager
 									$wpdb->query("UPDATE ".$table_name_to." SET option_name = '".$strBasePrefixTo."user_roles' WHERE option_name = '".$strBasePrefixFrom."user_roles'");
 									$str_queries .= $wpdb->last_query.";\n";
 
-									if(isset($_POST['intSiteKeepTitle']) && $_POST['intSiteKeepTitle'] == 1)
+									if($this->keep_title == 'yes')
 									{
 										$wpdb->query("UPDATE ".$table_name_to." SET option_value = '".$strBlogName_orig."' WHERE option_name = 'blogname'");
 										$str_queries .= $wpdb->last_query.";\n";
 									}
 
-									if(isset($_POST['intSiteEmptyPlugins']) && $_POST['intSiteEmptyPlugins'] == 1)
+									if($this->empty_plugins == 'yes') //isset($_POST['intSiteEmptyPlugins']) && $_POST['intSiteEmptyPlugins'] == 1
 									{
 										$wpdb->query("UPDATE ".$table_name_to." SET option_value = '' WHERE option_name = 'active_plugins'");
 										$str_queries .= $wpdb->last_query.";\n";
