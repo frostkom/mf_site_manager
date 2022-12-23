@@ -11,11 +11,11 @@ class mf_site_manager
 	{
 		if(!isset($data['exclude'])){	$data['exclude'] = array();}
 
-		$result = get_sites(array('site__not_in' => $data['exclude'], 'deleted' => 0, 'orderby' => 'domain'));
-
 		$arr_data = array(
 			'' => "-- ".__("Choose Here", 'lang_site_manager')." --"
 		);
+
+		$result = get_sites(array('site__not_in' => $data['exclude'], 'deleted' => 0, 'orderby' => 'domain'));
 
 		foreach($result as $r)
 		{
@@ -33,12 +33,76 @@ class mf_site_manager
 	{
 		$arr_data = array();
 
-		$arr_themes = wp_get_themes(array('errors' => false, 'allowed' => true));
-
-		foreach($arr_themes as $key => $value)
+		foreach(wp_get_themes(array('errors' => false, 'allowed' => true)) as $key => $value)
 		{
 			$arr_data[$key] = $value['Name'];
 		}
+
+		return $arr_data;
+	}
+
+	function get_table_action_for_select()
+	{
+		$arr_data = array(
+			'' => "-- ".__("Choose Here", 'lang_site_manager')." --",
+			'create_copy' => __("Create Copy", 'lang_site_manager'),
+			'replace' => __("Replace", 'lang_site_manager'),
+		);
+
+		return $arr_data;
+	}
+
+	function get_tables_for_select()
+	{
+		global $wpdb, $obj_base;
+
+		$first_wp_table = "_commentmeta";
+
+		$arr_data = array(
+			'' => "-- ".__("Choose Here", 'lang_site_manager')." --",
+		);
+
+		$result = $wpdb->get_results("SHOW TABLES", ARRAY_N);
+
+		$table_prefix = "";
+		$table_size = 0;
+
+		foreach($result as $r)
+		{
+			$table_name = $r[0];
+
+			if(preg_match('/'.$first_wp_table.'$/', $table_name))
+			{
+				$table_prefix = str_replace($first_wp_table, "", $table_name);
+				$table_size = 0;
+			}
+			
+			$table_size += $wpdb->get_var($wpdb->prepare("SELECT (DATA_LENGTH + INDEX_LENGTH) FROM information_schema.TABLES WHERE table_schema = %s AND table_name = %s", DB_NAME, $table_name));
+
+			if($table_prefix != '')
+			{
+				if(is_multisite())
+				{
+					$site_id = str_replace($wpdb->base_prefix, "", $table_prefix);
+
+					if(!($site_id > 0))
+					{
+						$site_id = 1;
+					}
+
+					$site_name = get_blog_option($site_id, 'blogname');
+				}
+
+				else
+				{
+					$site_name = get_bloginfo('name');
+				}
+
+				$arr_data[$table_prefix] = $site_name." (".$table_prefix.", ".show_final_size($table_size).")";
+			}
+		}
+
+		$arr_data = $obj_base->array_sort(array('array' => $arr_data, 'order' => 'asc', 'keep_index' => true));
 
 		return $arr_data;
 	}
@@ -47,8 +111,20 @@ class mf_site_manager
 	{
 		global $pagenow;
 
+		$page = check_var('page');
+
+		$plugin_include_url = plugin_dir_url(__FILE__);
+		$plugin_version = get_plugin_version(__FILE__);
+
 		switch($pagenow)
 		{
+			case 'admin.php':
+				if($page == 'mf_site_manager/tables/index.php')
+				{
+					mf_enqueue_script('script_site_manager_tables', $plugin_include_url."script_wp_tables.js", $plugin_version); //, array('plugins_url' => plugins_url(), 'confirm_question' => __("Are you sure?", 'lang_form'))
+				}
+			break;
+
 			case 'my-sites.php':
 				if(is_multisite() && IS_SUPER_ADMIN)
 				{
@@ -57,19 +133,13 @@ class mf_site_manager
 			break;
 
 			case 'options-general.php':
-				if(check_var('page') == 'settings_mf_base')
+				if($page == 'settings_mf_base')
 				{
-					$plugin_include_url = plugin_dir_url(__FILE__);
-					$plugin_version = get_plugin_version(__FILE__);
-
 					mf_enqueue_script('script_site_manager_settings', $plugin_include_url."script_wp_settings.js", array('plugin_url' => $plugin_include_url, 'ajax_url' => admin_url('admin-ajax.php')), $plugin_version);
 				}
 			break;
 
 			case 'sites.php':
-				$plugin_include_url = plugin_dir_url(__FILE__);
-				$plugin_version = get_plugin_version(__FILE__);
-
 				mf_enqueue_script('script_site_manager_sites', $plugin_include_url."script_wp_sites.js", array('plugin_url' => $plugin_include_url, 'ajax_url' => admin_url('admin-ajax.php')), $plugin_version);
 			break;
 
@@ -85,9 +155,6 @@ class mf_site_manager
 
 					if($obj_theme_core->is_theme_active())
 					{
-						$plugin_include_url = plugin_dir_url(__FILE__);
-						$plugin_version = get_plugin_version(__FILE__);
-
 						// Disable changing theme
 						mf_enqueue_style('style_site_manager_themes', $plugin_include_url."style_wp_themes.css", $plugin_version);
 					}
@@ -95,7 +162,7 @@ class mf_site_manager
 			break;
 
 			default:
-				//do_log("Unknown page: ".$pagenow);
+				//do_log("Unknown page: ".$pagenow." -> ".$page);
 			break;
 		}
 	}
@@ -205,6 +272,9 @@ class mf_site_manager
 			}
 		}
 
+		$menu_title = __("Edit Tables", 'lang_site_manager');
+		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."tables/index.php");
+
 		$menu_title = __("Change URL", 'lang_site_manager');
 		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."change/index.php");
 
@@ -292,7 +362,7 @@ class mf_site_manager
 		$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->options." SET option_value = REPLACE(option_value, %s, %s) WHERE (option_name = 'home' OR option_name = 'siteurl')", $this->site_url_clean, $this->new_url_clean));
 		if($wpdb->rows_affected == 0){	$this->arr_errors[] = $wpdb->last_query;}
 
-		$wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." WHERE guid LIKE %s", "%".$this->site_url."% LIMIT 0, 1"));
+		$wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." WHERE guid LIKE %s LIMIT 0, 1", "%".$this->site_url."%"));
 
 		if($wpdb->num_rows > 0)
 		{
@@ -300,7 +370,7 @@ class mf_site_manager
 			if($wpdb->rows_affected == 0){	$this->arr_errors[] = $wpdb->last_query;}
 		}
 
-		$wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." WHERE post_content LIKE %s", "%".$this->site_url."% LIMIT 0, 1"));
+		$wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." WHERE post_content LIKE %s LIMIT 0, 1", "%".$this->site_url."%"));
 
 		if($wpdb->num_rows > 0)
 		{
@@ -308,7 +378,7 @@ class mf_site_manager
 			if($wpdb->rows_affected == 0){	$this->arr_errors[] = $wpdb->last_query;}
 		}
 
-		$wpdb->get_results($wpdb->prepare("SELECT meta_id FROM ".$wpdb->postmeta." WHERE meta_value LIKE %s", "%".$this->site_url."% LIMIT 0, 1"));
+		$wpdb->get_results($wpdb->prepare("SELECT meta_id FROM ".$wpdb->postmeta." WHERE meta_value LIKE %s LIMIT 0, 1", "%".$this->site_url."%"));
 
 		if($wpdb->num_rows > 0)
 		{
@@ -380,9 +450,10 @@ class mf_site_manager
 	###########################
 	function fetch_request()
 	{
-		// Clone
+		// Clone / Switch
 		$this->blog_id = check_var('intBlogID');
 
+		// Clone
 		if(is_plugin_active("mf_backup/index.php"))
 		{
 			$this->site_backup = check_var('intSiteBackup');
@@ -401,15 +472,36 @@ class mf_site_manager
 		// Copy Diff
 		$this->compare_site_url = check_var('strSiteURL');
 		$this->compare_site_key = check_var('intSiteKey');
+
+		// Theme
+		$this->site_theme = check_var('strSiteTheme');
+
+		$this->arr_themes = $this->get_themes_for_select();
+		$this->current_theme = get_option('stylesheet');
+
+		// Edit Tables
+		$this->table_action = check_var('strTableAction');
+		$this->table_prefix = check_var('strTablePrefix');
+		$this->table_prefix_destination = check_var('strTablePrefixDestination');
 	}
 
 	function save_data()
 	{
 		global $wpdb, $error_text, $done_text;
 
-		if(isset($_POST['btnSiteChangeUrl']) && isset($_POST['intSiteChangeUrlAccept']) && $_POST['intSiteChangeUrlAccept'] == 1 && wp_verify_nonce($_POST['_wpnonce_site_change_url'], 'site_change_url_'.$wpdb->blogid.'_'.get_current_user_id()))
+		if(isset($_POST['btnSiteChangeUrl']))
 		{
-			if($this->new_url != $this->site_url || defined('WP_HOME'))
+			if(!(isset($_POST['intSiteChangeUrlAccept']) && $_POST['intSiteChangeUrlAccept'] == 1))
+			{
+				$error_text = __("You have to check the box to agree to change the URL", 'lang_site_manager');
+			}
+
+			else if(!wp_verify_nonce($_POST['_wpnonce_site_change_url'], 'site_change_url_'.$wpdb->blogid.'_'.get_current_user_id()))
+			{
+				$error_text = __("I could not verify that you were allowed to change the URL. I this problem persists, please contact an admin", 'lang_site_manager');
+			}
+
+			else if($this->new_url != $this->site_url || defined('WP_HOME'))
 			{
 				$this->arr_errors = array();
 
@@ -445,9 +537,19 @@ class mf_site_manager
 			}
 		}
 
-		else if(isset($_POST['btnSiteClone']) && isset($_POST['intSiteCloneAccept']) && $_POST['intSiteCloneAccept'] == 1 && wp_verify_nonce($_POST['_wpnonce_site_clone'], 'site_clone_'.$wpdb->blogid.'_'.get_current_user_id()))
+		else if(isset($_POST['btnSiteClone']))
 		{
-			if($this->blog_id > 0 && $this->blog_id != $wpdb->blogid)
+			if(!(isset($_POST['intSiteCloneAccept']) && $_POST['intSiteCloneAccept'] == 1))
+			{
+				$error_text = __("You have to check the box to agree to clone the site", 'lang_site_manager');
+			}
+
+			else if(!wp_verify_nonce($_POST['_wpnonce_site_clone'], 'site_clone_'.$wpdb->blogid.'_'.get_current_user_id()))
+			{
+				$error_text = __("I could not verify that you were allowed to clone the site. I this problem persists, please contact an admin", 'lang_site_manager');
+			}
+
+			else if($this->blog_id > 0 && $this->blog_id != $wpdb->blogid)
 			{
 				if(is_plugin_active("mf_backup/index.php") && $this->site_backup == 1)
 				{
@@ -693,6 +795,428 @@ class mf_site_manager
 				}
 			}
 		}
+
+		else if(isset($_POST['btnSiteSwitch']))
+		{
+			if(!(isset($_POST['intSiteSwitchAccept']) && $_POST['intSiteSwitchAccept'] == 1))
+			{
+				$error_text = __("You have to check the box to agree that the sites should be switched", 'lang_site_manager');
+			}
+
+			else if(!wp_verify_nonce($_POST['_wpnonce_site_switch'], 'site_switch_'.$wpdb->blogid.'_'.get_current_user_id()))
+			{
+				$error_text = __("I could not verify that you were allowed to switch sites. I this problem persists, please contact an admin", 'lang_site_manager');
+			}
+
+			else if($this->blog_id > 0 && $this->blog_id != $wpdb->blogid)
+			{
+				$str_queries = "";
+
+				$strBasePrefixFrom = $wpdb->prefix;
+				$strBlogDomainFrom = get_site_url_clean(array('trim' => "/"));
+
+				$arr_tables_from = array();
+
+				$result = $wpdb->get_results("SHOW TABLES LIKE '".$strBasePrefixFrom."%'");
+				$str_queries .= $wpdb->last_query.";\n";
+
+				foreach($result as $r)
+				{
+					foreach($r as $s)
+					{
+						$arr_tables_from[] = $s;
+					}
+				}
+
+				$strBasePrefixTo = ($this->blog_id > 1 ? $wpdb->base_prefix.$this->blog_id."_" : $wpdb->base_prefix);
+				$strBlogDomainTo = get_site_url_clean(array('id' => $this->blog_id, 'trim' => "/"));
+
+				$strBlogDomain_temp = "mf_cloner.com";
+				$arr_tables_to = array();
+
+				$result = $wpdb->get_results("SHOW TABLES LIKE '".$strBasePrefixTo."%'");
+				$str_queries .= $wpdb->last_query.";\n";
+
+				foreach($result as $r)
+				{
+					foreach($r as $s)
+					{
+						$arr_tables_to[] = $s;
+					}
+				}
+
+				$str_queries .= "# Tables: ".count($arr_tables_from)." -> ".count($arr_tables_to)."\n";
+
+				if(count($arr_tables_from) == 0 || count($arr_tables_to) == 0)
+				{
+					$error_text = __("There appears to be no tables on either of the sites", 'lang_site_manager')." (".$strBasePrefixFrom.": ".count($arr_tables_from)." -> ".$strBasePrefixTo.": ".count($arr_tables_to).")";
+				}
+
+				else
+				{
+					//Step 1
+					$wpdb->query("UPDATE ".$wpdb->blogs." SET domain = REPLACE(domain, '".$strBlogDomainFrom."', '".$strBlogDomain_temp."') WHERE domain LIKE '%".$strBlogDomainFrom."%'");
+
+					//Step 2
+					$wpdb->query("UPDATE ".$wpdb->blogs." SET domain = REPLACE(domain, '".$strBlogDomainTo."', '".$strBlogDomainFrom."') WHERE domain LIKE '%".$strBlogDomainTo."%'");
+
+					//Step 3
+					$wpdb->query("UPDATE ".$wpdb->blogs." SET domain = REPLACE(domain, '".$strBlogDomain_temp."', '".$strBlogDomainTo."') WHERE domain LIKE '%".$strBlogDomain_temp."%'");
+
+					//Step 1
+					foreach($arr_tables_from as $r)
+					{
+						$table_name = $r;
+						$domain_from = $strBlogDomainFrom;
+						$domain_to = $strBlogDomain_temp;
+
+						if(substr($table_name, -5) == "posts")
+						{
+							$wpdb->query("UPDATE ".$table_name." SET guid = REPLACE(guid, '".$domain_from."', '".$domain_to."'), post_content = REPLACE(post_content, '".$domain_from."', '".$domain_to."')");
+							$str_queries .= $wpdb->last_query.";\n";
+						}
+
+						else if(substr($table_name, -7) == "options")
+						{
+							$wpdb->query("UPDATE ".$table_name." SET option_value = REPLACE(option_value, '".$domain_from."', '".$domain_to."') WHERE (option_name = 'home' OR option_name = 'siteurl')");
+							$str_queries .= $wpdb->last_query.";\n";
+
+							$wpdb->query("UPDATE ".$table_name." SET option_name = '".$strBasePrefixTo."user_roles' WHERE option_name = '".$strBasePrefixFrom."user_roles'");
+							$str_queries .= $wpdb->last_query.";\n";
+						}
+					}
+
+					//Step 2
+					foreach($arr_tables_to as $r)
+					{
+						$table_name = $r;
+						$domain_from = $strBlogDomainTo;
+						$domain_to = $strBlogDomainFrom;
+
+						if(substr($table_name, -5) == "posts")
+						{
+							$wpdb->query("UPDATE ".$table_name." SET guid = REPLACE(guid, '".$domain_from."', '".$domain_to."'), post_content = REPLACE(post_content, '".$domain_from."', '".$domain_to."')");
+							$str_queries .= $wpdb->last_query.";\n";
+						}
+
+						else if(substr($table_name, -7) == "options")
+						{
+							$wpdb->query("UPDATE ".$table_name." SET option_value = REPLACE(option_value, '".$domain_from."', '".$domain_to."') WHERE (option_name = 'home' OR option_name = 'siteurl')");
+							$str_queries .= $wpdb->last_query.";\n";
+						}
+					}
+
+					//Step 3
+					foreach($arr_tables_from as $r)
+					{
+						$table_name = $r;
+						$domain_from = $strBlogDomain_temp;
+						$domain_to = $strBlogDomainTo;
+
+						if(substr($table_name, -5) == "posts")
+						{
+							$wpdb->query("UPDATE ".$table_name." SET guid = REPLACE(guid, '".$domain_from."', '".$domain_to."'), post_content = REPLACE(post_content, '".$domain_from."', '".$domain_to."')");
+							$str_queries .= $wpdb->last_query.";\n";
+						}
+
+						else if(substr($table_name, -7) == "options")
+						{
+							$wpdb->query("UPDATE ".$table_name." SET option_value = REPLACE(option_value, '".$domain_from."', '".$domain_to."') WHERE (option_name = 'home' OR option_name = 'siteurl')");
+							$str_queries .= $wpdb->last_query.";\n";
+						}
+					}
+
+					do_action('do_switch_sites', array('from' => $wpdb->blogid, 'to' => $this->blog_id));
+
+					$done_text = __("I have switched all the data on the two domain as you requested.", 'lang_site_manager')." (".$strBasePrefixFrom." -> ".$strBasePrefixTo.")";
+					//$done_text .= " [".nl2br($str_queries)."]";
+
+					do_log(sprintf("%s switched %s with %s", get_user_info(), $strBlogDomainFrom, $strBlogDomainTo), 'notification');
+				}
+			}
+
+			else
+			{
+				$error_text = __("You have to choose a site other than this site", 'lang_site_manager');
+			}
+		}
+
+		else if(isset($_POST['btnSiteChangeTheme']))
+		{
+			$old_theme = $this->current_theme;
+			$new_theme = $this->site_theme;
+
+			if(!(isset($_POST['intSiteChangeThemeAccept']) && $_POST['intSiteChangeThemeAccept'] == 1))
+			{
+				$error_text = __("You have to check the box to agree that the theme should be changed", 'lang_site_manager');
+			}
+
+			else if(!wp_verify_nonce($_POST['_wpnonce_site_change_theme'], 'site_change_theme_'.$wpdb->blogid.'_'.get_current_user_id()))
+			{
+				$error_text = __("I could not verify that you were allowed to switch theme on this site. I this problem persists, please contact an admin", 'lang_site_manager');
+			}
+
+			else if(!isset($this->arr_themes[$new_theme]))
+			{
+				$error_text = __("You have to choose a theme that is allowed for this site", 'lang_site_manager');
+			}
+
+			else if($new_theme == $old_theme)
+			{
+				$error_text = __("You have to choose another theme than the current one", 'lang_site_manager');
+			}
+
+			else
+			{
+				$arr_errors = array();
+
+				update_option('stylesheet', $new_theme, 'no');
+
+				//Make sure it doesn't already exist before trying to use it since it'll return a duplicate error if that is the case
+				$wpdb->query("DELETE FROM ".$wpdb->options." WHERE option_name = 'theme_mods_".$new_theme."'");
+
+				$wpdb->query("UPDATE ".$wpdb->options." SET option_name = 'theme_mods_".$new_theme."' WHERE option_name = 'theme_mods_".$old_theme."'");
+				if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
+
+				$count_temp = count($arr_errors);
+
+				if($count_temp > 0)
+				{
+					update_option('stylesheet', $old_theme, 'no');
+
+					$error_text = sprintf(__("I executed your request but there were %d errors so you need to manually update the database", 'lang_site_manager'), $count_temp);
+
+					do_log("Change Theme Errors: ".var_export($arr_errors, true));
+				}
+
+				else
+				{
+					$done_text = sprintf(__("I have changed the theme from %s to %s", 'lang_site_manager'), $this->arr_themes[$old_theme], $this->arr_themes[$new_theme]);
+
+					do_log(sprintf("%s changed theme from %s to %s", get_user_info(), $old_theme, $new_theme), 'notification');
+				}
+			}
+		}
+
+		else if(isset($_POST['btnEditTable']))
+		{
+			if(!(isset($_POST['intEditTableAccept']) && $_POST['intEditTableAccept'] == 1))
+			{
+				$error_text = __("You have to check the box to agree to perform the action that you have chosen", 'lang_site_manager');
+			}
+
+			else if(!wp_verify_nonce($_POST['_wpnonce_edit_table'], 'edit_table_'.$wpdb->blogid.'_'.get_current_user_id()))
+			{
+				$error_text = __("I could not verify that you were allowed to perform the action that you were requesting. I this problem persists, please contact an admin", 'lang_site_manager');
+			}
+
+			else
+			{
+				switch($this->table_action)
+				{
+					case 'create_copy':
+						$table_prefix_destination = $this->table_prefix."_copy".date("ymd");
+
+						$result = $wpdb->get_results("SHOW TABLES LIKE '".$this->table_prefix."%'", ARRAY_N);
+
+						foreach($result as $r)
+						{
+							$table_source = $r[0];
+							$table_destination = str_replace($this->table_prefix, $table_prefix_destination, $table_source);
+
+							if(does_table_exist($table_destination))
+							{
+								$error_text = sprintf(__("The table %s already exists", 'lang_site_manager'), $table_destination);
+
+								break;
+							}
+
+							else
+							{
+								$wpdb->query("CREATE TABLE ".$table_destination." LIKE ".$table_source);
+								$wpdb->query("INSERT ".$table_destination." SELECT * FROM ".$table_source);
+							}
+						}
+
+						if($error_text == '')
+						{
+							$done_text = __("I have copied all the tables for you", 'lang_site_manager');
+						}
+					break;
+
+					case 'replace':
+						if($this->table_prefix == $this->table_prefix_destination)
+						{
+							$error_text = __("You have to choose another destination than the source table", 'lang_site_manager');
+						}
+
+						else
+						{
+							$site_id = str_replace($wpdb->base_prefix, "", $this->table_prefix);
+							$site_url = get_blog_option($site_id, 'siteurl'); //home
+							$site_url_clean = remove_protocol(array('url' => $site_url, 'clean' => true));
+
+							$new_id = str_replace($wpdb->base_prefix, "", $this->table_prefix_destination);
+							$new_url = get_blog_option($new_id, 'siteurl'); //home
+							$new_url_clean = remove_protocol(array('url' => $new_url, 'clean' => true));
+
+							$table_prefix_backup = $this->table_prefix."_backup".date("ymd");
+
+							$result = $wpdb->get_results("SHOW TABLES LIKE '".$this->table_prefix_destination."%'", ARRAY_N);
+
+							foreach($result as $r)
+							{
+								$table_name = $r[0];
+								$table_name_backup = str_replace($this->table_prefix_destination, $table_prefix_backup, $table_name);
+
+								if(does_table_exist($table_name_backup))
+								{
+									//$done_text = "Drop ".$table_name.", ";
+									$wpdb->query("DROP TABLE IF EXISTS ".$table_name);
+								}
+
+								else
+								{
+									$wpdb->query("ALTER TABLE ".$table_name." RENAME ".$table_name_backup);
+								}
+							}
+
+							$arr_errors = array();
+
+							$result = $wpdb->get_results("SHOW TABLES LIKE '".$this->table_prefix."%'", ARRAY_N);
+
+							foreach($result as $r)
+							{
+								$table_source = $r[0];
+								$table_destination = str_replace($this->table_prefix, $this->table_prefix_destination, $table_source);
+
+								if(does_table_exist($table_destination))
+								{
+									$error_text = sprintf(__("The table %s already exists", 'lang_site_manager'), $table_destination);
+
+									break;
+								}
+
+								else
+								{
+									//$done_text = "Create and insert ".$table_source." -> ".$table_destination.", ";
+									$wpdb->query("CREATE TABLE ".$table_destination." LIKE ".$table_source);
+									$wpdb->query("INSERT ".$table_destination." SELECT * FROM ".$table_source);
+
+									switch(str_replace($this->table_prefix_destination, "", $table_destination))
+									{
+										case 'options':
+											$wpdb->query($wpdb->prepare("UPDATE ".$table_destination." SET option_value = REPLACE(option_value, %s, %s) WHERE (option_name = 'home' OR option_name = 'siteurl')", $site_url_clean, $new_url_clean));
+											if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
+											
+											$result = $wpdb->get_results($wpdb->prepare("SELECT option_id, option_name FROM ".$table_destination." WHERE option_name LIKE %s AND option_value LIKE %s", "widget_%", "%".$site_url."%"));
+
+											if($wpdb->num_rows > 0)
+											{
+												foreach($result as $r)
+												{
+													$option_id = $r->option_id;
+													$option_name = $r->option_name;
+
+													$option_value = get_option($option_name);
+
+													if(is_array($option_value))
+													{
+														foreach($option_value as $key => $value)
+														{
+															$option_value[$key] = str_replace($site_url, $new_url, $value);
+														}
+													}
+
+													else
+													{
+														$option_value = str_replace($site_url, $new_url, $option_value);
+													}
+
+													update_option($option_name, $option_value);
+												}
+											}
+										break;
+
+										case 'posts':
+											$wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$table_destination." WHERE guid LIKE %s LIMIT 0, 1", "%".$site_url."%"));
+
+											if($wpdb->num_rows > 0)
+											{
+												$wpdb->query($wpdb->prepare("UPDATE ".$table_destination." SET guid = replace(guid, %s, %s)", $site_url, $new_url));
+												if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
+											}
+
+											$wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$table_destination." WHERE post_content LIKE %s LIMIT 0, 1", "%".$site_url."%"));
+
+											if($wpdb->num_rows > 0)
+											{
+												$wpdb->query($wpdb->prepare("UPDATE ".$table_destination." SET post_content = replace(post_content, %s, %s)", $site_url, $new_url));
+												if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
+											}
+										break;
+
+										case 'postmeta':
+											$wpdb->get_results($wpdb->prepare("SELECT meta_id FROM ".$table_destination." WHERE meta_value LIKE %s LIMIT 0, 1", "%".$site_url."%"));
+
+											if($wpdb->num_rows > 0)
+											{
+												$wpdb->query($wpdb->prepare("UPDATE ".$table_destination." SET meta_value = replace(meta_value, %s, %s)", $site_url, $new_url));
+												if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
+											}
+										break;
+									}
+
+									/*function change_theme_mods()
+									{
+										$arr_theme_mods = get_theme_mods();
+
+										if(is_array($arr_theme_mods))
+										{
+											foreach($arr_theme_mods as $key => $value)
+											{
+												if(is_object($value) || is_array($value))
+												{
+													// What now?
+												}
+
+												else
+												{
+													$value_new = str_replace($site_url, $new_url, $value);
+
+													if($value_new != $value)
+													{
+														set_theme_mod($key, $value_new);
+													}
+												}
+											}
+										}
+									}*/
+								}
+							}
+
+							$count_temp = count($arr_errors);
+
+							if($count_temp > 0)
+							{
+								$error_text = sprintf(__("I executed your request but there were %d errors so you need to manually update the database", 'lang_site_manager'), $count_temp);
+
+								do_log("Errors while changing URL: ".var_export($arr_errors, true));
+							}
+
+							if($error_text == '')
+							{
+								$done_text = __("I have copied all the tables for you", 'lang_site_manager');
+							}
+						}
+					break;
+
+					default:
+						do_log("The action ".$this->table_action." needs to be dealt with...");
+					break;
+				}
+			}
+		}
 	}
 	###########################
 
@@ -901,10 +1425,9 @@ class mf_site_manager
 		);
 
 		// Themes
-		$arr_themes = wp_get_themes();
 		$arr_themes_this_site = array();
 
-		foreach($arr_themes as $key => $value)
+		foreach(wp_get_themes() as $key => $value)
 		{
 			$arr_data = array();
 
