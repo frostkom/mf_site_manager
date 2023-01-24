@@ -76,7 +76,7 @@ class mf_site_manager
 				$table_prefix = str_replace($first_wp_table, "", $table_name);
 				$table_size = 0;
 			}
-			
+
 			$table_size += $wpdb->get_var($wpdb->prepare("SELECT (DATA_LENGTH + INDEX_LENGTH) FROM information_schema.TABLES WHERE table_schema = %s AND table_name = %s", DB_NAME, $table_name));
 
 			if($table_prefix != '')
@@ -167,6 +167,33 @@ class mf_site_manager
 		}
 	}
 
+	function admin_notices()
+	{
+		global $done_text, $error_text;
+
+		$setting_server_ip_target = get_option('setting_server_ip_target');
+
+		if($setting_server_ip_target != '')
+		{
+			$setting_server_ip = get_option('setting_server_ip');
+			//$setting_server_ip = $this->get_server_ip();
+
+			if($setting_server_ip == $setting_server_ip_target)
+			{
+				$done_text = sprintf(__("This is the new server and now the setting can be removed %shere%s", 'lang_site_manager'), "<a href='".admin_url("options-general.php?page=settings_mf_base#settings_site_manager")."'>", "</a>");
+			}
+
+			else
+			{
+				$error_text = sprintf(__("This is the old server and you can find the setting %shere%s", 'lang_site_manager'), "<a href='".admin_url("options-general.php?page=settings_mf_base#settings_site_manager")."'>", "</a>");
+
+				$error_text .= " (".$setting_server_ip." != ".$setting_server_ip_target.")";
+			}
+
+			echo get_notification();
+		}
+	}
+
 	function settings_site_manager()
 	{
 		if(IS_SUPER_ADMIN)
@@ -177,6 +204,7 @@ class mf_site_manager
 
 			$arr_settings = array();
 			$arr_settings['setting_server_ip'] = __("Server IP", 'lang_site_manager');
+			$arr_settings['setting_server_ip_target'] = __("Target Server IP", 'lang_site_manager');
 			$arr_settings['setting_server_ips_allowed'] = __("Server IPs allowed", 'lang_site_manager');
 			$arr_settings['setting_site_comparison'] = __("Sites to compare with", 'lang_site_manager');
 
@@ -213,6 +241,14 @@ class mf_site_manager
 			.show_button(array('type' => 'button', 'name' => 'btnGetServerIP', 'text' => __("Get Server IP", 'lang_site_manager'), 'class' => 'button-secondary'))
 		."</div>
 		<div id='ip_debug'></div>";
+	}
+
+	function setting_server_ip_target_callback()
+	{
+		$setting_key = get_setting_key(__FUNCTION__);
+		$option = get_option($setting_key);
+
+		echo show_textfield(array('name' => $setting_key, 'value' => $option));
 	}
 
 	function setting_server_ips_allowed_callback()
@@ -1108,7 +1144,7 @@ class mf_site_manager
 										case 'options':
 											$wpdb->query($wpdb->prepare("UPDATE ".$table_destination." SET option_value = REPLACE(option_value, %s, %s) WHERE (option_name = 'home' OR option_name = 'siteurl')", $site_url_clean, $new_url_clean));
 											if($wpdb->rows_affected == 0){	$arr_errors[] = $wpdb->last_query;}
-											
+
 											$result = $wpdb->get_results($wpdb->prepare("SELECT option_id, option_name FROM ".$table_destination." WHERE option_name LIKE %s AND option_value LIKE %s", "widget_%", "%".$site_url."%"));
 
 											if($wpdb->num_rows > 0)
