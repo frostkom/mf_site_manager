@@ -121,7 +121,7 @@ class mf_site_manager
 			case 'admin.php':
 				if($page == 'mf_site_manager/tables/index.php')
 				{
-					mf_enqueue_script('script_site_manager_tables', $plugin_include_url."script_wp_tables.js", $plugin_version); //, array('plugins_url' => plugins_url(), 'confirm_question' => __("Are you sure?", 'lang_form'))
+					mf_enqueue_script('script_site_manager_tables', $plugin_include_url."script_wp_tables.js", $plugin_version); //, array('plugins_url' => plugins_url(), 'confirm_question' => __("Are you sure?", 'lang_site_manager'))
 				}
 			break;
 
