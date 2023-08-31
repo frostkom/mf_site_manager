@@ -2,9 +2,33 @@
 
 class mf_site_manager
 {
+	var $arr_core = array();
+	var $arr_themes = array();
+	var $arr_plugins = array();
+	var $arr_sites = array();
+	var $arr_sites_error = array();
+	var $server_ip_old = "";
+	var $server_ip_new = "";
+	var $arr_errors = array();
+	var $blog_id = "";
+	var $site_backup = "";
+	var $keep_title = "";
+	var $empty_plugins = "";
+	var $site_url = "";
+	var $new_url = "";
+	var $site_url_clean = "";
+	var $new_url_clean = "";
+	var $compare_site_url = "";
+	var $compare_site_key = "";
+	var $site_theme = "";
+	var $current_theme = "";
+	var $table_action = "";
+	var $table_prefix = "";
+	var $table_prefix_destination = "";
+
 	function __construct()
 	{
-		$this->arr_core = $this->arr_themes = $this->arr_plugins = $this->arr_sites = $this->arr_sites_error = array();
+		//$this->arr_core = $this->arr_themes = $this->arr_plugins = $this->arr_sites = $this->arr_sites_error = array();
 	}
 
 	function get_sites_for_select($data = array())
