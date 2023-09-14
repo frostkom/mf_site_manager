@@ -2,6 +2,16 @@ jQuery(function($)
 {
 	function run_ajax(obj)
 	{
+		if(obj.button.is("a"))
+		{
+			obj.button.addClass('hide');
+		}
+
+		else
+		{
+			obj.button.addClass('is_disabled');
+		}
+
 		obj.selector.html("<i class='fa fa-spinner fa-spin fa-2x'></i>");
 
 		$.ajax(
@@ -15,16 +25,6 @@ jQuery(function($)
 			success: function(data)
 			{
 				obj.selector.empty();
-
-				if(obj.button.is("a"))
-				{
-					obj.button.addClass('hide');
-				}
-
-				else
-				{
-					obj.button.addClass('is_disabled'); /*.attr('disabled', true)*/
-				}
 
 				if(data.success)
 				{
@@ -41,7 +41,7 @@ jQuery(function($)
 		return false;
 	}
 
-	$(document).on('click', "button[name='btnGetServerIP']", function(e)
+	$(document).on('click', "button[name='btnGetServerIP']:not(.is_disabled)", function(e)
 	{
 		run_ajax(
 		{
