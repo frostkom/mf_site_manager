@@ -2069,7 +2069,7 @@ class mf_site_manager
 		{
 			case 200:
 				$json_content = json_decode($content, true);
-				$this->server_ip_new = $json_content['ip'];
+				$this->server_ip_new = (isset($json_content['ip']) ? $json_content['ip'] : "");
 
 				do_log($log_message, 'trash');
 			break;
