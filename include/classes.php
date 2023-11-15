@@ -1390,6 +1390,12 @@ class mf_site_manager
 										$title = $arr_value['name'];
 									break;
 
+									case 'open':
+										$color = ($option == 'open' ? "green" : "red");
+										$icon = $arr_value['icon'];
+										$title = $arr_value['name'];
+									break;
+
 									case 'post':
 										$color = ($option > 0 ? "green" : "red");
 										$icon = $arr_value['icon'];
