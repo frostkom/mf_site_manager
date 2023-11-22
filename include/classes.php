@@ -152,7 +152,7 @@ class mf_site_manager
 			case 'my-sites.php':
 				if(is_multisite() && IS_SUPER_ADMIN)
 				{
-					mf_redirect(network_admin_url("sites.php?status=public"));
+					mf_redirect(network_admin_url("sites.php")); //?status=public // Removed because this will also filter out active not published sites
 				}
 			break;
 
