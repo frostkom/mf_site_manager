@@ -13,6 +13,7 @@ class mf_site_manager
 	var $blog_id = "";
 	var $site_backup = "";
 	var $keep_title = "";
+	var $keep_language;
 	var $empty_plugins = "";
 	var $site_url = "";
 	var $new_url = "";
@@ -26,10 +27,7 @@ class mf_site_manager
 	var $table_prefix = "";
 	var $table_prefix_destination = "";
 
-	function __construct()
-	{
-		//$this->arr_core = $this->arr_themes = $this->arr_plugins = $this->arr_sites = $this->arr_sites_error = array();
-	}
+	function __construct(){}
 
 	function get_sites_for_select($data = array())
 	{
@@ -520,6 +518,7 @@ class mf_site_manager
 		}
 
 		$this->keep_title = check_var('strSiteKeepTitle', 'char', true, 'yes');
+		$this->keep_language = check_var('strSiteKeepLanguage', 'char', true, 'yes');
 		$this->empty_plugins = check_var('strSiteEmptyPlugins', 'char', true, 'no');
 
 		// Change URL
@@ -702,6 +701,11 @@ class mf_site_manager
 									{
 										$strBlogName_orig = $wpdb->get_var("SELECT option_value FROM ".$table_name_to." WHERE option_name = 'blogname'");
 									}
+									
+									if($this->keep_language == 'yes')
+									{
+										$strBlogLanguage_orig = $wpdb->get_var("SELECT option_value FROM ".$table_name_to." WHERE option_name = 'WPLANG'");
+									}
 								}
 
 								$wpdb->query("DROP TABLE IF EXISTS ".$table_name_to);
@@ -724,6 +728,12 @@ class mf_site_manager
 									if($this->keep_title == 'yes')
 									{
 										$wpdb->query("UPDATE ".$table_name_to." SET option_value = '".$strBlogName_orig."' WHERE option_name = 'blogname'");
+										$str_queries .= $wpdb->last_query.";\n";
+									}
+
+									if($this->keep_language == 'yes')
+									{
+										$wpdb->query("UPDATE ".$table_name_to." SET option_value = '".$strBlogLanguage_orig."' WHERE option_name = 'WPLANG'");
 										$str_queries .= $wpdb->last_query.";\n";
 									}
 

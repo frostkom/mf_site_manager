@@ -26,6 +26,7 @@ echo "<div class='wrap'>
 						}
 
 						echo show_select(array('data' => get_yes_no_for_select(), 'name' => 'strSiteKeepTitle', 'text' => __("Would you like to keep the original title of the receiving site?", 'lang_site_manager'), 'value' => $obj_site_manager->keep_title))
+						.show_select(array('data' => get_yes_no_for_select(), 'name' => 'strSiteKeepLanguage', 'text' => __("Would you like to keep the original language of the receiving site?", 'lang_site_manager'), 'value' => $obj_site_manager->keep_language))
 						.show_select(array('data' => get_yes_no_for_select(), 'name' => 'strSiteEmptyPlugins', 'text' => __("Would you like to empty Active Plugins field?", 'lang_site_manager'), 'value' => $obj_site_manager->empty_plugins))
 						.show_checkbox(array('name' => 'intSiteCloneAccept', 'text' => __("Are you really sure? This will erase all previous data on the recieving site.", 'lang_site_manager'), 'value' => 1, 'required' => true));
 
