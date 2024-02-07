@@ -166,21 +166,21 @@ class mf_site_manager
 			break;
 
 			case 'themes.php':
-				if(is_plugin_active("mf_theme_core/index.php"))
+				/*if(is_plugin_active("mf_theme_core/index.php"))
 				{
 					global $obj_theme_core;
 
 					if(!isset($obj_theme_core))
 					{
 						$obj_theme_core = new mf_theme_core();
-					}
+					}*/
 
-					if($obj_theme_core->is_theme_active())
+					if(apply_filters('is_theme_active', false)) //$obj_theme_core->is_theme_active()
 					{
 						// Disable changing theme
 						mf_enqueue_style('style_site_manager_themes', $plugin_include_url."style_wp_themes.css", $plugin_version);
 					}
-				}
+				//}
 			break;
 
 			default:
@@ -701,7 +701,7 @@ class mf_site_manager
 									{
 										$strBlogName_orig = $wpdb->get_var("SELECT option_value FROM ".$table_name_to." WHERE option_name = 'blogname'");
 									}
-									
+
 									if($this->keep_language == 'yes')
 									{
 										$strBlogLanguage_orig = $wpdb->get_var("SELECT option_value FROM ".$table_name_to." WHERE option_name = 'WPLANG'");
