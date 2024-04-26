@@ -1292,6 +1292,21 @@ class mf_site_manager
 
 	/* Admin */
 	###########################
+	function filter_sites_table_pages($arr_pages)
+	{
+		$arr_pages['post'] = array(
+			'icon' => "fas fa-thumbtack",
+			'title' => __("Posts", 'lang_site_manager'),
+		);
+
+		$arr_pages['page'] = array(
+			'icon' => "fas fa-copy",
+			'title' => __("Pages", 'lang_site_manager'),
+		);
+
+		return $arr_pages;
+	}
+
 	function manage_plugins_columns($cols)
 	{
 		if(IS_SUPER_ADMIN)
@@ -1350,12 +1365,15 @@ class mf_site_manager
 	{
 		$cols['ssl'] = __("SSL", 'lang_site_manager');
 		$cols['settings'] = __("Settings", 'lang_site_manager');
+		$cols['pages'] = __("Pages", 'lang_site_manager');
 
 		return $cols;
 	}
 
 	function sites_column_cell($col, $id)
 	{
+		global $wpdb;
+
 		if(get_blog_status($id, 'deleted') == 0 && get_blog_status($id, 'archived') == 0)
 		{
 			switch($col)
@@ -1452,6 +1470,33 @@ class mf_site_manager
 						<div class='row-actions'>"
 							."<a class='toggle_all' href='#'>".__("Toggle All", 'lang_site_manager')."</a>"
 						."</div>";
+					}
+				break;
+
+				case 'pages':
+					$arr_pages = apply_filters('filter_sites_table_pages', array());
+
+					if(count($arr_pages) > 0)
+					{
+						echo "<div class='nowrap'>";
+
+							foreach($arr_pages as $key => $arr_value)
+							{
+								switch_to_blog($id);
+							
+								$amount = $wpdb->get_var($wpdb->prepare("SELECT COUNT(ID) FROM ".$wpdb->posts." WHERE post_type = %s AND post_status = %s", $key, 'publish'));
+
+								if($amount > 0)
+								{
+									echo "<a href='".get_admin_url($id, "edit.php?post_type=".$key)."'>"
+										." <i class='".$arr_value['icon']." ".($amount > 0 ? "green" : "grey")."' title='".$arr_value['title']." (".$amount.")'></i>"
+									."</a>";
+								}
+
+								restore_current_blog();
+							}
+
+						echo "</div>";
 					}
 				break;
 			}
