@@ -23,7 +23,7 @@ echo "<div class='wrap'>
 		echo "<table class='widefat striped'>";
 
 			$arr_header[] = __("Name", 'lang_site_manager');
-			$arr_header[] = __("Version", 'lang_site_manager');
+			$arr_header[] = __("This Site", 'lang_site_manager');
 
 			foreach($obj_site_manager->arr_sites as $site)
 			{
@@ -49,7 +49,7 @@ echo "<div class='wrap'>
 					{
 						$out .= "<td>";
 
-							if(isset($obj_site_manager->arr_core[$site]))
+							if(isset($obj_site_manager->arr_core[$site]) && is_array($obj_site_manager->arr_core[$site]))
 							{
 								$version_check = $obj_site_manager->arr_core[$site]['version'];
 								$obj_site_manager->is_multisite = $obj_site_manager->arr_core[$site]['is_multisite'];
@@ -64,7 +64,7 @@ echo "<div class='wrap'>
 
 							else
 							{
-								$out .= __("Does not support this", 'lang_site_manager');
+								$out .= __("Does not support this", 'lang_site_manager')." (".var_export($obj_site_manager->arr_core, true).")";
 
 								$has_equal_version = false;
 							}
@@ -233,6 +233,20 @@ echo "<div class='wrap'>
 				{
 					echo "<tr><td colspan='".count($arr_header)."'>".__("I could not find any differences", 'lang_site_manager')."</td></tr>";
 				}
+
+				echo "<tr>
+					<td>".__("Source", 'lang_site_manager')."</td>
+					<td></td>";
+
+					foreach($obj_site_manager->arr_sites as $site)
+					{
+						echo "<td>
+							<a href='".$site."/wp-admin/'><i class='fas fa-sign-in-alt'></i></a>&nbsp;
+							<a href='".$site.$obj_site_manager->compare_uri."'><i class='fas fa-link'></i></a>
+						</td>";
+					}
+
+				echo "</tr>";
 
 			echo "</tbody>
 		</table>";

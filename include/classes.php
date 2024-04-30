@@ -26,6 +26,11 @@ class mf_site_manager
 	var $table_action = "";
 	var $table_prefix = "";
 	var $table_prefix_destination = "";
+	var $uploads_amount = 0;
+	var $compare_uri = "/wp-content/plugins/mf_site_manager/include/api/?type=compare";
+	var $echoed;
+	var $type;
+	var $is_multisite;
 
 	function __construct(){}
 
@@ -1304,6 +1309,11 @@ class mf_site_manager
 			'title' => __("Pages", 'lang_site_manager'),
 		);
 
+		$arr_pages['attachment'] = array(
+			'icon' => "fas fa-photo-video",
+			'title' => __("Media", 'lang_site_manager'),
+		);
+
 		return $arr_pages;
 	}
 
@@ -1483,8 +1493,19 @@ class mf_site_manager
 							foreach($arr_pages as $key => $arr_value)
 							{
 								switch_to_blog($id);
+
+								switch($key)
+								{
+									case 'attachment':
+										$post_status = 'inherit';
+									break;
+
+									default:
+										$post_status = 'publish';
+									break;
+								}
 							
-								$amount = $wpdb->get_var($wpdb->prepare("SELECT COUNT(ID) FROM ".$wpdb->posts." WHERE post_type = %s AND post_status = %s", $key, 'publish'));
+								$amount = $wpdb->get_var($wpdb->prepare("SELECT COUNT(ID) FROM ".$wpdb->posts." WHERE post_type = %s AND post_status = %s", $key, $post_status));
 
 								if($amount > 0)
 								{
@@ -1624,13 +1645,6 @@ class mf_site_manager
 
 				list($content, $headers) = get_url_content(array('url' => $site_ajax, 'catch_head' => true));
 
-				if($headers['http_code'] != 200) //Fallback until all sites are updated
-				{
-					$site_ajax = $site."/wp-content/plugins/mf_site_manager/include/api/?type=compare";
-
-					list($content, $headers) = get_url_content(array('url' => $site_ajax, 'catch_head' => true));
-				}
-
 				if($headers['http_code'] == 200)
 				{
 					$arr_content = json_decode($content, true);
@@ -1659,7 +1673,7 @@ class mf_site_manager
 
 		else
 		{
-			return validate_url($site."/wp-admin".($this->is_multisite ? "/network" : "")."/update-core.php"); //".$this->type."
+			return validate_url($site."/wp-admin".($this->is_multisite ? "/network" : "")."/update-core.php");
 		}
 	}
 
