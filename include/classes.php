@@ -170,15 +170,15 @@ class mf_site_manager
 				mf_enqueue_script('script_site_manager_sites', $plugin_include_url."script_wp_sites.js", array('plugin_url' => $plugin_include_url, 'ajax_url' => admin_url('admin-ajax.php')), $plugin_version);
 			break;
 
-			case 'themes.php':
-				/*if(is_plugin_active("mf_theme_core/index.php"))
+			/*case 'themes.php':
+				if(is_plugin_active("mf_theme_core/index.php"))
 				{
 					global $obj_theme_core;
 
 					if(!isset($obj_theme_core))
 					{
 						$obj_theme_core = new mf_theme_core();
-					}*/
+					}
 
 					if(apply_filters('is_theme_active', false)) //$obj_theme_core->is_theme_active()
 					{
@@ -186,7 +186,7 @@ class mf_site_manager
 						mf_enqueue_style('style_site_manager_themes', $plugin_include_url."style_wp_themes.css", $plugin_version);
 					}
 				//}
-			break;
+			break;*/
 
 			default:
 				//do_log("Unknown page: ".$pagenow." -> ".$page);
