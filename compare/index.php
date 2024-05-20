@@ -83,6 +83,8 @@ echo "<div class='wrap'>
 				}
 				##############################
 
+				// Themes
+				##############################
 				$obj_site_manager->check_version('themes');
 
 				if($obj_site_manager->echoed == true)
@@ -91,7 +93,10 @@ echo "<div class='wrap'>
 
 					echo "<tr><td colspan='".count($arr_header)."'></td></tr>";
 				}
+				##############################
 
+				// Plugins
+				##############################
 				$obj_site_manager->check_version('plugins');
 
 				if($obj_site_manager->echoed == true)
@@ -100,6 +105,7 @@ echo "<div class='wrap'>
 
 					echo "<tr><td colspan='".count($arr_header)."'></td></tr>";
 				}
+				##############################
 
 				// Media
 				##############################

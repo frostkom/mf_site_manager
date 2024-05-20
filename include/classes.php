@@ -1711,13 +1711,14 @@ class mf_site_manager
 		foreach($array['this'] as $key => $value)
 		{
 			$name = $value['name'];
+			$directory = $value['dir'];
 			$version = $value['version'];
 			$arr_data = (isset($value['data']) ? $value['data'] : array());
 
 			$has_equal_version = true;
 
 			$out = "<tr>
-				<td>".$name."</td>
+				<td title='".$directory."'>".$name."</td>
 				<td>".$version."</td>";
 
 				foreach($this->arr_sites as $site)
@@ -1748,7 +1749,7 @@ class mf_site_manager
 
 							$has_equal_version = false;
 
-							$out .= $this->copy_differences(array('dir' => $this->type."/".$value['dir']));
+							$out .= $this->copy_differences(array('dir' => $this->type."/".$directory));
 						}
 
 					$out .= "</td>";
@@ -1916,7 +1917,7 @@ class mf_site_manager
 								{
 									echo "<a href='".$this->get_type_url($site, $name)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a>";
 
-									echo $this->copy_differences(array('dir' => $this->type."/".$value['dir']));
+									echo $this->copy_differences(array('dir' => $this->type."/".$directory));
 								}
 
 							echo "</td>";
@@ -1930,7 +1931,7 @@ class mf_site_manager
 
 			else
 			{
-				do_log("check_version(): ".$site2." does not exist in ".var_export($array, true));
+				do_log(__FUNCTION__.": ".$site2." does not exist in ".var_export($array, true));
 			}
 		}
 
