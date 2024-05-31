@@ -31,6 +31,8 @@ class mf_site_manager
 	var $echoed;
 	var $type;
 	var $is_multisite;
+	var $file_dir_from;
+	var $file_dir_to;
 
 	function __construct(){}
 
@@ -180,7 +182,7 @@ class mf_site_manager
 						$obj_theme_core = new mf_theme_core();
 					}
 
-					if(apply_filters('is_theme_active', false)) //$obj_theme_core->is_theme_active()
+					if(apply_filters('is_theme_active', false))
 					{
 						// Disable changing theme
 						mf_enqueue_style('style_site_manager_themes', $plugin_include_url."style_wp_themes.css", $plugin_version);
@@ -319,30 +321,33 @@ class mf_site_manager
 			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."compare/index.php");
 		}
 
-		if(is_multisite())
+		if(IS_SUPER_ADMIN)
 		{
-			global $wpdb;
-
-			$result = $wpdb->get_results("SELECT blog_id FROM ".$wpdb->base_prefix."blogs");
-
-			if($wpdb->num_rows > 1)
+			if(is_multisite())
 			{
-				$menu_title = __("Clone Site", 'lang_site_manager');
-				add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."clone/index.php");
+				global $wpdb;
 
-				$menu_title = __("Switch Sites", 'lang_site_manager');
-				add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."switch/index.php");
+				$result = $wpdb->get_results("SELECT blog_id FROM ".$wpdb->base_prefix."blogs");
+
+				if($wpdb->num_rows > 1)
+				{
+					$menu_title = __("Clone Site", 'lang_site_manager');
+					add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."clone/index.php");
+
+					$menu_title = __("Switch Sites", 'lang_site_manager');
+					add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."switch/index.php");
+				}
 			}
+
+			$menu_title = __("Edit Tables", 'lang_site_manager');
+			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."tables/index.php");
+
+			$menu_title = __("Change URL", 'lang_site_manager');
+			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."change/index.php");
+
+			$menu_title = __("Change Theme", 'lang_site_manager');
+			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."theme/index.php");
 		}
-
-		$menu_title = __("Edit Tables", 'lang_site_manager');
-		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."tables/index.php");
-
-		$menu_title = __("Change URL", 'lang_site_manager');
-		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."change/index.php");
-
-		$menu_title = __("Change Theme", 'lang_site_manager');
-		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."theme/index.php");
 
 		$menu_title = __("Settings", 'lang_site_manager');
 		add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, admin_url("options-general.php?page=settings_mf_base#settings_site_manager"));
@@ -547,6 +552,31 @@ class mf_site_manager
 		$this->table_action = check_var('strTableAction');
 		$this->table_prefix = check_var('strTablePrefix');
 		$this->table_prefix_destination = check_var('strTablePrefixDestination');
+	}
+
+	function copy_file($file_dir_from, $file_dir_to)
+	{
+		if(file_exists($file_dir_to))
+		{
+			if(file_exists($file_dir_from))
+			{
+				// Some files are still in use in the old hierarchy
+				//unlink($file_dir_from);
+			}
+		}
+
+		else
+		{
+			if(file_exists($file_dir_from))
+			{
+				mkdir(dirname($file_dir_to), 0755, true);
+
+				if(!copy($file_dir_from, $file_dir_to))
+				{
+					do_log("File was NOT copied: ".$file_dir_from." -> ".$file_dir_to);
+				}
+			}
+		}
 	}
 
 	function save_data()
@@ -759,13 +789,6 @@ class mf_site_manager
 
 						/* Clone Files */
 						#######################
-						global $obj_theme_core;
-
-						if(!isset($obj_theme_core))
-						{
-							$obj_theme_core = new mf_theme_core();
-						}
-
 						$upload_path_global = WP_CONTENT_DIR."/uploads/";
 						$upload_url_global = WP_CONTENT_URL."/uploads/";
 
@@ -802,11 +825,11 @@ class mf_site_manager
 							$post_id = $r->ID;
 							$post_url = wp_get_attachment_url($post_id);
 
-							$obj_theme_core->file_dir_from = str_replace(array($upload_url_to, $upload_url_from), $upload_path_from, $post_url);
-							$obj_theme_core->file_dir_to = str_replace(array($upload_url_to, $upload_url_from), $upload_path_to, $post_url);
+							$file_dir_from = str_replace(array($upload_url_to, $upload_url_from), $upload_path_from, $post_url);
+							$file_dir_to = str_replace(array($upload_url_to, $upload_url_from), $upload_path_to, $post_url);
 
-							$obj_theme_core->copy_file();
-							$str_queries .= "Copied: ".$obj_theme_core->file_dir_from." -> ".$obj_theme_core->file_dir_to."\n";
+							$this->copy_file($file_dir_from, $file_dir_to);
+							$str_queries .= "Copied: ".$file_dir_from." -> ".$file_dir_to."\n";
 
 							if(wp_attachment_is_image($post_id))
 							{
@@ -815,11 +838,11 @@ class mf_site_manager
 									$arr_image = wp_get_attachment_image_src($post_id, $size);
 									$post_url = $arr_image[0];
 
-									$obj_theme_core->file_dir_from = str_replace(array($upload_url_to, $upload_url_from), $upload_path_from, $post_url);
-									$obj_theme_core->file_dir_to = str_replace(array($upload_url_to, $upload_url_from), $upload_path_to, $post_url);
+									$file_dir_from = str_replace(array($upload_url_to, $upload_url_from), $upload_path_from, $post_url);
+									$file_dir_to = str_replace(array($upload_url_to, $upload_url_from), $upload_path_to, $post_url);
 
-									$obj_theme_core->copy_file();
-									$str_queries .= "Copied: ".$obj_theme_core->file_dir_from." -> ".$obj_theme_core->file_dir_to."\n";
+									$this->copy_file($file_dir_from, $file_dir_to);
+									$str_queries .= "Copied: ".$file_dir_from." -> ".$file_dir_to."\n";
 								}
 							}
 						}
@@ -1504,7 +1527,7 @@ class mf_site_manager
 										$post_status = 'publish';
 									break;
 								}
-							
+
 								$amount = $wpdb->get_var($wpdb->prepare("SELECT COUNT(ID) FROM ".$wpdb->posts." WHERE post_type = %s AND post_status = %s", $key, $post_status));
 
 								if($amount > 0)
