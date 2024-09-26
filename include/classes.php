@@ -2271,6 +2271,8 @@ class mf_site_manager
 
 	function cron_base()
 	{
+		global $wpdb;
+
 		$obj_cron = new mf_cron();
 		$obj_cron->start(__CLASS__);
 
@@ -2279,6 +2281,52 @@ class mf_site_manager
 			if(is_main_site())
 			{
 				$this->get_server_ip();
+
+				// Remove empty tables and revisions from posts on inactive sites
+				###################################
+				$result_sites = get_sites(array('deleted' => 1, 'order' => 'ASC'));
+
+				foreach($result_sites as $r)
+				{
+					switch_to_blog($r->blog_id);
+
+					$table_prefix = $wpdb->prefix;
+
+					restore_current_blog();
+
+					$result_tables = $wpdb->get_results("SHOW TABLES LIKE '".$table_prefix."%'", ARRAY_N);
+
+					foreach($result_tables as $r)
+					{
+						$table_name = $r[0];
+
+						$wpdb->get_results("SELECT * FROM ".$table_name." LIMIT 0, 1");
+
+						if($wpdb->num_rows == 0)
+						{
+							$wpdb->query("DROP TABLE IF EXISTS ".$table_name);
+						}
+
+						else
+						{
+							switch($table_name)
+							{
+								case $table_prefix.'posts':
+									$result_posts = $wpdb->get_results("SELECT ID FROM ".$table_prefix."posts WHERE post_status IN ('".implode("','", array('auto-draft', 'draft', 'ignore', 'inherit', 'trash'))."')");
+
+									foreach($result_posts as $r)
+									{
+										$post_id = $r->ID;
+
+										$wpdb->query($wpdb->prepare("DELETE FROM ".$table_prefix."postmeta WHERE post_id = '%d'", $post_id));
+										$wpdb->query($wpdb->prepare("DELETE FROM ".$table_prefix."posts WHERE ID = '%d'", $post_id));
+									}
+								break;
+							}
+						}
+					}
+				}
+				###################################
 			}
 		}
 
