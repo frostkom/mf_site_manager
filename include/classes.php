@@ -2284,44 +2284,47 @@ class mf_site_manager
 
 				// Remove empty tables and revisions from posts on inactive sites
 				###################################
-				$result_sites = get_sites(array('deleted' => 1, 'order' => 'ASC'));
-
-				foreach($result_sites as $r)
+				if(is_multisite())
 				{
-					switch_to_blog($r->blog_id);
+					$result_sites = get_sites(array('deleted' => 1, 'order' => 'ASC'));
 
-					$table_prefix = $wpdb->prefix;
-
-					restore_current_blog();
-
-					$result_tables = $wpdb->get_results("SHOW TABLES LIKE '".$table_prefix."%'", ARRAY_N);
-
-					foreach($result_tables as $r)
+					foreach($result_sites as $r)
 					{
-						$table_name = $r[0];
+						switch_to_blog($r->blog_id);
 
-						$wpdb->get_results("SELECT * FROM ".$table_name." LIMIT 0, 1");
+						$table_prefix = $wpdb->prefix;
 
-						if($wpdb->num_rows == 0)
+						restore_current_blog();
+
+						$result_tables = $wpdb->get_results("SHOW TABLES LIKE '".$table_prefix."%'", ARRAY_N);
+
+						foreach($result_tables as $r)
 						{
-							$wpdb->query("DROP TABLE IF EXISTS ".$table_name);
-						}
+							$table_name = $r[0];
 
-						else
-						{
-							switch($table_name)
+							$wpdb->get_results("SELECT * FROM ".$table_name." LIMIT 0, 1");
+
+							if($wpdb->num_rows == 0)
 							{
-								case $table_prefix.'posts':
-									$result_posts = $wpdb->get_results("SELECT ID FROM ".$table_prefix."posts WHERE post_status IN ('".implode("','", array('auto-draft', 'draft', 'ignore', 'inherit', 'trash'))."')");
+								$wpdb->query("DROP TABLE IF EXISTS ".$table_name);
+							}
 
-									foreach($result_posts as $r)
-									{
-										$post_id = $r->ID;
+							else
+							{
+								switch($table_name)
+								{
+									case $table_prefix.'posts':
+										$result_posts = $wpdb->get_results("SELECT ID FROM ".$table_prefix."posts WHERE post_status IN ('".implode("','", array('auto-draft', 'draft', 'ignore', 'inherit', 'trash'))."')");
 
-										$wpdb->query($wpdb->prepare("DELETE FROM ".$table_prefix."postmeta WHERE post_id = '%d'", $post_id));
-										$wpdb->query($wpdb->prepare("DELETE FROM ".$table_prefix."posts WHERE ID = '%d'", $post_id));
-									}
-								break;
+										foreach($result_posts as $r)
+										{
+											$post_id = $r->ID;
+
+											$wpdb->query($wpdb->prepare("DELETE FROM ".$table_prefix."postmeta WHERE post_id = '%d'", $post_id));
+											$wpdb->query($wpdb->prepare("DELETE FROM ".$table_prefix."posts WHERE ID = '%d'", $post_id));
+										}
+									break;
+								}
 							}
 						}
 					}
