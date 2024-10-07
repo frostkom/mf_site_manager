@@ -2306,7 +2306,8 @@ class mf_site_manager
 
 							if($wpdb->num_rows == 0)
 							{
-								$wpdb->query("DROP TABLE IF EXISTS ".$table_name);
+								// This will create log errors when WP can't find comments table
+								//$wpdb->query("DROP TABLE IF EXISTS ".$table_name);
 							}
 
 							else
