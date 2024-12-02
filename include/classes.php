@@ -266,7 +266,7 @@ class mf_site_manager
 		}
 
 		echo "<p>".$option."</p>
-		<div class='form_button'>"
+		<div".get_form_button_classes().">"
 			.show_button(array('type' => 'button', 'name' => 'btnGetServerIP', 'text' => __("Get Server IP", 'lang_site_manager'), 'class' => 'button-secondary'))
 		."</div>
 		<div id='ip_debug'></div>";
@@ -2306,7 +2306,7 @@ class mf_site_manager
 
 							if($wpdb->num_rows == 0)
 							{
-								// This will create log errors when WP can't find comments table
+								// This will create log errors when WP can't find comments table. So maybe if we only drop non-core tables???
 								//$wpdb->query("DROP TABLE IF EXISTS ".$table_name);
 							}
 
