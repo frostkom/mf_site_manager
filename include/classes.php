@@ -136,6 +136,11 @@ class mf_site_manager
 		return $arr_data;
 	}
 
+	function init()
+	{
+		load_plugin_textdomain('lang_site_manager', false, str_replace("/include", "", dirname(plugin_basename(__FILE__)))."/lang/");
+	}
+
 	function admin_init()
 	{
 		global $pagenow;
@@ -572,7 +577,10 @@ class mf_site_manager
 		{
 			if(file_exists($file_dir_from))
 			{
-				mkdir(dirname($file_dir_to), 0755, true);
+				if(!file_exists($file_dir_to))
+				{
+					mkdir(dirname($file_dir_to), 0755, true);
+				}
 
 				if(!copy($file_dir_from, $file_dir_to))
 				{
