@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-26 11:46+0100\n"
+"POT-Creation-Date: 2024-12-12 10:47+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -16,8 +16,8 @@ msgstr ""
 "X-Poedit-SearchPath-0: ..\n"
 
 #: ../change/index.php:8
-#: ../include/classes.php:341
-#: ../include/classes.php:1535
+#: ../include/classes.php:392
+#: ../include/classes.php:1622
 msgid "Change URL"
 msgstr "Ändra URL"
 
@@ -30,7 +30,7 @@ msgid "Are you really sure? This will change the URL of the site"
 msgstr "Är du helt säker? Detta kommer att byta URL för webbplatsen"
 
 #: ../change/index.php:15
-#: ../clone/index.php:35
+#: ../clone/index.php:32
 #: ../switch/index.php:23
 #: ../tables/index.php:21
 #: ../theme/index.php:19
@@ -38,7 +38,7 @@ msgid "Perform"
 msgstr "Genomför"
 
 #: ../clone/index.php:8
-#: ../include/classes.php:330
+#: ../include/classes.php:381
 msgid "Clone Site"
 msgstr "Klona webbsida"
 
@@ -70,16 +70,16 @@ msgstr "Vill du inaktivera alla tillägg?"
 msgid "Are you really sure? This will erase all previous data on the recieving site."
 msgstr "Är du helt säker? Detta kommer att radera all tidigare data på den mottagande webbplatsen."
 
-#: ../clone/index.php:48
+#: ../clone/index.php:38
 msgid "I could not find any sites to clone to"
 msgstr "Jag kunde inte hitta några webbplatser att klona till"
 
-#: ../clone/index.php:54
+#: ../clone/index.php:44
 msgid "You have to have a MultiSite to be able to clone this site"
 msgstr "Du måste ha en MultiSite för att kunna byta domän mellan två webbplatser"
 
 #: ../compare/index.php:15
-#: ../include/classes.php:318
+#: ../include/classes.php:367
 msgid "Compare Sites"
 msgstr "Jämför webbsidor"
 
@@ -91,307 +91,341 @@ msgstr "Namn"
 msgid "This Site"
 msgstr "Denna webbplats"
 
-#: ../compare/index.php:36
-msgid "Source"
-msgstr "Källa"
-
-#: ../compare/index.php:56
+#: ../compare/index.php:45
 msgid "Core"
 msgstr "Kärna"
 
-#: ../compare/index.php:78
-#: ../compare/index.php:166
+#: ../compare/index.php:67
+#: ../compare/index.php:161
 msgid "Does not support this"
 msgstr "Har inte support för detta"
 
-#: ../compare/index.php:122
-#: ../include/classes.php:1314
+#: ../compare/index.php:117
+#: ../include/classes.php:1390
 msgid "Media"
 msgstr ""
 
-#: ../compare/index.php:199
+#: ../compare/index.php:194
 msgid "Copy differences"
 msgstr "Kopiera skillnader"
 
-#: ../compare/index.php:214
+#: ../compare/index.php:209
 #, php-format
 msgid "The differences were test copied into %s"
 msgstr "Skillnaderna testkopierades till %s"
 
-#: ../compare/index.php:219
+#: ../compare/index.php:214
 #, php-format
 msgid "The differences were copied into %s"
 msgstr "Skillnaderna kopierades till %s"
 
-#: ../compare/index.php:225
+#: ../compare/index.php:220
 #, php-format
 msgid "Copy Differences Into %s"
 msgstr "Kopiera skillnader till %s"
 
-#: ../compare/index.php:226
+#: ../compare/index.php:221
 msgid "Copy Differences"
 msgstr "Kopiera skillnader"
 
-#: ../compare/index.php:230
+#: ../compare/index.php:225
 msgid "Test Copy"
 msgstr "Testa kopiering"
 
-#: ../compare/index.php:245
+#: ../compare/index.php:240
 msgid "I could not find any differences"
 msgstr "Jag kunde inte hitta några skillnader"
 
-#: ../compare/index.php:259
+#: ../compare/index.php:244
+msgid "Source"
+msgstr "Källa"
+
+#: ../compare/index.php:268
 #: ../theme/index.php:13
 msgid "Site"
 msgstr "Webbplats"
 
-#: ../compare/index.php:260
+#: ../compare/index.php:269
 msgid "Error"
 msgstr "Fel"
 
-#: ../compare/index.php:281
+#: ../compare/index.php:290
 #, php-format
 msgid "I could not find any sites to compare with. Convert to MultiSite and add sites or add external ones in %sMy Settings%s"
 msgstr "Jag kunde inte hitta några webbplatser att jämföra med. Konvertera till MultiSite och lägga till webbplatser eller lägg till externa via %sMina inställningar%s"
 
-#: ../include/classes.php:42
-#: ../include/classes.php:74
-#: ../include/classes.php:89
+#: ../include/classes.php:44
+#: ../include/classes.php:76
+#: ../include/classes.php:91
 msgid "Choose Here"
 msgstr "Välj här"
 
-#: ../include/classes.php:75
+#: ../include/classes.php:77
 msgid "Create Copy"
 msgstr "Skapa kopia"
 
-#: ../include/classes.php:76
+#: ../include/classes.php:78
 msgid "Replace"
 msgstr "Ersätt"
 
-#: ../include/classes.php:210
+#: ../include/classes.php:217
 #, php-format
 msgid "This is the new server and now the setting can be removed %shere%s"
 msgstr "Detta är den nya servern och nu kan du ta bort inställningen %shär%s"
 
-#: ../include/classes.php:215
+#: ../include/classes.php:222
 #, php-format
 msgid "This is the old server and you can find the setting %shere%s"
 msgstr "Detta är den gamla servern och du kan hitta inställningen %shär%s"
 
-#: ../include/classes.php:233
+#: ../include/classes.php:243
+msgid "Convert to MultiSite"
+msgstr "Konvertera till MultiSite"
+
+#: ../include/classes.php:246
 msgid "Server IP"
 msgstr "Server-IP"
 
-#: ../include/classes.php:234
+#: ../include/classes.php:247
 msgid "Target Server IP"
 msgstr "Nytt server-IP"
 
-#: ../include/classes.php:235
+#: ../include/classes.php:248
 msgid "Server IPs allowed"
 msgstr "Tillåtna server-IP"
 
-#: ../include/classes.php:236
+#: ../include/classes.php:249
 msgid "Sites to compare with"
 msgstr "Webbplatser att jämföra med"
 
-#: ../include/classes.php:240
+#: ../include/classes.php:253
 msgid "Path to Clone to"
 msgstr "Sökväg att klona till"
 
-#: ../include/classes.php:251
-#: ../include/classes.php:313
+#: ../include/classes.php:264
+#: ../include/classes.php:362
 msgid "Site Manager"
 msgstr ""
 
-#: ../include/classes.php:268
+#: ../include/classes.php:277
+#, php-format
+msgid "Add this to %s"
+msgstr "Lägg till detta i %s"
+
+#: ../include/classes.php:281
+msgid "Deactivate all plugins"
+msgstr "Inaktivera alla tillägg"
+
+#: ../include/classes.php:285
+msgid "Go to Network Settings"
+msgstr "Gå till Nätverksinställningarna"
+
+#: ../include/classes.php:286
+msgid "...and follow the instructions on that page..."
+msgstr "...och följ instruktionerna på den sidan..."
+
+#: ../include/classes.php:289
+#, php-format
+msgid "...but add this to %s instead"
+msgstr "...men lägg till detta i %s istället"
+
+#: ../include/classes.php:293
+msgid "Login"
+msgstr "Logga in"
+
+#: ../include/classes.php:297
+msgid "Activate all plugins"
+msgstr "Aktivera alla tillägg"
+
+#: ../include/classes.php:317
 msgid "Get Server IP"
 msgstr "Hämta Server-IP"
 
-#: ../include/classes.php:304
+#: ../include/classes.php:353
 msgid "The absolute path to receiving WP root"
 msgstr "Den absoluta sökvägen till mottagande WP-rot"
 
-#: ../include/classes.php:333
+#: ../include/classes.php:384
 #: ../switch/index.php:8
 msgid "Switch Sites"
 msgstr "Byt webbsidor"
 
-#: ../include/classes.php:338
+#: ../include/classes.php:389
 #: ../tables/index.php:10
 msgid "Edit Tables"
 msgstr "Redigera tabeller"
 
-#: ../include/classes.php:344
+#: ../include/classes.php:395
 #: ../theme/index.php:8
 msgid "Change Theme"
 msgstr "Byt tema"
 
-#: ../include/classes.php:347
-#: ../include/classes.php:1377
+#: ../include/classes.php:401
+#: ../include/classes.php:1453
 msgid "Settings"
 msgstr "Inställningar"
 
-#: ../include/classes.php:560
+#: ../include/classes.php:643
 msgid "You have to check the box to agree to change the URL"
 msgstr "Du måste kryssa i att du går med på att byta URL"
 
-#: ../include/classes.php:565
+#: ../include/classes.php:648
 msgid "I could not verify that you were allowed to change the URL. I this problem persists, please contact an admin"
 msgstr "Jag kunde inte verifiera att du är tillåten att byta URL. Om problemet kvarstår, var vänlig kontakta en admin"
 
-#: ../include/classes.php:585
-#: ../include/classes.php:1062
-#: ../include/classes.php:1277
+#: ../include/classes.php:668
+#: ../include/classes.php:1138
+#: ../include/classes.php:1353
 #, php-format
 msgid "I executed your request but there were %d errors so you need to manually update the database"
 msgstr "Jag genomförde din förfrågan men det uppkom %d fel så du behöver uppdatera databasen manuellt"
 
-#: ../include/classes.php:592
+#: ../include/classes.php:675
 #, php-format
 msgid "I have changed the URL from %s to %s. Go to %sDashboard%s"
 msgstr "Jag har ändrat URLen från %s till %s. Gå till %sPanel%s"
 
-#: ../include/classes.php:600
+#: ../include/classes.php:683
 msgid "You have to choose another URL than the current one"
 msgstr "Du måste välja en annan URL än den nuvarande"
 
-#: ../include/classes.php:608
+#: ../include/classes.php:691
 msgid "You have to check the box to agree to clone the site"
 msgstr "Du måste kryssa i att du går med på att klona webbplatsen"
 
-#: ../include/classes.php:613
+#: ../include/classes.php:696
 msgid "I could not verify that you were allowed to clone the site. I this problem persists, please contact an admin"
 msgstr "Jag kunde inte verifiera att du är tillåten att klona webbplatsen. Om problemet kvarstår, var vänlig kontakta en admin"
 
-#: ../include/classes.php:686
+#: ../include/classes.php:769
 msgid "There appears to be no tables on the source site"
 msgstr "Det verkar inte finnas någon tabell på källwebbplatsen"
 
-#: ../include/classes.php:830
+#: ../include/classes.php:906
 msgid "All data was cloned"
 msgstr "All data klonades"
 
-#: ../include/classes.php:840
+#: ../include/classes.php:916
 msgid "The backup was not successful so I could not clone the site for you"
 msgstr "Backupen lyckades inte så jag kan inte klona webbplatsen åt dig"
 
-#: ../include/classes.php:846
-#: ../include/classes.php:1015
+#: ../include/classes.php:922
+#: ../include/classes.php:1091
 msgid "You have to choose a site other than this site"
 msgstr "Du måste välja en annan webbplats än denna"
 
-#: ../include/classes.php:878
+#: ../include/classes.php:954
 msgid "You have to check the box to agree that the sites should be switched"
 msgstr "Du måste kryssa i att du går med på att byta webbplatser"
 
-#: ../include/classes.php:883
+#: ../include/classes.php:959
 msgid "I could not verify that you were allowed to switch sites. I this problem persists, please contact an admin"
 msgstr "Jag kunde inte verifiera att du är tillåten att byta webbplatser. Om problemet kvarstår, var vänlig kontakta en admin"
 
-#: ../include/classes.php:927
+#: ../include/classes.php:1003
 msgid "There appears to be no tables on either of the sites"
 msgstr "Det verkar inte finnas några tabeller på sidorna"
 
-#: ../include/classes.php:1006
+#: ../include/classes.php:1082
 msgid "I have switched all the data on the two domain as you requested."
 msgstr "Jag har bytt all data mellan de två domänerna som du efterfrågade."
 
-#: ../include/classes.php:1026
+#: ../include/classes.php:1102
 msgid "You have to check the box to agree that the theme should be changed"
 msgstr "Du måste kryssa i att du går med på att temat ska bytas ut"
 
-#: ../include/classes.php:1031
+#: ../include/classes.php:1107
 msgid "I could not verify that you were allowed to switch theme on this site. I this problem persists, please contact an admin"
 msgstr "Jag kunde inte verifiera att du är tillåten att ändra tema på den här webbplatsen. Om problemet kvarstår, var vänlig kontakta en admin"
 
-#: ../include/classes.php:1036
+#: ../include/classes.php:1112
 msgid "You have to choose a theme that is allowed for this site"
 msgstr "Du måste välja ett tema som är tillåtet för denna webbplats"
 
-#: ../include/classes.php:1041
+#: ../include/classes.php:1117
 msgid "You have to choose another theme than the current one"
 msgstr "Du måste välja ett annat tema än den nuvarande"
 
-#: ../include/classes.php:1069
+#: ../include/classes.php:1145
 #, php-format
 msgid "I have changed the theme from %s to %s"
 msgstr "Jag har ändrat temat från %s till %s"
 
-#: ../include/classes.php:1080
+#: ../include/classes.php:1156
 msgid "You have to check the box to agree to perform the action that you have chosen"
 msgstr "Du måste kryssa i att du går med på att utföra den åtgärd som du har valt"
 
-#: ../include/classes.php:1085
+#: ../include/classes.php:1161
 msgid "I could not verify that you were allowed to perform the action that you were requesting. I this problem persists, please contact an admin"
 msgstr "Jag kunde inte verifiera att du är tillåten att genomföra den åtgärd som du efterfrågar. Om problemet kvarstår, var vänlig kontakta en admin"
 
-#: ../include/classes.php:1104
-#: ../include/classes.php:1170
+#: ../include/classes.php:1180
+#: ../include/classes.php:1246
 #, php-format
 msgid "The table %s already exists"
 msgstr "Tabellen %s finns redan"
 
-#: ../include/classes.php:1118
-#: ../include/classes.php:1284
+#: ../include/classes.php:1194
+#: ../include/classes.php:1360
 msgid "I have copied all the tables for you"
 msgstr "Jag har kopierat alla tabellerna åt dig"
 
-#: ../include/classes.php:1125
+#: ../include/classes.php:1201
 msgid "You have to choose another destination than the source table"
 msgstr "Du måste välja en annan mottagartabell än källtabellen"
 
-#: ../include/classes.php:1304
+#: ../include/classes.php:1380
 msgid "Posts"
 msgstr "Inlägg"
 
-#: ../include/classes.php:1309
-#: ../include/classes.php:1378
+#: ../include/classes.php:1385
+#: ../include/classes.php:1454
 msgid "Pages"
 msgstr "Sidor"
 
-#: ../include/classes.php:1324
+#: ../include/classes.php:1400
 msgid "Activated On"
 msgstr "Aktiverad på"
 
-#: ../include/classes.php:1376
+#: ../include/classes.php:1452
 msgid "SSL"
 msgstr ""
 
-#: ../include/classes.php:1465
+#: ../include/classes.php:1541
 msgid "This can only be saved on the main site"
 msgstr "Detta kan endast sparas på huvudsidan"
 
-#: ../include/classes.php:1481
+#: ../include/classes.php:1557
 msgid "Toggle All"
 msgstr "Visa/dölj alla"
 
-#: ../include/classes.php:1674
+#: ../include/classes.php:1761
 msgid "domain"
 msgstr "domän"
 
-#: ../include/classes.php:1736
-#: ../include/classes.php:1782
-#: ../include/classes.php:1856
-#: ../include/classes.php:1889
-#: ../include/classes.php:1906
+#: ../include/classes.php:1824
+#: ../include/classes.php:1870
+#: ../include/classes.php:1944
+#: ../include/classes.php:1977
+#: ../include/classes.php:1994
 msgid "does not exist"
 msgstr "finns inte"
 
-#: ../include/classes.php:2113
+#: ../include/classes.php:2201
 msgid "I would have copied:"
 msgstr "Jag hade kopierat:"
 
-#: ../include/classes.php:2203
+#: ../include/classes.php:2291
 #, php-format
 msgid "I successfully fetched the server IP (%s) for you"
 msgstr "Jag lyckades hämta Server-IP (%s) åt dig"
 
-#: ../include/classes.php:2208
+#: ../include/classes.php:2296
 #, php-format
 msgid "The IP (%s) is the same as before"
 msgstr "IP-adressen (%s) är samma som innan"
 
-#: ../include/classes.php:2213
+#: ../include/classes.php:2301
 #, php-format
 msgid "I could not fetch the server IP (%s) for you"
 msgstr "Jag kunde inte hämta Server-IP (%s) åt dig"

@@ -237,6 +237,12 @@ class mf_site_manager
 			add_settings_section($options_area, "", array($this, $options_area.'_callback'), BASE_OPTIONS_PAGE);
 
 			$arr_settings = array();
+
+			if(is_multisite() == false)
+			{
+				$arr_settings['setting_site_manager_multisite'] = __("Convert to MultiSite", 'lang_site_manager');
+			}
+
 			$arr_settings['setting_server_ip'] = __("Server IP", 'lang_site_manager');
 			$arr_settings['setting_server_ip_target'] = __("Target Server IP", 'lang_site_manager');
 			$arr_settings['setting_server_ips_allowed'] = __("Server IPs allowed", 'lang_site_manager');
@@ -258,58 +264,94 @@ class mf_site_manager
 		echo settings_header($setting_key, __("Site Manager", 'lang_site_manager'));
 	}
 
-	function setting_server_ip_callback()
-	{
-		$setting_key = get_setting_key(__FUNCTION__);
-		$option = get_option($setting_key);
-
-		if($option == '')
+		function setting_site_manager_multisite_callback()
 		{
-			$obj_site_manager = new mf_site_manager();
+			$multisite_step_1 = "define('WP_ALLOW_MULTISITE', true);";
+			$multisite_step_2 = "define('MULTISITE', true);
+			define('SUBDOMAIN_INSTALL', true);
+			define('DOMAIN_CURRENT_SITE', (isset(\$_SERVER['HTTP_HOST']) ? \$_SERVER['HTTP_HOST'] : '".get_site_url_clean(array('trim' => "/"))."'));
+			define('PATH_CURRENT_SITE', '/');";
 
-			$option = $obj_site_manager->get_server_ip();
+			echo "<ol>
+				<li>
+					<strong>".sprintf(__("Add this to %s", 'lang_site_manager'), "wp-config.php")."</strong>
+					<p class='input'>".nl2br(htmlspecialchars($multisite_step_1))."</p>
+				</li>
+				<li>
+					<strong><a href='/wp-admin/plugins.php' rel='external'>".__("Deactivate all plugins", 'lang_site_manager')."</a></strong>
+					<br><br>
+				</li>
+				<li>
+					<strong><a href='/wp-admin/network.php' rel='external'>".__("Go to Network Settings", 'lang_site_manager')."</a></strong>
+					<p>".__("...and follow the instructions on that page...", 'lang_site_manager')."</p>
+				</li>
+				<li>
+					<strong>".sprintf(__("...but add this to %s instead", 'lang_site_manager'), "wp-config.php")."</strong>
+					<p class='input'>".nl2br(htmlspecialchars($multisite_step_2))."</p>
+				</li>
+				<li>
+					<strong><a href='/wp-admin/' rel='external'>".__("Login", 'lang_site_manager')."</a></strong>
+					<br><br>
+				</li>
+				<li>
+					<strong><a href='/wp-admin/network/plugins.php' rel='external'>".__("Activate all plugins", 'lang_site_manager')."</a></strong>
+					<br><br>
+				</li>
+			</ul>";
 		}
 
-		echo "<p>".$option."</p>
-		<div".get_form_button_classes().">"
-			.show_button(array('type' => 'button', 'name' => 'btnGetServerIP', 'text' => __("Get Server IP", 'lang_site_manager'), 'class' => 'button-secondary'))
-		."</div>
-		<div id='ip_debug'></div>";
-	}
+		function setting_server_ip_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
 
-	function setting_server_ip_target_callback()
-	{
-		$setting_key = get_setting_key(__FUNCTION__);
-		$option = get_option($setting_key);
+			if($option == '')
+			{
+				$obj_site_manager = new mf_site_manager();
 
-		echo show_textfield(array('name' => $setting_key, 'value' => $option));
-	}
+				$option = $obj_site_manager->get_server_ip();
+			}
 
-	function setting_server_ips_allowed_callback()
-	{
-		$setting_key = get_setting_key(__FUNCTION__);
-		$option = get_option($setting_key);
+			echo "<p>".$option."</p>
+			<div".get_form_button_classes().">"
+				.show_button(array('type' => 'button', 'name' => 'btnGetServerIP', 'text' => __("Get Server IP", 'lang_site_manager'), 'class' => 'button-secondary'))
+			."</div>
+			<div id='ip_debug'></div>";
+		}
 
-		echo show_textfield(array('name' => $setting_key, 'value' => $option));
-	}
+		function setting_server_ip_target_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
 
-	function setting_site_comparison_callback()
-	{
-		$setting_key = get_setting_key(__FUNCTION__);
-		$option = get_option($setting_key);
+			echo show_textfield(array('name' => $setting_key, 'value' => $option));
+		}
 
-		$site_url = remove_protocol(array('url' => get_option('siteurl'), 'clean' => true));
+		function setting_server_ips_allowed_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
 
-		echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => $site_url.", test.".$site_url));
-	}
+			echo show_textfield(array('name' => $setting_key, 'value' => $option));
+		}
 
-	function setting_site_clone_path_callback()
-	{
-		$setting_key = get_setting_key(__FUNCTION__);
-		$option = get_option($setting_key);
+		function setting_site_comparison_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
 
-		echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => "/live, /test", 'description' => __("The absolute path to receiving WP root", 'lang_site_manager')));
-	}
+			$site_url = remove_protocol(array('url' => get_option('siteurl'), 'clean' => true));
+
+			echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => $site_url.", test.".$site_url));
+		}
+
+		function setting_site_clone_path_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
+
+			echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => "/live, /test", 'description' => __("The absolute path to receiving WP root", 'lang_site_manager')));
+		}
 
 	function admin_menu()
 	{
