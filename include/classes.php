@@ -2258,6 +2258,13 @@ class mf_site_manager
 				unset($headers['local_port']);
 				unset($headers['request_header']);
 				unset($headers['Date']);
+				unset($headers['date']);
+				unset($headers['appconnect_time_us']);
+				unset($headers['connect_time_us']);
+				unset($headers['namelookup_time_us']);
+				unset($headers['pretransfer_time_us']);
+				unset($headers['starttransfer_time_us']);
+				unset($headers['total_time_us']);
 
 				do_log($log_message." (".htmlspecialchars(var_export($headers, true)).")");
 			break;
