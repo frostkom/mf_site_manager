@@ -3,7 +3,7 @@
 Plugin Name: MF Site Manager
 Plugin URI: https://github.com/frostkom/mf_site_manager
 Description:
-Version: 5.5.25
+Version: 5.6.0
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://martinfors.se
@@ -26,7 +26,7 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 	{
 		register_uninstall_hook(__FILE__, 'uninstall_site_manager');
 
-		add_action('init', array($obj_site_manager, 'init'));
+		add_action('wp_before_admin_bar_render', array($obj_site_manager, 'wp_before_admin_bar_render'));
 
 		add_action('admin_init', array($obj_site_manager, 'admin_init'), 0);
 		add_action('admin_notices', array($obj_site_manager, 'admin_notices'));
@@ -48,7 +48,12 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 		}
 	}
 
+	add_filter('option_blogname', array($obj_site_manager, 'option_blogname'), 10, 2);
+	add_filter('get_site_icon_url', array($obj_site_manager, 'get_site_icon_url'), 10, 3);
+
 	add_action('wp_ajax_force_server_ip', array($obj_site_manager, 'force_server_ip'));
+
+	load_plugin_textdomain('lang_site_manager', false, dirname(plugin_basename(__FILE__))."/lang/");
 
 	function uninstall_site_manager()
 	{

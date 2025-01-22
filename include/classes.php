@@ -136,9 +136,230 @@ class mf_site_manager
 		return $arr_data;
 	}
 
-	function init()
+	function get_language_code($language)
 	{
-		load_plugin_textdomain('lang_site_manager', false, str_replace("/include", "", dirname(plugin_basename(__FILE__)))."/lang/");
+		switch($language)
+		{
+			case 'da-DK':
+			case 'da_DK':
+				return "dk";
+			break;
+
+			case 'de-DE':
+			case 'de_DE':
+				return "de";
+			break;
+
+			case 'nn-NO':
+			case 'nb-NO':
+			case 'nn_NO':
+			case 'nb_NO':
+				return "no";
+			break;
+
+			case 'sv-SE':
+			case 'sv_SE':
+				return "se";
+			break;
+
+			case 'en-UK':
+			case 'en_UK':
+				return "uk";
+			break;
+
+			case 'en-US':
+			case 'en_US':
+			case '':
+				return "us";
+			break;
+
+			default:
+				if($id > 0)
+				{
+					do_log("Someone chose '".$blog_language."' as the language for the site '".$id."'. Please add the flag for this language");
+				}
+
+				else
+				{
+					do_log("Someone chose '".$blog_language."' as the language. Please add the flag for this language");
+				}
+
+				return "";
+			break;
+		}
+	}
+
+	function get_flag_image($id = 0)
+	{
+		global $wpdb;
+
+		if($id > 0)
+		{
+			switch_to_blog($id);
+
+			$blog_language = $wpdb->get_var($wpdb->prepare("SELECT option_value FROM ".$wpdb->options." WHERE option_name = %s", 'WPLANG'));
+
+			restore_current_blog();
+		}
+
+		else
+		{
+			$blog_language = get_bloginfo('language');
+		}
+
+		$language_code = $this->get_language_code($blog_language);
+
+		$plugin_url = str_replace("/include", "", plugin_dir_url(__FILE__));
+
+		return $plugin_url."images/flags/flag_".$language_code.".png";
+	}
+
+	function get_site_status()
+	{
+		if(get_option('setting_maintenance_page') > 0 && get_option('setting_activate_maintenance') == 'yes')
+		{
+			return 'maintenance_mode';
+		}
+
+		else if(get_option('setting_no_public_pages') == 'yes')
+		{
+			return 'not_public';
+		}
+
+		else if(get_option('setting_theme_core_login') == 'yes')
+		{
+			return 'requires_login';
+		}
+
+		else if(get_option('blog_public') == 0)
+		{
+			return 'no_index';
+		}
+
+		else
+		{
+			return 'public';
+		}
+	}
+
+	function get_site_status_data($data = array())
+	{
+		$arr_out = array(
+			'url' => "",
+			'color' => "",
+			'icon' => "",
+			'text' => "",
+		);
+
+		switch($this->get_site_status())
+		{
+			case 'maintenance_mode':
+				$arr_out['url'] = admin_url("options-general.php?page=settings_mf_base#settings_theme_core_public");
+				$arr_out['color'] = "color_red";
+				$arr_out['icon'] = "fas fa-hard-hat";
+				$arr_out['text'] = __("Maintenance Mode Activated", 'lang_site_manager');
+			break;
+
+			case 'not_public':
+				if($data['type'] == 'admin_bar')
+				{
+					global $wp_admin_bar;
+
+					$wp_admin_bar->remove_menu('site-name');
+				}
+
+				$arr_out['color'] = "color_red";
+				$arr_out['icon'] = "fas fa-eye-slash";
+				$arr_out['text'] = __("No Public Pages", 'lang_site_manager');
+			break;
+
+			case 'requires_login':
+				$arr_out['url'] = get_home_url();
+				$arr_out['color'] = "color_red";
+				$arr_out['icon'] = "fas fa-user-lock";
+				$arr_out['text'] = __("Requires Login", 'lang_site_manager');
+			break;
+
+			case 'no_index':
+				$arr_out['url'] = get_home_url();
+				$arr_out['color'] = "color_yellow";
+				$arr_out['icon'] = "fas fa-robot";
+				$arr_out['text'] = __("No Index", 'lang_site_manager');
+			break;
+
+			default:
+			case 'public':
+				$arr_out['url'] = get_home_url();
+				$arr_out['color'] = "color_green";
+				$arr_out['icon'] = "fas fa-eye";
+				$arr_out['text'] = __("Public", 'lang_site_manager');
+			break;
+		}
+
+		return $arr_out;
+	}
+
+	function wp_before_admin_bar_render()
+	{
+		global $wp_admin_bar;
+
+		if(IS_ADMINISTRATOR)
+		{
+			$arr_site_status = $this->get_site_status_data(array('type' => 'admin_bar'));
+
+			$flag_image = $this->get_flag_image();
+
+			$title = "";
+
+			if($arr_site_status['url'] != '')
+			{
+				$title .= "<a href='".$arr_site_status['url']."' class='".$arr_site_status['color']."'>";
+			}
+
+			else
+			{
+				$title .= "<span class='".$arr_site_status['color']."'>";
+			}
+
+				if($flag_image != '')
+				{
+					$title .= "<div class='flex_flow tight'>
+						<img src='".$flag_image."'>&nbsp;
+						<span>";
+				}
+
+					// "#wpadminbar *" overrides style for FA icons
+					/*if($arr_site_status['icon'] != '')
+					{
+						$title .= "<i class='".$arr_site_status['icon']."' title='".$arr_site_status['text']."'></i>";
+					}
+
+					else
+					{*/
+						$title .= $arr_site_status['text'];
+					//}
+
+				if($flag_image != '')
+				{
+						$title .= "</span>
+					</div>";
+				}
+
+			if($arr_site_status['url'] != '')
+			{
+				$title .= "</a>";
+			}
+
+			else
+			{
+				$title .= "</span>";
+			}
+
+			$wp_admin_bar->add_node(array(
+				'id' => 'live',
+				'title' => $title,
+			));
+		}
 	}
 
 	function admin_init()
@@ -148,14 +369,13 @@ class mf_site_manager
 		$page = check_var('page');
 
 		$plugin_include_url = plugin_dir_url(__FILE__);
-		$plugin_version = get_plugin_version(__FILE__);
 
 		switch($pagenow)
 		{
 			case 'admin.php':
 				if($page == 'mf_site_manager/tables/index.php')
 				{
-					mf_enqueue_script('script_site_manager_tables', $plugin_include_url."script_wp_tables.js", $plugin_version); //, array('plugins_url' => plugins_url(), 'confirm_question' => __("Are you sure?", 'lang_site_manager'))
+					mf_enqueue_script('script_site_manager_tables', $plugin_include_url."script_wp_tables.js");
 				}
 			break;
 
@@ -169,12 +389,12 @@ class mf_site_manager
 			case 'options-general.php':
 				if($page == 'settings_mf_base')
 				{
-					mf_enqueue_script('script_site_manager_settings', $plugin_include_url."script_wp_settings.js", array('plugin_url' => $plugin_include_url, 'ajax_url' => admin_url('admin-ajax.php')), $plugin_version);
+					mf_enqueue_script('script_site_manager_settings', $plugin_include_url."script_wp_settings.js", array('plugin_url' => $plugin_include_url, 'ajax_url' => admin_url('admin-ajax.php')));
 				}
 			break;
 
 			case 'sites.php':
-				mf_enqueue_script('script_site_manager_sites', $plugin_include_url."script_wp_sites.js", array('plugin_url' => $plugin_include_url, 'ajax_url' => admin_url('admin-ajax.php')), $plugin_version);
+				mf_enqueue_script('script_site_manager_sites', $plugin_include_url."script_wp_sites.js", array('plugin_url' => $plugin_include_url, 'ajax_url' => admin_url('admin-ajax.php')));
 			break;
 
 			/*case 'themes.php':
@@ -190,7 +410,7 @@ class mf_site_manager
 					if(apply_filters('is_theme_active', false))
 					{
 						// Disable changing theme
-						mf_enqueue_style('style_site_manager_themes', $plugin_include_url."style_wp_themes.css", $plugin_version);
+						mf_enqueue_style('style_site_manager_themes', $plugin_include_url."style_wp_themes.css");
 					}
 				//}
 			break;*/
@@ -1449,19 +1669,32 @@ class mf_site_manager
 
 	function sites_column_header($cols)
 	{
+		unset($cols['registered']);
+		unset($cols['lastupdated']);
+
 		$cols['ssl'] = __("SSL", 'lang_site_manager');
 		$cols['settings'] = __("Settings", 'lang_site_manager');
 		$cols['pages'] = __("Pages", 'lang_site_manager');
+		$cols['site_status'] = __("Status", 'lang_site_manager');
+		$cols['email'] = __("E-mail", 'lang_site_manager');
+		$cols['last_updated'] = __("Updated", 'lang_site_manager');
 
 		return $cols;
 	}
 
 	function sites_column_cell($col, $id)
 	{
-		global $wpdb;
+		global $wpdb, $obj_base;
 
 		if(get_blog_status($id, 'deleted') == 0 && get_blog_status($id, 'archived') == 0)
 		{
+			if(!isset($obj_base))
+			{
+				$obj_base = new mf_base();
+			}
+
+			switch_to_blog($id);
+
 			switch($col)
 			{
 				case 'ssl':
@@ -1596,6 +1829,84 @@ class mf_site_manager
 						echo "</div>";
 					}
 				break;
+
+				case 'site_status':
+					$flag_image = $this->get_flag_image($id);
+
+					if($flag_image != '')
+					{
+						echo "<img src='".$flag_image."' class='alignleft'>&nbsp;";
+					}
+
+					$arr_site_status = $this->get_site_status_data(array('type' => 'sites_column'));
+
+					echo "<i class='".$arr_site_status['icon']." fa-2x ".$arr_site_status['color']."' title='".$arr_site_status['text']."'></i>";
+				break;
+
+				case 'email':
+					$admin_email = get_option('admin_email');
+
+					if($admin_email != '')
+					{
+						list($prefix, $domain) = explode("@", $admin_email);
+
+						echo "<a href='mailto:".$admin_email."'>".$prefix."</a>
+						<div class='row-actions'>"
+							."@".$domain
+						."</div>";
+					}
+				break;
+
+				case 'last_updated':
+					$arr_post_types = $obj_base->get_post_types_for_metabox();
+					$last_updated_manual_post_types = array_diff($arr_post_types, apply_filters('filter_last_updated_post_types', array(), 'manual'));
+
+					$result = $wpdb->get_results("SELECT ID, post_title, post_modified FROM ".$wpdb->posts." WHERE post_type IN ('".implode("','", $last_updated_manual_post_types)."') AND post_status != 'auto-draft' ORDER BY post_modified DESC LIMIT 0, 1");
+
+					foreach($result as $r)
+					{
+						$post_id_manual = $r->ID;
+						$post_title = ($r->post_title != '' ? $r->post_title : "(".__("unknown", 'lang_site_manager').")");
+						$post_modified_manual = $r->post_modified;
+
+						if($post_modified_manual > DEFAULT_DATE)
+						{
+							$row_actions = "";
+
+							echo format_date($post_modified_manual);
+
+							$row_actions .= ($row_actions != '' ? " | " : "")."<a href='".admin_url("post.php?action=edit&post=".$post_id_manual)."'>".shorten_text(array('string' => get_post_title($post_id_manual), 'limit' => 10))."</a>";
+
+							$last_updated_automatic_post_types = array_diff($arr_post_types, apply_filters('filter_last_updated_post_types', array('post', 'page'), 'auto'));
+
+							$result_auto = $wpdb->get_results("SELECT ID, post_title, post_modified FROM ".$wpdb->posts." WHERE post_type IN ('".implode("','", $last_updated_automatic_post_types)."') ORDER BY post_modified DESC LIMIT 0, 1");
+
+							foreach($result_auto as $r)
+							{
+								$post_id_auto = $r->ID;
+								$post_title = ($r->post_title != '' ? $r->post_title : "(".__("unknown", 'lang_site_manager').")");
+								$post_modified_auto = $r->post_modified;
+
+								if($post_modified_auto > $post_modified_manual)
+								{
+									$row_actions .= ($row_actions != '' ? " | " : "").__("Background", 'lang_site_manager').": ".format_date($post_modified_auto)." (<a href='".admin_url("post.php?action=edit&post=".$post_id_auto)."'>".shorten_text(array('string' => $post_title, 'limit' => 10))."</a>)";
+								}
+
+								if($row_actions != '')
+								{
+									echo "<div class='row-actions'>"
+										.$row_actions
+									."</div>";
+								}
+							}
+						}
+
+						/*else
+						{
+							do_log("last_updated: ".$wpdb->last_query);
+						}*/
+					}
+				break;
 			}
 		}
 	}
@@ -1617,9 +1928,8 @@ class mf_site_manager
 			$blog_id = check_var('id', 'int');
 
 			$plugin_include_url = plugin_dir_url(__FILE__);
-			$plugin_version = get_plugin_version(__FILE__);
 
-			mf_enqueue_script('script_site_manager_url', $plugin_include_url."script_wp_url.js", array('change_url_link' => get_admin_url($blog_id, "admin.php?page=mf_site_manager/change/index.php"), 'change_url_text' => __("Change URL", 'lang_site_manager')), $plugin_version);
+			mf_enqueue_script('script_site_manager_url', $plugin_include_url."script_wp_url.js", array('change_url_link' => get_admin_url($blog_id, "admin.php?page=mf_site_manager/change/index.php"), 'change_url_text' => __("Change URL", 'lang_site_manager')));
 		}
 	}
 	###########################
@@ -2281,6 +2591,57 @@ class mf_site_manager
 
 			return $this->server_ip_new;
 		}
+	}
+	
+	function option_blogname($value, $option)
+	{
+		if(!preg_match("/\[/", $value))
+		{
+			$http_host = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '' ? $_SERVER['HTTP_HOST'] : get_site_url());
+
+			if($http_host != '')
+			{
+				$value = trim(str_replace(array("[STAGING]", "[DEV]"), "", $value));
+
+				if(preg_match("/staging/", $http_host))
+				{
+					$value = "[STAGING] ".$value;
+				}
+
+				if(preg_match("/development|dev\./", $http_host))
+				{
+					$value = "[DEV] ".$value;
+				}
+			}
+		}
+
+		return $value;
+	}
+
+	function get_site_icon_url($url, $size, $blog_id)
+	{
+		$http_host = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '' ? $_SERVER['HTTP_HOST'] : get_site_url());
+
+		if($http_host != '')
+		{
+			if(preg_match("/staging|development|dev\./", $http_host))
+			{
+				$plugin_images_url = str_replace("/include/", "/images/", plugin_dir_url(__FILE__));
+
+				switch($size)
+				{
+					case 32:
+						return $plugin_images_url."staging-favicon-150x150.png";
+					break;
+
+					default:
+						return $plugin_images_url."staging-favicon-300x300.png";
+					break;
+				}
+			}
+		}
+
+		return $url;
 	}
 
 	function force_server_ip()
