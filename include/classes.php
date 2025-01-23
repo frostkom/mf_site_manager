@@ -303,63 +303,75 @@ class mf_site_manager
 	{
 		global $wp_admin_bar;
 
-		if(IS_ADMINISTRATOR)
+		/*if(is_multisite())
 		{
-			$arr_site_status = $this->get_site_status_data(array('type' => 'admin_bar'));
-
-			$flag_image = $this->get_flag_image();
-
-			$title = "";
-
-			if($arr_site_status['url'] != '')
+			if(!IS_SUPER_ADMIN && count($wp_admin_bar->user->blogs) < 2)
 			{
-				$title .= "<a href='".$arr_site_status['url']."' class='".$arr_site_status['color']."'>";
+				$wp_admin_bar->remove_menu('my-sites');
 			}
-
-			else
-			{
-				$title .= "<span class='".$arr_site_status['color']."'>";
-			}
-
-				if($flag_image != '')
-				{
-					$title .= "<div class='flex_flow tight'>
-						<img src='".$flag_image."'>&nbsp;
-						<span>";
-				}
-
-					// "#wpadminbar *" overrides style for FA icons
-					/*if($arr_site_status['icon'] != '')
-					{
-						$title .= "<i class='".$arr_site_status['icon']."' title='".$arr_site_status['text']."'></i>";
-					}
-
-					else
-					{*/
-						$title .= $arr_site_status['text'];
-					//}
-
-				if($flag_image != '')
-				{
-						$title .= "</span>
-					</div>";
-				}
-
-			if($arr_site_status['url'] != '')
-			{
-				$title .= "</a>";
-			}
-
-			else
-			{
-				$title .= "</span>";
-			}
-
-			$wp_admin_bar->add_node(array(
-				'id' => 'live',
-				'title' => $title,
-			));
 		}
+
+		else
+		{
+			$wp_admin_bar->remove_menu('updates');
+		}*/
+
+		$wp_admin_bar->remove_menu('site-name');
+
+		$arr_site_status = $this->get_site_status_data(array('type' => 'admin_bar'));
+
+		$flag_image = $this->get_flag_image();
+
+		$title = "";
+
+		if($arr_site_status['url'] != '' && IS_ADMINISTRATOR)
+		{
+			$title .= "<a href='".$arr_site_status['url']."' class='".$arr_site_status['color']."'>";
+		}
+
+		else
+		{
+			$title .= "<span class='".$arr_site_status['color']."'>";
+		}
+
+			if($flag_image != '')
+			{
+				$title .= "<div class='flex_flow tight'>
+					<img src='".$flag_image."'>&nbsp;
+					<span>";
+			}
+
+				// "#wpadminbar *" overrides style for FA icons
+				/*if($arr_site_status['icon'] != '')
+				{
+					$title .= "<i class='".$arr_site_status['icon']."' title='".$arr_site_status['text']."'></i>";
+				}
+
+				else
+				{*/
+					$title .= $arr_site_status['text'];
+				//}
+
+			if($flag_image != '')
+			{
+					$title .= "</span>
+				</div>";
+			}
+
+		if($arr_site_status['url'] != '')
+		{
+			$title .= "</a>";
+		}
+
+		else
+		{
+			$title .= "</span>";
+		}
+
+		$wp_admin_bar->add_node(array(
+			'id' => 'live',
+			'title' => $title,
+		));
 	}
 
 	function admin_init()
