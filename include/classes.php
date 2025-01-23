@@ -303,15 +303,17 @@ class mf_site_manager
 	{
 		global $wp_admin_bar;
 
-		/*if(is_multisite())
+		if(is_multisite())
 		{
 			if(!IS_SUPER_ADMIN && count($wp_admin_bar->user->blogs) < 2)
 			{
 				$wp_admin_bar->remove_menu('my-sites');
 			}
+
+			$wp_admin_bar->remove_menu('site-editor');
 		}
 
-		else
+		/*else
 		{
 			$wp_admin_bar->remove_menu('updates');
 		}*/
