@@ -376,6 +376,38 @@ class mf_site_manager
 		));
 	}
 
+	function admin_bar_menu()
+	{
+		global $wp_admin_bar;
+
+		if(count($wp_admin_bar->user->blogs) > 1)
+		{
+			$main_site_id = get_main_site_id();
+
+			$arr_names = array();
+			$arr_sites = $wp_admin_bar->user->blogs;
+
+			foreach($arr_sites as $site_id => $site)
+			{
+				$arr_names[$site_id] = strtoupper($site->blogname);
+
+				if($site_id == $main_site_id)
+				{
+					$wp_admin_bar->user->blogs[$site_id]->blogname .= " <i class='far fa-star yellow'></i>";
+				}
+			}
+
+			asort($arr_names);
+
+			$wp_admin_bar->user->blogs = array();
+
+			foreach($arr_names as $site_id => $name)
+			{
+				$wp_admin_bar->user->blogs[$site_id] = $arr_sites[$site_id];
+			}
+		}
+	}
+
 	function admin_init()
 	{
 		global $pagenow;
