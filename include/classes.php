@@ -1921,7 +1921,7 @@ class mf_site_manager
 
 							echo format_date($post_modified_manual);
 
-							$row_actions .= ($row_actions != '' ? " | " : "")."<a href='".admin_url("post.php?action=edit&post=".$post_id_manual)."'>".shorten_text(array('string' => get_post_title($post_id_manual), 'limit' => 10))."</a>";
+							$row_actions .= ($row_actions != '' ? " | " : "")."<a href='".admin_url("post.php?action=edit&post=".$post_id_manual)."'>".shorten_text(array('string' => get_the_title($post_id_manual), 'limit' => 10))."</a>";
 
 							$last_updated_automatic_post_types = array_diff($arr_post_types, apply_filters('filter_last_updated_post_types', array('post', 'page'), 'auto'));
 
