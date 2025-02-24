@@ -25,10 +25,10 @@ $type_table = (isset($arr_input[1]) ? $arr_input[1] : '');
 
 $remote_server_ip = get_current_visitor_ip();
 
-$setting_server_ips_allowed = get_option('setting_server_ips_allowed');
-$arr_setting_server_ips_allowed = array_map('trim', explode(",", $setting_server_ips_allowed));
+$setting_site_manager_server_ips_allowed = get_option('setting_site_manager_server_ips_allowed');
+$arr_setting_site_manager_server_ips_allowed = array_map('trim', explode(",", $setting_site_manager_server_ips_allowed));
 
-if(count($arr_setting_server_ips_allowed) > 0 && in_array($remote_server_ip, $arr_setting_server_ips_allowed))
+if(count($arr_setting_site_manager_server_ips_allowed) > 0 && in_array($remote_server_ip, $arr_setting_site_manager_server_ips_allowed))
 {
 	if($type_action == "compare")
 	{

@@ -1,8 +1,8 @@
 <?php
 
-$setting_site_comparison = get_option('setting_site_comparison');
+$setting_site_manager_site_comparison = get_option('setting_site_manager_site_comparison');
 
-if($setting_site_comparison == '')
+if($setting_site_manager_site_comparison == '')
 {
 	mf_redirect(admin_url("options-general.php?page=settings_mf_base#settings_site_manager"));
 }
@@ -16,7 +16,7 @@ echo "<div class='wrap'>
 	.get_notification();
 
 	$obj_site_manager->get_content_versions();
-	$obj_site_manager->get_sites($setting_site_comparison);
+	$obj_site_manager->get_sites($setting_site_manager_site_comparison);
 
 	if(count($obj_site_manager->arr_sites) > 0)
 	{
@@ -184,11 +184,11 @@ echo "<div class='wrap'>
 
 				if($has_echoed == true)
 				{
-					$setting_site_clone_path = get_option('setting_site_clone_path');
+					$setting_site_manager_site_clone_path = get_option('setting_site_manager_site_clone_path');
 
-					if($setting_site_clone_path != '')
+					if($setting_site_manager_site_clone_path != '')
 					{
-						$arr_setting_site_clone_path = array_map('trim', explode(",", $setting_site_clone_path));
+						$arr_setting_site_manager_site_clone_path = array_map('trim', explode(",", $setting_site_manager_site_clone_path));
 
 						echo "<tr>
 							<td>".__("Copy differences", 'lang_site_manager')."</td>
@@ -198,7 +198,7 @@ echo "<div class='wrap'>
 
 							foreach($obj_site_manager->arr_sites as $site)
 							{
-								$site_key = (count($arr_setting_site_clone_path) > 1 ? $i : 0);
+								$site_key = (count($arr_setting_site_manager_site_clone_path) > 1 ? $i : 0);
 
 								echo "<td>";
 
@@ -206,18 +206,18 @@ echo "<div class='wrap'>
 									{
 										if(isset($_GET['type']) && $_GET['type'] == 'debug_copy')
 										{
-											echo sprintf(__("The differences were test copied into %s", 'lang_site_manager'), $arr_setting_site_clone_path[$site_key]);
+											echo sprintf(__("The differences were test copied into %s", 'lang_site_manager'), $arr_setting_site_manager_site_clone_path[$site_key]);
 										}
 
 										else
 										{
-											echo sprintf(__("The differences were copied into %s", 'lang_site_manager'), $arr_setting_site_clone_path[$site_key]);
+											echo sprintf(__("The differences were copied into %s", 'lang_site_manager'), $arr_setting_site_manager_site_clone_path[$site_key]);
 										}
 									}
 
 									else
 									{
-										echo "<a href='".wp_nonce_url(admin_url("admin.php?page=".check_var('page')."&btnDifferencesCopy&strSiteURL=".$site."&intSiteKey=".$site_key), 'differences_copy_'.$site_key, '_wpnonce_differences_copy')."' class='button' rel='confirm' title='".sprintf(__("Copy Differences Into %s", 'lang_site_manager'), $arr_setting_site_clone_path[$site_key])."'>"
+										echo "<a href='".wp_nonce_url(admin_url("admin.php?page=".check_var('page')."&btnDifferencesCopy&strSiteURL=".$site."&intSiteKey=".$site_key), 'differences_copy_'.$site_key, '_wpnonce_differences_copy')."' class='button' rel='confirm' title='".sprintf(__("Copy Differences Into %s", 'lang_site_manager'), $arr_setting_site_manager_site_clone_path[$site_key])."'>"
 											.__("Copy Differences", 'lang_site_manager')
 										."</a>";
 

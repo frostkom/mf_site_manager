@@ -471,14 +471,14 @@ class mf_site_manager
 	{
 		global $done_text, $error_text;
 
-		$setting_server_ip_target = get_option('setting_server_ip_target');
+		$setting_site_manager_server_ip_target = get_option('setting_site_manager_server_ip_target');
 
-		if($setting_server_ip_target != '')
+		if($setting_site_manager_server_ip_target != '')
 		{
-			$setting_server_ip = get_option('setting_server_ip');
-			//$setting_server_ip = $this->get_server_ip();
+			$setting_site_manager_server_ip = get_option('setting_site_manager_server_ip');
+			//$setting_site_manager_server_ip = $this->get_server_ip();
 
-			if($setting_server_ip == $setting_server_ip_target)
+			if($setting_site_manager_server_ip == $setting_site_manager_server_ip_target)
 			{
 				$done_text = sprintf(__("This is the new server and now the setting can be removed %shere%s", 'lang_site_manager'), "<a href='".admin_url("options-general.php?page=settings_mf_base#settings_site_manager")."'>", "</a>");
 			}
@@ -487,7 +487,7 @@ class mf_site_manager
 			{
 				$error_text = sprintf(__("This is the old server and you can find the setting %shere%s", 'lang_site_manager'), "<a href='".admin_url("options-general.php?page=settings_mf_base#settings_site_manager")."'>", "</a>");
 
-				$error_text .= " (".$setting_server_ip." != ".$setting_server_ip_target.")";
+				$error_text .= " (".$setting_site_manager_server_ip." != ".$setting_site_manager_server_ip_target.")";
 			}
 
 			echo get_notification();
@@ -509,14 +509,14 @@ class mf_site_manager
 				$arr_settings['setting_site_manager_multisite'] = __("Convert to MultiSite", 'lang_site_manager');
 			}
 
-			$arr_settings['setting_server_ip'] = __("Server IP", 'lang_site_manager');
-			$arr_settings['setting_server_ip_target'] = __("Target Server IP", 'lang_site_manager');
-			$arr_settings['setting_server_ips_allowed'] = __("Server IPs allowed", 'lang_site_manager');
-			$arr_settings['setting_site_comparison'] = __("Sites to compare with", 'lang_site_manager');
+			$arr_settings['setting_site_manager_server_ip'] = __("Server IP", 'lang_site_manager');
+			$arr_settings['setting_site_manager_server_ip_target'] = __("Target Server IP", 'lang_site_manager');
+			$arr_settings['setting_site_manager_server_ips_allowed'] = __("Server IPs allowed", 'lang_site_manager');
+			$arr_settings['setting_site_manager_site_comparison'] = __("Sites to compare with", 'lang_site_manager');
 
-			if(get_option('setting_site_comparison') != '')
+			if(get_option('setting_site_manager_site_comparison') != '')
 			{
-				$arr_settings['setting_site_clone_path'] = __("Path to Clone to", 'lang_site_manager');
+				$arr_settings['setting_site_manager_site_clone_path'] = __("Path to Clone to", 'lang_site_manager');
 			}
 
 			show_settings_fields(array('area' => $options_area, 'object' => $this, 'settings' => $arr_settings));
@@ -566,7 +566,7 @@ class mf_site_manager
 			</ul>";
 		}
 
-		function setting_server_ip_callback()
+		function setting_site_manager_server_ip_callback()
 		{
 			$setting_key = get_setting_key(__FUNCTION__);
 			$option = get_option($setting_key);
@@ -585,7 +585,7 @@ class mf_site_manager
 			<div id='ip_debug'></div>";
 		}
 
-		function setting_server_ip_target_callback()
+		function setting_site_manager_server_ip_target_callback()
 		{
 			$setting_key = get_setting_key(__FUNCTION__);
 			$option = get_option($setting_key);
@@ -593,7 +593,7 @@ class mf_site_manager
 			echo show_textfield(array('name' => $setting_key, 'value' => $option));
 		}
 
-		function setting_server_ips_allowed_callback()
+		function setting_site_manager_server_ips_allowed_callback()
 		{
 			$setting_key = get_setting_key(__FUNCTION__);
 			$option = get_option($setting_key);
@@ -601,7 +601,7 @@ class mf_site_manager
 			echo show_textfield(array('name' => $setting_key, 'value' => $option));
 		}
 
-		function setting_site_comparison_callback()
+		function setting_site_manager_site_comparison_callback()
 		{
 			$setting_key = get_setting_key(__FUNCTION__);
 			$option = get_option($setting_key);
@@ -611,7 +611,7 @@ class mf_site_manager
 			echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => $site_url.", test.".$site_url));
 		}
 
-		function setting_site_clone_path_callback()
+		function setting_site_manager_site_clone_path_callback()
 		{
 			$setting_key = get_setting_key(__FUNCTION__);
 			$option = get_option($setting_key);
@@ -628,7 +628,7 @@ class mf_site_manager
 		$menu_title = __("Site Manager", 'lang_site_manager');
 		add_menu_page($menu_title, $menu_title, $menu_capability, $menu_start, '', 'dashicons-images-alt2', 100);
 
-		if(get_option('setting_site_comparison') != '')
+		if(get_option('setting_site_manager_site_comparison') != '')
 		{
 			$menu_title = __("Compare Sites", 'lang_site_manager');
 			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."compare/index.php");
@@ -1191,24 +1191,24 @@ class mf_site_manager
 
 		else if(isset($_REQUEST['btnDifferencesCopy']))
 		{
-			$this->setting_site_clone_path = "";
+			$this->setting_site_manager_site_clone_path = "";
 
 			if($this->compare_site_key != '' && wp_verify_nonce($_REQUEST['_wpnonce_differences_copy'], 'differences_copy_'.$this->compare_site_key))
 			{
-				$setting_site_clone_path = get_option('setting_site_clone_path');
+				$setting_site_manager_site_clone_path = get_option('setting_site_manager_site_clone_path');
 
-				if($setting_site_clone_path != '')
+				if($setting_site_manager_site_clone_path != '')
 				{
-					$arr_setting_site_clone_path = array_map('trim', explode(",", $setting_site_clone_path));
+					$arr_setting_site_manager_site_clone_path = array_map('trim', explode(",", $setting_site_manager_site_clone_path));
 
-					$this->setting_site_clone_path = $arr_setting_site_clone_path[$this->compare_site_key];
+					$this->setting_site_manager_site_clone_path = $arr_setting_site_manager_site_clone_path[$this->compare_site_key];
 
-					if(substr($this->setting_site_clone_path, -1) != "/")
+					if(substr($this->setting_site_manager_site_clone_path, -1) != "/")
 					{
-						$this->setting_site_clone_path .= "/";
+						$this->setting_site_manager_site_clone_path .= "/";
 					}
 
-					//$done_text = sprintf(__("I am going to copy the differences into %s", 'lang_site_manager'), $arr_setting_site_clone_path[$this->compare_site_key]);
+					//$done_text = sprintf(__("I am going to copy the differences into %s", 'lang_site_manager'), $arr_setting_site_manager_site_clone_path[$this->compare_site_key]);
 				}
 			}
 		}
@@ -2058,11 +2058,11 @@ class mf_site_manager
 		$this->arr_plugins['this'] = $arr_plugins_this_site;
 	}
 
-	function get_sites($setting_site_comparison)
+	function get_sites($setting_site_manager_site_comparison)
 	{
-		if($setting_site_comparison != '')
+		if($setting_site_manager_site_comparison != '')
 		{
-			$this->arr_sites = array_map('trim', explode(",", $setting_site_comparison));
+			$this->arr_sites = array_map('trim', explode(",", $setting_site_manager_site_comparison));
 		}
 
 		$count_temp = count($this->arr_sites);
@@ -2532,7 +2532,7 @@ class mf_site_manager
 
 		$out = "";
 
-		if(isset($_REQUEST['btnDifferencesCopy']) && $this->setting_site_clone_path != '')
+		if(isset($_REQUEST['btnDifferencesCopy']) && $this->setting_site_manager_site_clone_path != '')
 		{
 			$debug_copy = (isset($_GET['type']) && $_GET['type'] == 'debug_copy');
 
@@ -2543,7 +2543,7 @@ class mf_site_manager
 				$source_path .= $data['dir'];
 			}
 
-			$destination_path = str_replace(ABSPATH, $this->setting_site_clone_path, $source_path);
+			$destination_path = str_replace(ABSPATH, $this->setting_site_manager_site_clone_path, $source_path);
 
 			if($debug_copy)
 			{
@@ -2566,7 +2566,7 @@ class mf_site_manager
 	{
 		$url = get_site_url()."/wp-content/plugins/mf_base/include/api/?type=my_ip";
 
-		$this->server_ip_old = get_option('setting_server_ip');
+		$this->server_ip_old = get_option('setting_site_manager_server_ip');
 		$this->server_ip_new = "";
 
 		list($content, $headers) = get_url_content(array('url' => $url, 'catch_head' => true));
@@ -2628,7 +2628,7 @@ class mf_site_manager
 
 		if($this->server_ip_new != '' && $this->server_ip_new != $this->server_ip_old)
 		{
-			update_option('setting_server_ip', $this->server_ip_new, false);
+			update_option('setting_site_manager_server_ip', $this->server_ip_new, false);
 
 			if($this->server_ip_old != '')
 			{
