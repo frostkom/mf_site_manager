@@ -799,7 +799,7 @@ class mf_site_manager
 					$option_value = str_replace($this->site_url, $this->new_url, $option_value);
 				}
 
-				update_option($option_name, $option_value);
+				update_option($option_name, $option_value, false);
 			}
 		}
 	}
@@ -1387,7 +1387,7 @@ class mf_site_manager
 			{
 				$arr_errors = array();
 
-				update_option('stylesheet', $new_theme, 'no');
+				update_option('stylesheet', $new_theme, false);
 
 				//Make sure it doesn't already exist before trying to use it since it'll return a duplicate error if that is the case
 				$wpdb->query("DELETE FROM ".$wpdb->options." WHERE option_name = 'theme_mods_".$new_theme."'");
@@ -1399,7 +1399,7 @@ class mf_site_manager
 
 				if($count_temp > 0)
 				{
-					update_option('stylesheet', $old_theme, 'no');
+					update_option('stylesheet', $old_theme, false);
 
 					$error_text = sprintf(__("I executed your request but there were %d errors so you need to manually update the database", 'lang_site_manager'), $count_temp);
 
@@ -1550,7 +1550,7 @@ class mf_site_manager
 														$option_value = str_replace($site_url, $new_url, $option_value);
 													}
 
-													update_option($option_name, $option_value);
+													update_option($option_name, $option_value, false);
 												}
 											}
 										break;
@@ -2628,7 +2628,7 @@ class mf_site_manager
 
 		if($this->server_ip_new != '' && $this->server_ip_new != $this->server_ip_old)
 		{
-			update_option('setting_server_ip', $this->server_ip_new, 'no');
+			update_option('setting_server_ip', $this->server_ip_new, false);
 
 			if($this->server_ip_old != '')
 			{
