@@ -244,14 +244,17 @@ class mf_site_manager
 
 	function get_site_status_data($data = array())
 	{
+		$status = $this->get_site_status();
+
 		$arr_out = array(
+			'status' => $status,
 			'url' => "",
 			'color' => "",
 			'icon' => "",
 			'text' => "",
 		);
 
-		switch($this->get_site_status())
+		switch($status)
 		{
 			case 'maintenance_mode':
 				$arr_out['url'] = admin_url("options-general.php?page=settings_mf_base#settings_theme_core_public");
@@ -374,6 +377,14 @@ class mf_site_manager
 			'id' => 'live',
 			'title' => $title,
 		));
+
+		if($arr_site_status['status'] == 'public')
+		{
+			$wp_admin_bar->add_node(array(
+				'id' => 'sitemap',
+				'title' => "<a href='".get_site_url()."/sitemap.xml'>".__("Sitemap", 'lang_site_manager')."</a>",
+			));
+		}
 	}
 
 	function admin_bar_menu()
@@ -1887,6 +1898,11 @@ class mf_site_manager
 					$arr_site_status = $this->get_site_status_data(array('type' => 'sites_column'));
 
 					echo "<i class='".$arr_site_status['icon']." fa-2x ".$arr_site_status['color']."' title='".$arr_site_status['text']."'></i>";
+
+					if($arr_site_status['status'] == 'public')
+					{
+						echo "&nbsp;<a href='".get_site_url($id)."/sitemap.xml'><i class='fas fa-sitemap fa-2x'></i></a>";
+					}
 				break;
 
 				case 'email':
