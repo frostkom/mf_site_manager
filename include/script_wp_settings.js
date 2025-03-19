@@ -24,17 +24,7 @@ jQuery(function($)
 			},
 			success: function(data)
 			{
-				obj.selector.empty();
-
-				if(data.success)
-				{
-					obj.selector.html(data.message);
-				}
-
-				else
-				{
-					obj.selector.html(data.error);
-				}
+				obj.selector.html(data.html);
 			}
 		});
 
@@ -46,8 +36,8 @@ jQuery(function($)
 		run_ajax(
 		{
 			'button': $(e.currentTarget),
-			'action': 'force_server_ip',
-			'selector': $("#ip_debug")
+			'action': 'api_site_manager_force_server_ip',
+			'selector': $(".api_site_manager_force_server_ip")
 		});
 	});
 });

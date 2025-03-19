@@ -593,7 +593,7 @@ class mf_site_manager
 			<div".get_form_button_classes().">"
 				.show_button(array('type' => 'button', 'name' => 'btnGetServerIP', 'text' => __("Get Server IP", 'lang_site_manager'), 'class' => 'button-secondary'))
 			."</div>
-			<div id='ip_debug'></div>";
+			<div class='api_site_manager_force_server_ip'></div>";
 		}
 
 		function setting_site_manager_server_ip_target_callback()
@@ -2654,7 +2654,7 @@ class mf_site_manager
 			return $this->server_ip_new;
 		}
 	}
-	
+
 	function option_blogname($value, $option)
 	{
 		if(!preg_match("/\[/", $value))
@@ -2706,11 +2706,13 @@ class mf_site_manager
 		return $url;
 	}
 
-	function force_server_ip()
+	function api_site_manager_force_server_ip()
 	{
 		global $done_text, $error_text;
 
-		$result = array();
+		$json_output = array(
+			'success' => false,
+		);
 
 		//delete_transient('server_ip_transient');
 
@@ -2724,6 +2726,8 @@ class mf_site_manager
 		else if($this->server_ip_new == $this->server_ip_old)
 		{
 			$done_text = sprintf(__("The IP (%s) is the same as before", 'lang_site_manager'), $this->server_ip_new);
+
+			$json_output['success'] = true;
 		}
 
 		else
@@ -2731,21 +2735,10 @@ class mf_site_manager
 			$error_text = sprintf(__("I could not fetch the server IP (%s) for you", 'lang_site_manager'), $this->server_ip_old." -> ".$this->server_ip_new);
 		}
 
-		$out = get_notification();
-
-		if($done_text != '')
-		{
-			$result['success'] = true;
-			$result['message'] = $out;
-		}
-
-		else
-		{
-			$result['error'] = $out;
-		}
+		$json_output['html'] = get_notification();
 
 		header('Content-Type: application/json');
-		echo json_encode($result);
+		echo json_encode($json_output);
 		die();
 	}
 
