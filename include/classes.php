@@ -216,7 +216,7 @@ class mf_site_manager
 
 	function get_site_status()
 	{
-		if(get_option('setting_maintenance_page') > 0 && get_option('setting_activate_maintenance') == 'yes')
+		if(get_option('setting_activate_maintenance') == 'yes' && get_option('setting_maintenance_page') > 0)
 		{
 			return 'maintenance_mode';
 		}
@@ -454,24 +454,6 @@ class mf_site_manager
 				mf_enqueue_script('script_site_manager_sites', $plugin_include_url."script_wp_sites.js", array('plugin_url' => $plugin_include_url, 'ajax_url' => admin_url('admin-ajax.php')));
 			break;
 
-			/*case 'themes.php':
-				if(is_plugin_active("mf_theme_core/index.php"))
-				{
-					global $obj_theme_core;
-
-					if(!isset($obj_theme_core))
-					{
-						$obj_theme_core = new mf_theme_core();
-					}
-
-					if(apply_filters('is_theme_active', false))
-					{
-						// Disable changing theme
-						mf_enqueue_style('style_site_manager_themes', $plugin_include_url."style_wp_themes.css");
-					}
-				//}
-			break;*/
-
 			default:
 				//do_log("Unknown page: ".$pagenow." -> ".$page);
 			break;
@@ -487,7 +469,6 @@ class mf_site_manager
 		if($setting_site_manager_server_ip_target != '')
 		{
 			$setting_site_manager_server_ip = get_option('setting_site_manager_server_ip');
-			//$setting_site_manager_server_ip = $this->get_server_ip();
 
 			if($setting_site_manager_server_ip == $setting_site_manager_server_ip_target)
 			{
@@ -529,6 +510,8 @@ class mf_site_manager
 			{
 				$arr_settings['setting_site_manager_site_clone_path'] = __("Path to Clone to", 'lang_site_manager');
 			}
+
+			$arr_settings['setting_site_manager_template_site'] = __("Template Site", 'lang_site_manager'); //wp_is_block_theme() == false && 
 
 			show_settings_fields(array('area' => $options_area, 'object' => $this, 'settings' => $arr_settings));
 		}
@@ -630,6 +613,60 @@ class mf_site_manager
 			echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => "/live, /test", 'description' => __("The absolute path to receiving WP root", 'lang_site_manager')));
 		}
 
+		function setting_site_manager_template_site_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
+
+			$placeholder = get_site_url();
+
+			if($option != '')
+			{
+				if($option == $placeholder)
+				{
+					$option = "";
+				}
+
+				else
+				{
+					$option = trim($option, "/");
+				}
+			}
+
+			echo show_textfield(array('type' => 'url', 'name' => $setting_key, 'value' => $option, 'placeholder' => $placeholder));
+
+			/*$option_sync_sites = get_option('option_sync_sites', array());
+
+			if(count($option_sync_sites) > 0)
+			{
+				$updated = false;
+
+				echo "<h3>".__("Child Sites", 'lang_site_manager')."</h3>
+				<ol class='text_columns columns_3'>";
+
+					$option_sync_sites = $this->array_sort(array('array' => $option_sync_sites, 'on' => 'datetime', 'order' => 'desc', 'keep_index' => true));
+
+					foreach($option_sync_sites as $url => $site)
+					{
+						echo "<li><a href='".validate_url($url)."' title='".$site['ip'].", ".format_date($site['datetime'])."'>".$site['name']."</a></li>";
+
+						if($site['datetime'] < date("Y-m-d H:i:s", strtotime("-1 week")))
+						{
+							unset($option_sync_sites[$url]);
+
+							$updated = true;
+						}
+					}
+
+				echo "</ol>";
+
+				if($updated == true)
+				{
+					update_option('option_sync_sites', $option_sync_sites, false);
+				}
+			}*/
+		}
+
 	function admin_menu()
 	{
 		$menu_root = 'mf_site_manager/';
@@ -678,6 +715,20 @@ class mf_site_manager
 			$menu_title = __("Settings", 'lang_site_manager');
 			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, admin_url("options-general.php?page=settings_mf_base#settings_site_manager"));
 		}
+	}
+
+	function filter_sites_table_settings($arr_settings)
+	{
+		$arr_settings['settings_site_manager'] = array(
+			'setting_site_manager_template_site' => array(
+				'type' => 'string',
+				'global' => false,
+				'icon' => "fas fa-copy",
+				'name' => __("Template Site", 'lang_site_manager'),
+			),
+		);
+
+		return $arr_settings;
 	}
 
 	/* Change URL */
@@ -1733,6 +1784,7 @@ class mf_site_manager
 		$cols['settings'] = __("Settings", 'lang_site_manager');
 		$cols['pages'] = __("Pages", 'lang_site_manager');
 		$cols['site_status'] = __("Status", 'lang_site_manager');
+		$cols['theme'] = __("Theme", 'lang_site_manager');
 		$cols['email'] = __("E-mail", 'lang_site_manager');
 		$cols['last_updated'] = __("Updated", 'lang_site_manager');
 
@@ -1903,6 +1955,61 @@ class mf_site_manager
 					{
 						echo "&nbsp;<a href='".get_site_url($id)."/sitemap.xml'><i class='fas fa-sitemap fa-2x'></i></a>";
 					}
+				break;
+
+				case 'theme':
+					$restore_notice = $restore_url = "";
+
+					/*if(in_array(get_blog_option($id, 'template'), array('mf_parallax', 'mf_theme'))) //'twentytwentyfour', 'twentytwentyfive'
+					{
+						$style_source = get_blog_option($id, 'setting_site_manager_template_site');
+
+						if($style_source != '')
+						{
+							if($style_source == get_site_url($id))
+							{
+								$restore_notice .= "&nbsp;<i class='fas fa-star fa-lg yellow' title='".__("This is the template theme design", 'lang_theme_core')."'></i>";
+							}
+
+							else
+							{
+								$option_theme_source_style_url = get_blog_option($id, 'option_theme_source_style_url');
+
+								if($option_theme_source_style_url != '')
+								{
+									$restore_notice = "&nbsp;<span class='update-plugins' title='".__("Theme Updates", 'lang_theme_core')."'>
+										<span>1</span>
+									</span>";
+									$restore_url = " | <a href='".get_admin_url($id, "themes.php?page=theme_options")."'>".__("Update", 'lang_theme_core')."</a>";
+								}
+
+								else
+								{
+									$option_theme_saved = get_blog_option($id, 'option_theme_saved');
+
+									$restore_notice .= "&nbsp;<i class='fa fa-check fa-lg ".($option_theme_saved > date("Y-m-d H:i:s", strtotime("-1 month")) ? "green" : "grey")."' title='".__("The theme design is up to date", 'lang_theme_core')."'></i>";
+								}
+							}
+						}
+
+						else
+						{
+							$option_sync_sites = get_option('option_sync_sites', array());
+
+							if(count($option_sync_sites) > 0)
+							{
+								$restore_notice .= "&nbsp;<i class='fas fa-star fa-lg yellow' title='".__("This is the template theme design", 'lang_theme_core')."'></i>";
+							}
+						}
+					}*/
+
+					echo get_blog_option($id, 'stylesheet')
+					.$restore_notice;
+
+					echo "<div class='row-actions'>"
+						."<a href='".get_admin_url($id, "admin.php?page=mf_site_manager/theme/index.php")."'>".__("Change", 'lang_theme_core')."</a>"
+						.$restore_url
+					."</div>";
 				break;
 
 				case 'email':
@@ -2805,6 +2912,49 @@ class mf_site_manager
 				}
 				###################################
 			}
+
+			// Sync with template site
+			############################
+			$setting_site_manager_template_site = get_option('setting_site_manager_template_site');
+			$site_url = get_site_url();
+
+			if($setting_site_manager_template_site != '' && $setting_site_manager_template_site != $site_url && filter_var($setting_site_manager_template_site, FILTER_VALIDATE_URL))
+			{
+				do_log(__FUNCTION__.": Check if theme is the same on this site and the template site, then tell the user that there are new versions of template and/or styles");
+				//SELECT * FROM wp_posts WHERE post_type IN ('wp_global_styles', 'wp_template', 'wp_template_part') 
+
+				/*$url = $setting_site_manager_template_site."/wp-content/plugins/mf_base/include/api/?type=sync";
+
+				list($content, $headers) = get_url_content(array(
+					'url' => $url,
+					'catch_head' => true,
+					'post_data' => array(
+						'site_name' => get_bloginfo('name'),
+						'site_url' => remove_protocol(array('url' => $site_url, 'clean' => true)),
+					),
+				));
+
+				$log_message = sprintf("Getting sync from %s returned an error", $url);
+
+				switch($headers['http_code'])
+				{
+					case 200:
+						$json = json_decode($content, true);
+
+						if(isset($json['success']) && $json['success'] == true)
+						{
+							do_action('cron_sync', $json);
+						}
+
+						do_log($log_message, 'trash');
+					break;
+
+					default:
+						do_log($log_message." (".$headers['http_code'].")");
+					break;
+				}*/
+			}
+			############################
 		}
 
 		$obj_cron->end();

@@ -30,23 +30,46 @@ $arr_setting_site_manager_server_ips_allowed = array_map('trim', explode(",", $s
 
 if(count($arr_setting_site_manager_server_ips_allowed) > 0 && in_array($remote_server_ip, $arr_setting_site_manager_server_ips_allowed))
 {
-	if($type_action == "compare")
+	switch($type_action)
 	{
-		header("Status: 200 OK");
+		case 'compare':
+			header("Status: 200 OK");
 
-		$obj_site_manager = new mf_site_manager();
-		$obj_site_manager->get_content_versions();
+			$obj_site_manager = new mf_site_manager();
+			$obj_site_manager->get_content_versions();
 
-		$json_output['core'] = $obj_site_manager->arr_core['this'];
-		$json_output['themes'] = $obj_site_manager->arr_themes['this'];
-		$json_output['plugins'] = $obj_site_manager->arr_plugins['this'];
-	}
+			$json_output['core'] = $obj_site_manager->arr_core['this'];
+			$json_output['themes'] = $obj_site_manager->arr_themes['this'];
+			$json_output['plugins'] = $obj_site_manager->arr_plugins['this'];
+		break;
 
-	else
-	{
-		header("Status: 503 Unknown action");
+		/*case 'sync':
+			$json_output['success'] = true;
 
-		$json_output['error'] = __("Wrong Type", 'lang_site_manager').": ".$type_action;
+			$remote_site_url = check_var('site_url');
+			$remote_site_name = check_var('site_name');
+
+			if($remote_site_url != '' && $remote_site_name != '')
+			{
+				$option_sync_sites = get_option('option_sync_sites', array());
+
+				$option_sync_sites[$remote_site_url] = array(
+					'name' => $remote_site_name,
+					'datetime' => date("Y-m-d H:i:s"),
+					'ip' => get_current_visitor_ip(),
+				);
+
+				update_option('option_sync_sites', $option_sync_sites, false);
+			}
+
+			$json_output = apply_filters('api_sync', $json_output, array('remote_site_url' => $remote_site_url));
+		break;*/
+
+		default:
+			header("Status: 503 Unknown action");
+
+			$json_output['error'] = __("Wrong Type", 'lang_site_manager').": ".$type_action;
+		break;
 	}
 }
 

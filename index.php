@@ -40,6 +40,8 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 		add_action('admin_init', array($obj_site_manager, 'settings_site_manager'));
 		add_action('admin_menu', array($obj_site_manager, 'admin_menu'));
 
+		add_filter('filter_sites_table_settings', array($obj_site_manager, 'filter_sites_table_settings'));
+
 		if(is_multisite())
 		{
 			add_filter('filter_sites_table_pages', array($obj_site_manager, 'filter_sites_table_pages'));
@@ -69,6 +71,7 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 		replace_option(array('old' => 'setting_server_ips_allowed', 'new' => 'setting_site_manager_server_ips_allowed'));
 		replace_option(array('old' => 'setting_site_comparison', 'new' => 'setting_site_manager_site_comparison'));
 		replace_option(array('old' => 'setting_site_clone_path', 'new' => 'setting_site_manager_site_clone_path'));
+		replace_option(array('old' => 'setting_base_template_site', 'new' => 'setting_site_manager_template_site'));
 	}
 
 	function uninstall_site_manager()
