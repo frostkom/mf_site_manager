@@ -511,7 +511,7 @@ class mf_site_manager
 				$arr_settings['setting_site_manager_site_clone_path'] = __("Path to Clone to", 'lang_site_manager');
 			}
 
-			$arr_settings['setting_site_manager_template_site'] = __("Template Site", 'lang_site_manager'); //wp_is_block_theme() == false && 
+			//$arr_settings['setting_site_manager_template_site'] = __("Template Site", 'lang_site_manager');
 
 			show_settings_fields(array('area' => $options_area, 'object' => $this, 'settings' => $arr_settings));
 		}
@@ -634,37 +634,6 @@ class mf_site_manager
 			}
 
 			echo show_textfield(array('type' => 'url', 'name' => $setting_key, 'value' => $option, 'placeholder' => $placeholder));
-
-			/*$option_sync_sites = get_option('option_sync_sites', array());
-
-			if(count($option_sync_sites) > 0)
-			{
-				$updated = false;
-
-				echo "<h3>".__("Child Sites", 'lang_site_manager')."</h3>
-				<ol class='text_columns columns_3'>";
-
-					$option_sync_sites = $this->array_sort(array('array' => $option_sync_sites, 'on' => 'datetime', 'order' => 'desc', 'keep_index' => true));
-
-					foreach($option_sync_sites as $url => $site)
-					{
-						echo "<li><a href='".validate_url($url)."' title='".$site['ip'].", ".format_date($site['datetime'])."'>".$site['name']."</a></li>";
-
-						if($site['datetime'] < date("Y-m-d H:i:s", strtotime("-1 week")))
-						{
-							unset($option_sync_sites[$url]);
-
-							$updated = true;
-						}
-					}
-
-				echo "</ol>";
-
-				if($updated == true)
-				{
-					update_option('option_sync_sites', $option_sync_sites, false);
-				}
-			}*/
 		}
 
 	function admin_menu()
@@ -715,20 +684,6 @@ class mf_site_manager
 			$menu_title = __("Settings", 'lang_site_manager');
 			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, admin_url("options-general.php?page=settings_mf_base#settings_site_manager"));
 		}
-	}
-
-	function filter_sites_table_settings($arr_settings)
-	{
-		$arr_settings['settings_site_manager'] = array(
-			'setting_site_manager_template_site' => array(
-				'type' => 'string',
-				'global' => false,
-				'icon' => "fas fa-copy",
-				'name' => __("Template Site", 'lang_site_manager'),
-			),
-		);
-
-		return $arr_settings;
 	}
 
 	/* Change URL */
@@ -1953,63 +1908,12 @@ class mf_site_manager
 
 					if($arr_site_status['status'] == 'public')
 					{
-						echo "&nbsp;<a href='".get_site_url($id)."/sitemap.xml'><i class='fas fa-sitemap fa-2x'></i></a>";
+						echo "&nbsp;<a href='".get_site_url($id)."/sitemap.xml'><i class='fas fa-sitemap fa-2x' title='".__("Sitemap", 'lang_site_manager')."'></i></a>";
 					}
 				break;
 
 				case 'theme':
-					$restore_notice = $restore_url = "";
-
-					/*if(in_array(get_blog_option($id, 'template'), array('mf_parallax', 'mf_theme'))) //'twentytwentyfour', 'twentytwentyfive'
-					{
-						$style_source = get_blog_option($id, 'setting_site_manager_template_site');
-
-						if($style_source != '')
-						{
-							if($style_source == get_site_url($id))
-							{
-								$restore_notice .= "&nbsp;<i class='fas fa-star fa-lg yellow' title='".__("This is the template theme design", 'lang_theme_core')."'></i>";
-							}
-
-							else
-							{
-								$option_theme_source_style_url = get_blog_option($id, 'option_theme_source_style_url');
-
-								if($option_theme_source_style_url != '')
-								{
-									$restore_notice = "&nbsp;<span class='update-plugins' title='".__("Theme Updates", 'lang_theme_core')."'>
-										<span>1</span>
-									</span>";
-									$restore_url = " | <a href='".get_admin_url($id, "themes.php?page=theme_options")."'>".__("Update", 'lang_theme_core')."</a>";
-								}
-
-								else
-								{
-									$option_theme_saved = get_blog_option($id, 'option_theme_saved');
-
-									$restore_notice .= "&nbsp;<i class='fa fa-check fa-lg ".($option_theme_saved > date("Y-m-d H:i:s", strtotime("-1 month")) ? "green" : "grey")."' title='".__("The theme design is up to date", 'lang_theme_core')."'></i>";
-								}
-							}
-						}
-
-						else
-						{
-							$option_sync_sites = get_option('option_sync_sites', array());
-
-							if(count($option_sync_sites) > 0)
-							{
-								$restore_notice .= "&nbsp;<i class='fas fa-star fa-lg yellow' title='".__("This is the template theme design", 'lang_theme_core')."'></i>";
-							}
-						}
-					}*/
-
-					echo get_blog_option($id, 'stylesheet')
-					.$restore_notice;
-
-					echo "<div class='row-actions'>"
-						."<a href='".get_admin_url($id, "admin.php?page=mf_site_manager/theme/index.php")."'>".__("Change", 'lang_theme_core')."</a>"
-						.$restore_url
-					."</div>";
+					echo get_blog_option($id, 'stylesheet');
 				break;
 
 				case 'email':
@@ -2124,7 +2028,40 @@ class mf_site_manager
 		// Themes
 		$arr_themes_this_site = array();
 
-		foreach(wp_get_themes() as $key => $value)
+		$current_theme = wp_get_theme();
+		$theme_name = $current_theme->get('Name');
+		$theme_version = $current_theme->get('Version');
+
+		$theme_slug = get_stylesheet();
+		//$theme_uri = get_template_directory_uri();
+
+		//do_log(__FUNCTION__.": ".$theme_name.", ".$theme_version.", ".$theme_slug.", ".$theme_slug);
+
+		$arr_data = array();
+
+		switch($theme_slug)
+		{
+			case 'mf_parallax':
+			case 'mf_theme':
+				$arr_data['array'] = get_theme_mods();
+			break;
+
+			case 'twentytwentyfour':
+			case 'twentytwentyfive':
+				do_log(__FUNCTION__.": Get wp_template etc. from wp_options to compare");
+				// SELECT * FROM wp_posts WHERE post_type IN ('wp_global_styles', 'wp_template', 'wp_template_part')
+				// Check if favicon is the same
+			break;
+		}
+
+		$arr_themes_this_site[$theme_slug] = array(
+			'name' => $theme_name,
+			'dir' => $theme_slug,
+			'version' => $theme_version,
+			'data' => $arr_data,
+		);
+
+		/*foreach(wp_get_themes() as $key => $value)
 		{
 			$arr_data = array();
 
@@ -2142,7 +2079,9 @@ class mf_site_manager
 				'version' => $value->Version,
 				'data' => $arr_data,
 			);
-		}
+
+			do_log(__FUNCTION__.": ".$value->Name.", ".$value->Version.", ".$key.", ".$key);
+		}*/
 
 		$this->arr_themes['this'] = $arr_themes_this_site;
 
@@ -2196,7 +2135,8 @@ class mf_site_manager
 			{
 				$this->arr_sites[$i] = $site = $this->arr_sites[$i];
 
-				$site_ajax = $site."/wp-content/plugins/mf_site_manager/include/api/?type=compare";
+				//$site_ajax = $site."/wp-content/plugins/mf_site_manager/include/api/?type=compare";
+				$site_ajax = $site.$this->compare_uri;
 
 				list($content, $headers) = get_url_content(array('url' => $site_ajax, 'catch_head' => true));
 
@@ -2272,13 +2212,13 @@ class mf_site_manager
 
 			$has_equal_version = true;
 
-			$out = "<tr>
+			$out = "<tr title='".$key."'>
 				<td title='".$directory."'>".$name."</td>
-				<td>".$version."</td>";
+				<td title='".__("Version", 'lang_site_manager')."'>".$version."</td>";
 
 				foreach($this->arr_sites as $site)
 				{
-					$out .= "<td>";
+					$out .= "<td title='".$key."'>";
 
 						if(isset($array[$site][$key]))
 						{
@@ -2315,11 +2255,15 @@ class mf_site_manager
 			if(count($arr_data) > 0)
 			{
 				$out .= "<tr>
-					<td><i class='fa fa-info-circle fa-lg'></i></td>";
+					<td title='".__("Data", 'lang_site_manager')."'>
+						<i class='fa fa-info-circle fa-lg blue'></i>
+					</td>";
 
 					if(isset($arr_data['value']))
 					{
-						$out .= "<td>".($arr_data['value'] > 0 ? "<i class='fa fa-times fa-lg red'></i> <a href='".$arr_data['link']."'>".$arr_data['value']."</a>" : "<i class='fa fa-check fa-lg green'></i>")."</td>";
+						$out .= "<td>"
+							.($arr_data['value'] > 0 ? "<i class='fa fa-times fa-lg red'></i> <a href='".$arr_data['link']."'>".$arr_data['value']."</a>" : "<i class='fa fa-check fa-lg green'></i>")
+						."</td>";
 
 						foreach($this->arr_sites as $site)
 						{
@@ -2327,7 +2271,7 @@ class mf_site_manager
 
 							if(count($arr_data_check) > 0)
 							{
-								$out .= "<td>";
+								$out .= "<td title='".$key."'>";
 
 									if($arr_data_check['value'] > 0)
 									{
@@ -2346,7 +2290,7 @@ class mf_site_manager
 
 							else
 							{
-								$out .= "<td><a href='".$this->get_type_url($site)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a></td>";
+								$out .= "<td title='".$key."'><a href='".$this->get_type_url($site)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a></td>";
 
 								$has_equal_version = false;
 							}
@@ -2378,7 +2322,36 @@ class mf_site_manager
 
 									if(!in_array($key2, $arr_exclude) && $value2 != $value_check)
 									{
-										$out_temp .= "<li><i class='fa fa-times fa-lg red'></i> <strong>".$key2.":</strong> <span class='color_red'>".shorten_text(array('string' => $value_check, 'limit' => 50, 'count' => true))."</span> <strong>-></strong> ".shorten_text(array('string' => $value2, 'limit' => 50, 'count' => true))."</li>";
+										$out_temp .= "<li rel='".$key2."'>
+											<i class='fa fa-times fa-lg red'></i> <strong>".$key2.": </strong>
+											<span class='color_red'>";
+
+												if(is_array($value_check))
+												{
+													$out_temp .= var_export($value_check, true);
+												}
+
+												else
+												{
+													$out_temp .= shorten_text(array('string' => $value_check, 'limit' => 50, 'count' => true));
+												}
+
+											$out_temp .= "</span>
+											<strong> -> </strong>
+											<span>";
+
+												if(is_array($value2))
+												{
+													$out_temp .= var_export($value2, true);
+												}
+
+												else
+												{
+													$out_temp .= shorten_text(array('string' => $value2, 'limit' => 50, 'count' => true));
+												}
+
+											$out_temp .= "</span>
+										</li>";
 
 										$has_equal_version = false;
 									}
@@ -2395,7 +2368,7 @@ class mf_site_manager
 
 									if(!in_array($key2, $arr_exclude) && $value2 != $value_check)
 									{
-										$out_temp .= "<li><i class='fa fa-times fa-lg red'></i> <strong>".$key2.":</strong> <span class='color_red'>".shorten_text(array('string' => $value2, 'limit' => 50, 'count' => true))."</span> <strong>-></strong> ".shorten_text(array('string' => $value_check, 'limit' => 50, 'count' => true))."</li>";
+										$out_temp .= "<li rel='".$key2."'><i class='fa fa-times fa-lg red'></i> <strong>".$key2.":</strong> <span class='color_red'>".shorten_text(array('string' => $value2, 'limit' => 50, 'count' => true))."</span> <strong>-></strong> ".shorten_text(array('string' => $value_check, 'limit' => 50, 'count' => true))."</li>";
 
 										$has_equal_version = false;
 									}
@@ -2912,49 +2885,6 @@ class mf_site_manager
 				}
 				###################################
 			}
-
-			// Sync with template site
-			############################
-			$setting_site_manager_template_site = get_option('setting_site_manager_template_site');
-			$site_url = get_site_url();
-
-			if($setting_site_manager_template_site != '' && $setting_site_manager_template_site != $site_url && filter_var($setting_site_manager_template_site, FILTER_VALIDATE_URL))
-			{
-				do_log(__FUNCTION__.": Check if theme is the same on this site and the template site, then tell the user that there are new versions of template and/or styles");
-				//SELECT * FROM wp_posts WHERE post_type IN ('wp_global_styles', 'wp_template', 'wp_template_part') 
-
-				/*$url = $setting_site_manager_template_site."/wp-content/plugins/mf_base/include/api/?type=sync";
-
-				list($content, $headers) = get_url_content(array(
-					'url' => $url,
-					'catch_head' => true,
-					'post_data' => array(
-						'site_name' => get_bloginfo('name'),
-						'site_url' => remove_protocol(array('url' => $site_url, 'clean' => true)),
-					),
-				));
-
-				$log_message = sprintf("Getting sync from %s returned an error", $url);
-
-				switch($headers['http_code'])
-				{
-					case 200:
-						$json = json_decode($content, true);
-
-						if(isset($json['success']) && $json['success'] == true)
-						{
-							do_action('cron_sync', $json);
-						}
-
-						do_log($log_message, 'trash');
-					break;
-
-					default:
-						do_log($log_message." (".$headers['http_code'].")");
-					break;
-				}*/
-			}
-			############################
 		}
 
 		$obj_cron->end();

@@ -43,28 +43,6 @@ if(count($arr_setting_site_manager_server_ips_allowed) > 0 && in_array($remote_s
 			$json_output['plugins'] = $obj_site_manager->arr_plugins['this'];
 		break;
 
-		/*case 'sync':
-			$json_output['success'] = true;
-
-			$remote_site_url = check_var('site_url');
-			$remote_site_name = check_var('site_name');
-
-			if($remote_site_url != '' && $remote_site_name != '')
-			{
-				$option_sync_sites = get_option('option_sync_sites', array());
-
-				$option_sync_sites[$remote_site_url] = array(
-					'name' => $remote_site_name,
-					'datetime' => date("Y-m-d H:i:s"),
-					'ip' => get_current_visitor_ip(),
-				);
-
-				update_option('option_sync_sites', $option_sync_sites, false);
-			}
-
-			$json_output = apply_filters('api_sync', $json_output, array('remote_site_url' => $remote_site_url));
-		break;*/
-
 		default:
 			header("Status: 503 Unknown action");
 
