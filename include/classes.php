@@ -669,14 +669,14 @@ class mf_site_manager
 				}
 			}
 
-			$menu_title = __("Edit Tables", 'lang_site_manager');
-			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."tables/index.php");
+			/*$menu_title = __("Edit Tables", 'lang_site_manager');
+			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."tables/index.php");*/
 
 			$menu_title = __("Change URL", 'lang_site_manager');
 			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."change/index.php");
 
-			$menu_title = __("Change Theme", 'lang_site_manager');
-			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."theme/index.php");
+			/*$menu_title = __("Change Theme", 'lang_site_manager');
+			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."theme/index.php");*/
 		}
 
 		if(IS_EDITOR)

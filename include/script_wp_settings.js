@@ -16,7 +16,7 @@ jQuery(function($)
 
 		$.ajax(
 		{
-			url: script_site_manager.ajax_url,
+			url: script_site_manager_settings.ajax_url,
 			type: 'post',
 			dataType: 'json',
 			data: {
