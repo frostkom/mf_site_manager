@@ -600,9 +600,9 @@ class mf_site_manager
 			$setting_key = get_setting_key(__FUNCTION__);
 			$option = get_option($setting_key);
 
-			$site_url = remove_protocol(array('url' => get_option('siteurl'), 'clean' => true));
+			$site_url = get_option('siteurl');
 
-			echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => $site_url.", test.".$site_url));
+			echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => $site_url.", ".str_replace("//", "//test.", $site_url)));
 		}
 
 		function setting_site_manager_site_clone_path_callback()
