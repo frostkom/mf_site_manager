@@ -2012,6 +2012,39 @@ class mf_site_manager
 		$this->uploads_amount++;
 	}
 
+	function get_block_parts()
+	{
+		global $wpdb;
+
+		$array = array();
+
+		$site_icon = get_option('site_icon');
+
+		if($site_icon > 0)
+		{
+			$site_icon_url = mf_get_post_content($site_icon, 'guid');
+
+			//list($upload_path, $upload_url) = get_uploads_folder();
+			//$site_icon_path = str_replace($upload_url, $upload_path, $site_icon_url);
+
+			$array['favicon'] = $site_icon_url;
+		}
+
+		$result = $wpdb->get_results("SELECT post_name, post_type, post_title, post_content, post_modified FROM ".$wpdb->posts." WHERE post_type IN ('wp_global_styles', 'wp_template', 'wp_template_part') AND post_status = 'publish'");
+
+		foreach($result as $r)
+		{
+			$array[$r->post_name] = array(
+				'post_type' => $r->post_type,
+				'post_title' => $r->post_title,
+				'post_content' => $r->post_content,
+				'post_modified' => $r->post_modified,
+			);
+		}
+
+		return $array;
+	}
+
 	function get_content_versions()
 	{
 		list($upload_path, $upload_url) = get_uploads_folder();
@@ -2048,9 +2081,7 @@ class mf_site_manager
 
 			case 'twentytwentyfour':
 			case 'twentytwentyfive':
-				do_log(__FUNCTION__.": Get wp_template etc. from wp_options to compare");
-				// SELECT * FROM wp_posts WHERE post_type IN ('wp_global_styles', 'wp_template', 'wp_template_part')
-				// Check if favicon is the same
+				$arr_data['array'] = $this->get_block_parts();
 			break;
 		}
 
@@ -2368,7 +2399,33 @@ class mf_site_manager
 
 									if(!in_array($key2, $arr_exclude) && $value2 != $value_check)
 									{
-										$out_temp .= "<li rel='".$key2."'><i class='fa fa-times fa-lg red'></i> <strong>".$key2.":</strong> <span class='color_red'>".shorten_text(array('string' => $value2, 'limit' => 50, 'count' => true))."</span> <strong>-></strong> ".shorten_text(array('string' => $value_check, 'limit' => 50, 'count' => true))."</li>";
+										if(is_array($value2) || is_array($value_check))
+										{
+											if(strpos($value2['post_content'], "<!--") !== false)
+											{
+												$value2['post_content'] = htmlspecialchars($value2['post_content']);
+											}
+
+											if(strpos($value_check['post_content'], "<!--") !== false)
+											{
+												$value_check['post_content'] = htmlspecialchars($value_check['post_content']);
+											}
+
+											$out_temp .= "<li rel='".$key2."'>
+												<i class='fa fa-times fa-lg red'></i>
+												<strong> ".$key2.": </strong>
+												<span class='color_red'>".var_export($value2, true)."</span><strong> -> </strong>".var_export($value_check, true)
+											."</li>";
+										}
+
+										else
+										{
+											$out_temp .= "<li rel='".$key2."'>
+												<i class='fa fa-times fa-lg red'></i>
+												<strong> ".$key2.": </strong>
+												<span class='color_red'>".shorten_text(array('string' => $value2, 'limit' => 50, 'count' => true))."</span><strong> -> </strong>".shorten_text(array('string' => $value_check, 'limit' => 50, 'count' => true))
+											."</li>";
+										}
 
 										$has_equal_version = false;
 									}
