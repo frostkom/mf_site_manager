@@ -33,6 +33,7 @@ class mf_site_manager
 	var $is_multisite;
 	var $file_dir_from;
 	var $file_dir_to;
+	var $editor_block_parts = array('wp_global_styles', 'wp_template', 'wp_template_part');
 
 	function __construct(){}
 
@@ -2030,7 +2031,7 @@ class mf_site_manager
 			$array['favicon'] = $site_icon_url;
 		}
 
-		$result = $wpdb->get_results("SELECT post_name, post_type, post_title, post_content, post_modified FROM ".$wpdb->posts." WHERE post_type IN ('wp_global_styles', 'wp_template', 'wp_template_part') AND post_status = 'publish'");
+		$result = $wpdb->get_results("SELECT post_name, post_type, post_title, post_content, post_modified FROM ".$wpdb->posts." WHERE post_type IN ('".implode("', '", $this->editor_block_parts)."') AND post_status = 'publish'");
 
 		foreach($result as $r)
 		{
@@ -2066,7 +2067,6 @@ class mf_site_manager
 		$theme_version = $current_theme->get('Version');
 
 		$theme_slug = get_stylesheet();
-		//$theme_uri = get_template_directory_uri();
 
 		//do_log(__FUNCTION__.": ".$theme_name.", ".$theme_version.", ".$theme_slug.", ".$theme_slug);
 
@@ -2213,8 +2213,42 @@ class mf_site_manager
 		return $url;
 	}
 
+	function upload_image_from_url_to_media_library($image_url)
+	{
+		require_once(ABSPATH.'wp-admin/includes/file.php');
+		require_once(ABSPATH.'wp-admin/includes/image.php');
+		require_once(ABSPATH.'wp-admin/includes/media.php');
+
+		$temp_file = download_url($image_url);
+
+		if(is_wp_error($temp_file))
+		{
+			return $temp_file->get_error_message();
+		}
+
+		$file = array(
+			'name' => basename($image_url),
+			'type' => mime_content_type($temp_file),
+			'tmp_name' => $temp_file,
+			'error' => 0,
+			'size' => filesize($temp_file),
+		);
+
+		$file_id = media_handle_sideload($file);
+
+		if(is_wp_error($file_id))
+		{
+			@unlink($temp_file);
+			return $file_id->get_error_message();
+		}
+
+		return $file_id;
+	}
+
 	function check_version($type)
 	{
+		global $wpdb, $done_text, $error_text;
+
 		$this->echoed = false;
 
 		$this->type = $type;
@@ -2271,11 +2305,10 @@ class mf_site_manager
 
 						else
 						{
-							$out .= "<a href='".$this->get_type_url($site, $name)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a>";
-
 							$has_equal_version = false;
 
-							$out .= $this->copy_differences(array('dir' => $this->type."/".$directory));
+							$out .= "<a href='".$this->get_type_url($site, $name)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a>"
+							.$this->copy_differences(array('dir' => $this->type."/".$directory));
 						}
 
 					$out .= "</td>";
@@ -2344,6 +2377,193 @@ class mf_site_manager
 							{
 								$out_temp = "";
 
+								$arr_data_keys = array();
+
+								foreach($arr_data['array'] as $key2 => $value2)
+								{
+									if(!isset($arr_data_keys[$key2]))
+									{
+										$arr_data_keys[$key2] = '';
+									}
+								}
+
+								foreach($arr_data_check['array'] as $key2 => $value2)
+								{
+									if(!isset($arr_data_keys[$key2]))
+									{
+										$arr_data_keys[$key2] = '';
+									}
+								}
+
+								//$out_temp .= var_export($arr_data_keys, true);
+
+								foreach($arr_data_keys as $key2 => $rest)
+								{
+									$value2 = (isset($arr_data_check['array'][$key2]) ? $arr_data_check['array'][$key2] : '');
+									$value_check = (isset($arr_data['array'][$key2]) ? $arr_data['array'][$key2] : '');
+
+									//$value2 = $this->clear_domain_from_urls($value2, get_site_url());
+									//$value_check = $this->clear_domain_from_urls($value_check, "//".$site);
+
+									if($key2 == 'favicon')
+									{
+										$value2 = basename($value2);
+										$value_check = basename($value_check);
+									}
+
+									if(!in_array($key2, $arr_exclude) && $value2 != $value_check)
+									{
+										if(is_array($value2) || is_array($value_check))
+										{
+											$out_temp .= "<li rel='".__LINE__.": ".$key2."'>
+												<i class='fa fa-times fa-lg red'></i> "
+												."<strong>";
+												
+													if(isset($value2['post_type']) && in_array($value2['post_type'], $this->editor_block_parts))
+													{
+														$out_temp .= $value2['post_title']." (".$key2.")";
+													}
+
+													else
+													{
+														$out_temp .= $key2;
+													}
+													
+												$out_temp .= ":</strong> "
+												."<span class='color_red'>";
+
+													if(isset($value2['post_type']) && in_array($value2['post_type'], $this->editor_block_parts))
+													{
+														if(isset($value2['post_content']))
+														{
+															$out_temp .= htmlspecialchars($value2['post_content']);
+														}
+
+														$out_temp .= "</span><strong> -> </strong>";
+
+														if(isset($value_check['post_content']))
+														{
+															$out_temp .= htmlspecialchars($value_check['post_content']);
+														}
+													}
+
+													else
+													{
+														$out_temp .= var_export($value2, true)."</span><strong> -> </strong>".var_export($value_check, true);
+													}
+
+													if(isset($value2['post_type']) && in_array($value2['post_type'], $this->editor_block_parts))
+													{
+														if(isset($_POST['btnBlockPart_'.$value2['post_type'].'_Update']) && isset($_POST['_wpnonce_block_part_'.$value2['post_type'].'_update']) && wp_verify_nonce($_POST['_wpnonce_block_part_'.$value2['post_type'].'_update'], 'block_part_'.$value2['post_type'].'_update_'.get_current_user_id()))
+														{
+															$result = $wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." WHERE post_name = %s AND post_type = %s", $key2, $value2['post_type']));
+
+															if($wpdb->num_rows > 0)
+															{
+																if($wpdb->num_rows == 1)
+																{
+																	foreach($result as $r)
+																	{
+																		$post_id = $r->ID;
+																	}
+
+																	$post_data = array(
+																		'ID' => $post_id,
+																		'post_content' => $value2['post_content'],
+																		'post_modified' => date("Y-m-d H:i:s"),
+																	);
+
+																	//wp_update_post($post_data);
+
+																	$done_text = "Update with ".var_export($post_data, true);
+																}
+
+																else
+																{
+																	$error_text = __("There were several posts", 'lang_site_manager')." (".$wpdb->last_query.")";
+																}
+															}
+
+															else
+															{
+																$post_data = array(
+																	'post_name' => $key2,
+																	'post_title' => $value2['post_title'],
+																	'post_content' => $value2['post_content'],
+																	'post_type' => $value2['post_type'],
+																	'post_status' => 'publish',
+																);
+
+																//wp_insert_post($post_data);
+
+																$done_text = "Insert with ".var_export($post_data, true);
+															}
+
+															$out_temp .= get_notification();
+														}
+
+														else
+														{
+															$out_temp .= "<form method='post' action=''>
+																<div".get_form_button_classes().">"
+																	.show_button(array('name' => 'btnBlockPart_'.$value2['post_type'].'_Update', 'text' => __("Update", 'lang_site_manager')))
+																	.wp_nonce_field('block_part_'.$value2['post_type'].'_update_'.get_current_user_id(), '_wpnonce_block_part_'.$value2['post_type'].'_update', true, false)
+																."</div>
+															</form>";
+														}
+													}
+
+											$out_temp .= "</li>";
+										}
+
+										else
+										{
+											$out_temp .= "<li rel='".__LINE__.": ".$key2."'>
+												<i class='fa fa-times fa-lg red'></i> "
+												."<strong>".$key2.":</strong> "
+												."<span class='color_red'>".shorten_text(array('string' => $value2, 'limit' => 50, 'count' => true))."</span><strong> -> </strong>".shorten_text(array('string' => $value_check, 'limit' => 50, 'count' => true));
+
+												if($key2 == 'favicon')
+												{
+													if(isset($_POST['btnFaviconUpdate']) && isset($_POST['_wpnonce_favicon_update']) && wp_verify_nonce($_POST['_wpnonce_favicon_update'], 'favicon_update_'.get_current_user_id()))
+													{
+														$attachment_id = $this->upload_image_from_url_to_media_library($value2);
+
+														if(is_numeric($attachment_id))
+														{
+															update_option('site_icon', $attachment_id, true);
+
+															$done_text = __("Image uploaded successfully!", 'lang_site_manager');
+														}
+														
+														else
+														{
+															$error_text = __("Error uploading image", 'lang_site_manager');
+														}
+
+														$out_temp .= get_notification();
+													}
+
+													else
+													{
+														$out_temp .= "<form method='post' action=''>
+															<div".get_form_button_classes().">"
+																.show_button(array('name' => 'btnFaviconUpdate', 'text' => __("Update", 'lang_site_manager')))
+																.wp_nonce_field('favicon_update_'.get_current_user_id(), '_wpnonce_favicon_update', true, false)
+															."</div>
+														</form>";
+													}
+												}
+
+											$out_temp .= "</li>";
+										}
+
+										$has_equal_version = false;
+									}
+								}
+
+								/*$out_temp .= "--------------------------";
+
 								foreach($arr_data['array'] as $key2 => $value2)
 								{
 									$value_check = (isset($arr_data_check['array'][$key2]) ? $arr_data_check['array'][$key2] : '');
@@ -2353,7 +2573,7 @@ class mf_site_manager
 
 									if(!in_array($key2, $arr_exclude) && $value2 != $value_check)
 									{
-										$out_temp .= "<li rel='".$key2."'>
+										$out_temp .= "<li rel='".__LINE__.": ".$key2."'>
 											<i class='fa fa-times fa-lg red'></i> <strong>".$key2.": </strong>
 											<span class='color_red'>";
 
@@ -2401,35 +2621,58 @@ class mf_site_manager
 									{
 										if(is_array($value2) || is_array($value_check))
 										{
-											if(strpos($value2['post_content'], "<!--") !== false)
-											{
-												$value2['post_content'] = htmlspecialchars($value2['post_content']);
-											}
+											$out_temp .= "<li rel='".__LINE__.": ".$key2."'>
+												<i class='fa fa-times fa-lg red'></i> "
+												."<strong>";
+												
+													if(in_array($value2['post_type'], $this->editor_block_parts))
+													{
+														$out_temp .= $value2['post_title'];
+													}
 
-											if(strpos($value_check['post_content'], "<!--") !== false)
-											{
-												$value_check['post_content'] = htmlspecialchars($value_check['post_content']);
-											}
+													else
+													{
+														$out_temp .= $key2;
+													}
+													
+												$out_temp .= ":</strong> "
+												."<span class='color_red'>";
 
-											$out_temp .= "<li rel='".$key2."'>
-												<i class='fa fa-times fa-lg red'></i>
-												<strong> ".$key2.": </strong>
-												<span class='color_red'>".var_export($value2, true)."</span><strong> -> </strong>".var_export($value_check, true)
-											."</li>";
+													if(in_array($value2['post_type'], $this->editor_block_parts))
+													{
+														$out_temp .= htmlspecialchars($value2['post_content'])."</span><strong> -> </strong>".htmlspecialchars($value_check['post_content']);
+													}
+
+													else
+													{
+														$out_temp .= var_export($value2, true)."</span><strong> -> </strong>".var_export($value_check, true);
+													}
+
+													if(in_array($value2['post_type'], $this->editor_block_parts))
+													{
+														$out_temp .= " [button to update part]";
+													}
+
+													else if($key2 == 'favicon')
+													{
+														$out_temp .= " [button to update favicon]";
+													}
+
+											$out_temp .= "</li>";
 										}
 
 										else
 										{
-											$out_temp .= "<li rel='".$key2."'>
-												<i class='fa fa-times fa-lg red'></i>
-												<strong> ".$key2.": </strong>
-												<span class='color_red'>".shorten_text(array('string' => $value2, 'limit' => 50, 'count' => true))."</span><strong> -> </strong>".shorten_text(array('string' => $value_check, 'limit' => 50, 'count' => true))
+											$out_temp .= "<li rel='".__LINE__.": ".$key2."'>
+												<i class='fa fa-times fa-lg red'></i> "
+												."<strong>".$key2.":</strong> "
+												."<span class='color_red'>".shorten_text(array('string' => $value2, 'limit' => 50, 'count' => true))."</span><strong> -> </strong>".shorten_text(array('string' => $value_check, 'limit' => 50, 'count' => true))
 											."</li>";
 										}
 
 										$has_equal_version = false;
 									}
-								}
+								}*/
 
 								$out .= "<td>";
 
