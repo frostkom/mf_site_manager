@@ -2013,7 +2013,7 @@ class mf_site_manager
 		$this->uploads_amount++;
 	}
 
-	function get_block_parts()
+	function get_block_parts($theme_slug)
 	{
 		global $wpdb;
 
@@ -2025,9 +2025,6 @@ class mf_site_manager
 		{
 			$site_icon_url = mf_get_post_content($site_icon, 'guid');
 
-			//list($upload_path, $upload_url) = get_uploads_folder();
-			//$site_icon_path = str_replace($upload_url, $upload_path, $site_icon_url);
-
 			$array['favicon'] = $site_icon_url;
 		}
 
@@ -2035,12 +2032,15 @@ class mf_site_manager
 
 		foreach($result as $r)
 		{
-			$array[$r->post_name] = array(
-				'post_type' => $r->post_type,
-				'post_title' => $r->post_title,
-				'post_content' => $r->post_content,
-				'post_modified' => $r->post_modified,
-			);
+			if($r->post_type != 'wp_global_styles' || $r->post_name == 'wp-global-styles-'.$theme_slug)
+			{
+				$array[$r->post_name] = array(
+					'post_type' => $r->post_type,
+					'post_title' => $r->post_title,
+					'post_content' => utf8_encode($r->post_content),
+					//'post_modified' => $r->post_modified,
+				);
+			}
 		}
 
 		return $array;
@@ -2060,6 +2060,7 @@ class mf_site_manager
 		);
 
 		// Themes
+		#############################
 		$arr_themes_this_site = array();
 
 		$current_theme = wp_get_theme();
@@ -2068,20 +2069,18 @@ class mf_site_manager
 
 		$theme_slug = get_stylesheet();
 
-		//do_log(__FUNCTION__.": ".$theme_name.", ".$theme_version.", ".$theme_slug.", ".$theme_slug);
-
-		$arr_data = array();
+		$arr_data_this = array();
 
 		switch($theme_slug)
 		{
 			case 'mf_parallax':
 			case 'mf_theme':
-				$arr_data['array'] = get_theme_mods();
+				$arr_data_this['array'] = get_theme_mods();
 			break;
 
 			case 'twentytwentyfour':
 			case 'twentytwentyfive':
-				$arr_data['array'] = $this->get_block_parts();
+				$arr_data_this['array'] = $this->get_block_parts($theme_slug);
 			break;
 		}
 
@@ -2089,40 +2088,20 @@ class mf_site_manager
 			'name' => $theme_name,
 			'dir' => $theme_slug,
 			'version' => $theme_version,
-			'data' => $arr_data,
+			'data' => $arr_data_this,
 		);
 
-		/*foreach(wp_get_themes() as $key => $value)
-		{
-			$arr_data = array();
-
-			switch($key)
-			{
-				case 'mf_parallax':
-				case 'mf_theme':
-					$arr_data['array'] = get_theme_mods();
-				break;
-			}
-
-			$arr_themes_this_site[$key] = array(
-				'name' => $value->Name,
-				'dir' => $key,
-				'version' => $value->Version,
-				'data' => $arr_data,
-			);
-
-			do_log(__FUNCTION__.": ".$value->Name.", ".$value->Version.", ".$key.", ".$key);
-		}*/
-
 		$this->arr_themes['this'] = $arr_themes_this_site;
+		#############################
 
 		// Plugins
+		#############################
 		$arr_plugins = get_plugins();
 		$arr_plugins_this_site = array();
 
 		foreach($arr_plugins as $key => $value)
 		{
-			$arr_data = array();
+			$arr_data_this = array();
 
 			switch($key)
 			{
@@ -2133,8 +2112,8 @@ class mf_site_manager
 						'select' => "ID",
 					));
 
-					$arr_data['value'] = count($tbl_group->data);
-					$arr_data['link'] = admin_url("admin.php?page=mf_log/list/index.php");
+					$arr_data_this['value'] = count($tbl_group->data);
+					$arr_data_this['link'] = admin_url("admin.php?page=mf_log/list/index.php");
 				break;
 			}
 
@@ -2144,11 +2123,12 @@ class mf_site_manager
 				'name' => $value['Name'],
 				'dir' => $plugin_dir,
 				'version' => $value['Version'],
-				'data' => $arr_data,
+				'data' => $arr_data_this,
 			);
 		}
 
 		$this->arr_plugins['this'] = $arr_plugins_this_site;
+		#############################
 	}
 
 	function get_sites($setting_site_manager_site_comparison)
@@ -2166,7 +2146,6 @@ class mf_site_manager
 			{
 				$this->arr_sites[$i] = $site = $this->arr_sites[$i];
 
-				//$site_ajax = $site."/wp-content/plugins/mf_site_manager/include/api/?type=compare";
 				$site_ajax = $site.$this->compare_uri;
 
 				list($content, $headers) = get_url_content(array('url' => $site_ajax, 'catch_head' => true));
@@ -2203,7 +2182,7 @@ class mf_site_manager
 		}
 	}
 
-	function clear_domain_from_urls($url, $domain)
+	/*function clear_domain_from_urls($url, $domain)
 	{
 		$url = remove_protocol(array('url' => $url));
 		$domain = remove_protocol(array('url' => $domain));
@@ -2211,7 +2190,7 @@ class mf_site_manager
 		$url = str_replace($domain, "[".__("domain", 'lang_site_manager')."]", $url);
 
 		return $url;
-	}
+	}*/
 
 	function upload_image_from_url_to_media_library($image_url)
 	{
@@ -2244,6 +2223,73 @@ class mf_site_manager
 
 		return $file_id;
 	}
+	
+	function replace_content($post_content_parent, $post_content_child = "")
+	{
+		//$post_content_parent = stripslashes($post_content_parent);
+		//$post_content_parent = str_replace("\/", "/", $post_content_parent);
+		$post_content_parent = str_replace(':""', ':"\"', $post_content_parent);
+		$post_content_parent = str_replace('""', '"\"', $post_content_parent);
+		$post_content_parent = str_replace('", ', '\", ', $post_content_parent);
+
+		if($post_content_child != '')
+		{
+			$navigation_id = (int)get_match("/wp\:mf\/navigation \{\"navigation_id\"\:\"(.*?)\"\}/is", $post_content_child, false);
+
+			if($navigation_id > 0)
+			{
+				$post_content_parent = preg_replace("/wp\:mf\/navigation \{\"navigation_id\"\:\"(.*?)\"\}/is", 'wp:mf/navigation {"navigation_id":"'.$navigation_id.'"}', $post_content_parent);
+			}
+		}
+
+		return $post_content_parent;
+	}
+
+	function extractAttributes($html) {
+		$attributes = [];
+		preg_match_all('/<!-- wp:[^ ]+ ({.*?}) -->/', $html, $matches);
+		foreach ($matches[1] as $json) {
+			$attributes[] = json_decode($json, true);
+		}
+		return $attributes;
+	}
+
+	function compareAttributes($attr1, $attr2) {
+		$differences = [];
+		foreach ($attr1 as $key => $value) {
+			if (!array_key_exists($key, $attr2)) {
+				$differences[$key] = ['block1' => $value, 'block2' => null];
+			} elseif ($value !== $attr2[$key]) {
+				$differences[$key] = ['block1' => $value, 'block2' => $attr2[$key]];
+			}
+		}
+		foreach ($attr2 as $key => $value) {
+			if (!array_key_exists($key, $attr1)) {
+				$differences[$key] = ['block1' => null, 'block2' => $value];
+			}
+		}
+		return $differences;
+	}
+
+	function compare_remote_and_this_post_content($block1, $block2)
+	{
+		$attributes1 = $this->extractAttributes($block1);
+		$attributes2 = $this->extractAttributes($block2);
+
+		$differences = [];
+		foreach ($attributes1 as $index => $attr1) {
+			if (isset($attributes2[$index])) {
+				$diff = $this->compareAttributes($attr1, $attributes2[$index]);
+				if (!empty($diff)) {
+					$differences[] = ['index' => $index, 'differences' => $diff];
+				}
+			} else {
+				$differences[] = ['index' => $index, 'differences' => 'Block missing in block 2'];
+			}
+		}
+
+		return $differences;
+	}
 
 	function check_version($type)
 	{
@@ -2268,12 +2314,12 @@ class mf_site_manager
 			break;
 		}
 
-		foreach($array['this'] as $key => $value)
+		foreach($array['this'] as $key => $arr_value)
 		{
-			$name = $value['name'];
-			$directory = $value['dir'];
-			$version = $value['version'];
-			$arr_data = (isset($value['data']) ? $value['data'] : array());
+			$name = $arr_value['name'];
+			$directory = $arr_value['dir'];
+			$version = $arr_value['version'];
+			$arr_data_this = (isset($arr_value['data']) ? $arr_value['data'] : array());
 
 			$has_equal_version = true;
 
@@ -2283,7 +2329,7 @@ class mf_site_manager
 
 				foreach($this->arr_sites as $site)
 				{
-					$out .= "<td title='".$key."'>";
+					$out .= "<td title='".$site.": ".$key."'>";
 
 						if(isset($array[$site][$key]))
 						{
@@ -2297,7 +2343,7 @@ class mf_site_manager
 								$has_equal_version = false;
 							}
 
-							if(count($arr_data) == 0)
+							if(count($arr_data_this) == 0)
 							{
 								unset($array[$site][$key]);
 							}
@@ -2316,30 +2362,30 @@ class mf_site_manager
 
 			$out .= "</tr>";
 
-			if(count($arr_data) > 0)
+			if(count($arr_data_this) > 0)
 			{
 				$out .= "<tr>
 					<td title='".__("Data", 'lang_site_manager')."'>
 						<i class='fa fa-info-circle fa-lg blue'></i>
 					</td>";
 
-					if(isset($arr_data['value']))
+					if(isset($arr_data_this['value']))
 					{
 						$out .= "<td>"
-							.($arr_data['value'] > 0 ? "<i class='fa fa-times fa-lg red'></i> <a href='".$arr_data['link']."'>".$arr_data['value']."</a>" : "<i class='fa fa-check fa-lg green'></i>")
+							.($arr_data_this['value'] > 0 ? "<i class='fa fa-times fa-lg red'></i> <a href='".$arr_data_this['link']."'>".$arr_data_this['value']."</a>" : "<i class='fa fa-check fa-lg green'></i>")
 						."</td>";
 
 						foreach($this->arr_sites as $site)
 						{
-							$arr_data_check = (isset($array[$site][$key]['data']) ? $array[$site][$key]['data'] : array());
+							$arr_data_remote = (isset($array[$site][$key]['data']) ? $array[$site][$key]['data'] : array());
 
-							if(count($arr_data_check) > 0)
+							if(count($arr_data_remote) > 0)
 							{
 								$out .= "<td title='".$key."'>";
 
-									if($arr_data_check['value'] > 0)
+									if($arr_data_remote['value'] > 0)
 									{
-										$out .= "<i class='fa fa-times fa-lg red'></i> <a href='".$arr_data_check['link']."'>".$arr_data_check['value']."</a>";
+										$out .= "<i class='fa fa-times fa-lg red'></i> <a href='".$arr_data_remote['link']."'>".$arr_data_remote['value']."</a>";
 
 										$has_equal_version = false;
 									}
@@ -2363,7 +2409,7 @@ class mf_site_manager
 						}
 					}
 
-					else if(isset($arr_data['array']))
+					else if(isset($arr_data_this['array']))
 					{
 						$arr_exclude = array('style_source');
 
@@ -2371,92 +2417,133 @@ class mf_site_manager
 
 						foreach($this->arr_sites as $site)
 						{
-							$arr_data_check = (isset($array[$site][$key]['data']) ? $array[$site][$key]['data'] : array());
+							$arr_data_remote = (isset($array[$site][$key]['data']) ? $array[$site][$key]['data'] : array());
 
-							if(count($arr_data_check) > 0)
+							if(count($arr_data_remote) > 0)
 							{
 								$out_temp = "";
 
 								$arr_data_keys = array();
 
-								foreach($arr_data['array'] as $key2 => $value2)
+								foreach($arr_data_this['array'] as $key_this => $rest)
 								{
-									if(!isset($arr_data_keys[$key2]))
+									if(!isset($arr_data_keys[$key_this]))
 									{
-										$arr_data_keys[$key2] = '';
+										$arr_data_keys[$key_this] = '';
 									}
 								}
 
-								foreach($arr_data_check['array'] as $key2 => $value2)
+								foreach($arr_data_remote['array'] as $key_remote => $rest)
 								{
-									if(!isset($arr_data_keys[$key2]))
+									if(!isset($arr_data_keys[$key_remote]))
 									{
-										$arr_data_keys[$key2] = '';
+										$arr_data_keys[$key_remote] = '';
 									}
 								}
 
 								//$out_temp .= var_export($arr_data_keys, true);
 
-								foreach($arr_data_keys as $key2 => $rest)
+								foreach($arr_data_keys as $key_all => $rest)
 								{
-									$value2 = (isset($arr_data_check['array'][$key2]) ? $arr_data_check['array'][$key2] : '');
-									$value_check = (isset($arr_data['array'][$key2]) ? $arr_data['array'][$key2] : '');
+									$arr_value_remote = (isset($arr_data_remote['array'][$key_all]) ? $arr_data_remote['array'][$key_all] : '');
+									$arr_value_this = (isset($arr_data_this['array'][$key_all]) ? $arr_data_this['array'][$key_all] : '');
 
-									//$value2 = $this->clear_domain_from_urls($value2, get_site_url());
-									//$value_check = $this->clear_domain_from_urls($value_check, "//".$site);
+									//$arr_value_remote = $this->clear_domain_from_urls($arr_value_remote, get_site_url());
+									//$arr_value_this = $this->clear_domain_from_urls($arr_value_this, "//".$site);
 
-									if($key2 == 'favicon')
+									if($key_all == 'favicon')
 									{
-										$value2 = basename($value2);
-										$value_check = basename($value_check);
+										$arr_value_remote = basename($arr_value_remote);
+										$arr_value_this = basename($arr_value_this);
 									}
 
-									if(!in_array($key2, $arr_exclude) && $value2 != $value_check)
+									$is_different = ($arr_value_remote != $arr_value_this);
+
+									if(isset($arr_value_remote['post_type']) && in_array($arr_value_remote['post_type'], $this->editor_block_parts))
 									{
-										if(is_array($value2) || is_array($value_check))
+										if(isset($arr_value_remote['post_content']))
 										{
-											$out_temp .= "<li rel='".__LINE__.": ".$key2."'>
+											$arr_value_remote['post_content'] = utf8_decode($arr_value_remote['post_content']);
+											//$arr_value_remote['post_content'] = $this->replace_content($arr_value_remote['post_content']); //, $arr_value_this['post_content']
+										}
+									}
+
+									if(isset($arr_value_this['post_type']) && in_array($arr_value_this['post_type'], $this->editor_block_parts))
+									{
+										if(isset($arr_value_this['post_content']))
+										{
+											$arr_value_this['post_content'] = utf8_decode($arr_value_this['post_content']);
+											//$arr_value_this['post_content'] = $this->replace_content($arr_value_this['post_content']); //, $arr_value_this['post_content']
+										}
+									}
+
+									if(isset($arr_value_remote['post_content']) && isset($arr_value_this['post_content']) && $arr_value_remote['post_content'] == $arr_value_this['post_content'])
+									{
+										$is_different = false;
+									}
+
+									if(!in_array($key_all, $arr_exclude) && $is_different)
+									{
+										if(is_array($arr_value_remote) || is_array($arr_value_this))
+										{
+											$out_temp .= "<li rel='".__LINE__.": ".$key_all."'>
 												<i class='fa fa-times fa-lg red'></i> "
 												."<strong>";
-												
-													if(isset($value2['post_type']) && in_array($value2['post_type'], $this->editor_block_parts))
+
+													if(isset($arr_value_remote['post_type']) && in_array($arr_value_remote['post_type'], $this->editor_block_parts))
 													{
-														$out_temp .= $value2['post_title']." (".$key2.")";
+														$out_temp .= $arr_value_remote['post_title']." (".$key_all.")";
 													}
 
 													else
 													{
-														$out_temp .= $key2;
+														$out_temp .= $key_all;
 													}
-													
+
 												$out_temp .= ":</strong> "
 												."<span class='color_red'>";
 
-													if(isset($value2['post_type']) && in_array($value2['post_type'], $this->editor_block_parts))
+													if(isset($arr_value_remote['post_type']) && in_array($arr_value_remote['post_type'], $this->editor_block_parts))
 													{
-														if(isset($value2['post_content']))
+														if(isset($arr_value_this['post_content']) && $arr_value_this['post_content'] != '')
 														{
-															$out_temp .= htmlspecialchars($value2['post_content']);
+															if(isset($arr_value_remote['post_content']))
+															{
+																$arr_value_remote['post_content'] = $this->replace_content($arr_value_remote['post_content'], (isset($arr_value_this['post_content']) ? $arr_value_this['post_content'] : ''));
+
+																$out_temp .= htmlspecialchars($arr_value_remote['post_content']);
+															}
+
+															$out_temp .= "</span><strong> -> </strong>";
+
+															if(isset($arr_value_this['post_content']))
+															{
+																$out_temp .= htmlspecialchars($arr_value_this['post_content']);
+															}
+
+															$differences = $this->compare_remote_and_this_post_content($arr_value_remote['post_content'], $arr_value_this['post_content']);
+
+															$out_temp .= "Diff: ".var_export($differences, true);
 														}
 
-														$out_temp .= "</span><strong> -> </strong>";
-
-														if(isset($value_check['post_content']))
+														else
 														{
-															$out_temp .= htmlspecialchars($value_check['post_content']);
+															$out_temp .= "(".__("empty", 'lang_site_manager').")";
 														}
 													}
 
 													else
 													{
-														$out_temp .= var_export($value2, true)."</span><strong> -> </strong>".var_export($value_check, true);
+														$out_temp .= var_export($arr_value_remote, true)."</span><strong> -> </strong>".var_export($arr_value_this, true);
 													}
 
-													if(isset($value2['post_type']) && in_array($value2['post_type'], $this->editor_block_parts))
+													if(isset($arr_value_remote['post_type']) && in_array($arr_value_remote['post_type'], $this->editor_block_parts))
 													{
-														if(isset($_POST['btnBlockPart_'.$value2['post_type'].'_Update']) && isset($_POST['_wpnonce_block_part_'.$value2['post_type'].'_update']) && wp_verify_nonce($_POST['_wpnonce_block_part_'.$value2['post_type'].'_update'], 'block_part_'.$value2['post_type'].'_update_'.get_current_user_id()))
+														if(isset($_POST['btnBlockPart_'.$key_all.'_Update']) && isset($_POST['_wpnonce_block_part_'.$key_all.'_update']) && wp_verify_nonce($_POST['_wpnonce_block_part_'.$key_all.'_update'], 'block_part_'.$key_all.'_update_'.get_current_user_id()))
 														{
-															$result = $wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." WHERE post_name = %s AND post_type = %s", $key2, $value2['post_type']));
+															$post_id = 0;
+
+															$result = $wpdb->get_results($wpdb->prepare("SELECT ID, post_content FROM ".$wpdb->posts." WHERE post_name = %s AND post_type = %s", $key_all, $arr_value_remote['post_type']));
 
 															if($wpdb->num_rows > 0)
 															{
@@ -2465,15 +2552,18 @@ class mf_site_manager
 																	foreach($result as $r)
 																	{
 																		$post_id = $r->ID;
+																		$post_content = $r->post_content;
+
+																		$arr_value_remote['post_content'] = $this->replace_content($arr_value_remote['post_content'], $post_content);
 																	}
 
 																	$post_data = array(
 																		'ID' => $post_id,
-																		'post_content' => $value2['post_content'],
+																		'post_content' => $arr_value_remote['post_content'],
 																		'post_modified' => date("Y-m-d H:i:s"),
 																	);
 
-																	//wp_update_post($post_data);
+																	wp_update_post($post_data);
 
 																	$done_text = "Update with ".var_export($post_data, true);
 																}
@@ -2487,16 +2577,29 @@ class mf_site_manager
 															else
 															{
 																$post_data = array(
-																	'post_name' => $key2,
-																	'post_title' => $value2['post_title'],
-																	'post_content' => $value2['post_content'],
-																	'post_type' => $value2['post_type'],
+																	'post_name' => $key_all,
+																	'post_title' => $arr_value_remote['post_title'],
+																	'post_content' => $arr_value_remote['post_content'],
+																	'post_type' => $arr_value_remote['post_type'],
 																	'post_status' => 'publish',
 																);
 
-																//wp_insert_post($post_data);
+																$post_id = wp_insert_post($post_data);
 
 																$done_text = "Insert with ".var_export($post_data, true);
+															}
+
+															if($post_id > 0)
+															{
+																$post_content_temp = $arr_value_remote['post_content'];
+																$post_content_temp = str_replace("\\", "\\\\", $post_content_temp);
+																$post_content_temp = str_replace('"', '\\"', $post_content_temp);
+																$post_content_temp = str_replace("\\\\\\\\\\", "\\\\\\", $post_content_temp);
+																$post_content_temp = str_replace('\\\\\\"\\\\\\"', '\\\\\\"\\"', $post_content_temp);
+
+																$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->posts." SET post_content = '".$post_content_temp."' WHERE ID = '%d'", $post_id));
+
+																$done_text .= " and updated with ".$wpdb->last_query;
 															}
 
 															$out_temp .= get_notification();
@@ -2506,8 +2609,8 @@ class mf_site_manager
 														{
 															$out_temp .= "<form method='post' action=''>
 																<div".get_form_button_classes().">"
-																	.show_button(array('name' => 'btnBlockPart_'.$value2['post_type'].'_Update', 'text' => __("Update", 'lang_site_manager')))
-																	.wp_nonce_field('block_part_'.$value2['post_type'].'_update_'.get_current_user_id(), '_wpnonce_block_part_'.$value2['post_type'].'_update', true, false)
+																	.show_button(array('name' => 'btnBlockPart_'.$key_all.'_Update', 'text' => ($arr_value_this['post_content'] != '' ? __("Update", 'lang_site_manager') : __("Add", 'lang_site_manager')), 'xtra' => " rel='confirm'"))
+																	.wp_nonce_field('block_part_'.$key_all.'_update_'.get_current_user_id(), '_wpnonce_block_part_'.$key_all.'_update', true, false)
 																."</div>
 															</form>";
 														}
@@ -2518,16 +2621,16 @@ class mf_site_manager
 
 										else
 										{
-											$out_temp .= "<li rel='".__LINE__.": ".$key2."'>
+											$out_temp .= "<li rel='".__LINE__.": ".$key_all."'>
 												<i class='fa fa-times fa-lg red'></i> "
-												."<strong>".$key2.":</strong> "
-												."<span class='color_red'>".shorten_text(array('string' => $value2, 'limit' => 50, 'count' => true))."</span><strong> -> </strong>".shorten_text(array('string' => $value_check, 'limit' => 50, 'count' => true));
+												."<strong>".$key_all.":</strong> "
+												."<span class='color_red'>".shorten_text(array('string' => $arr_value_remote, 'limit' => 50, 'count' => true))."</span><strong> -> </strong>".shorten_text(array('string' => $arr_value_this, 'limit' => 50, 'count' => true));
 
-												if($key2 == 'favicon')
+												if($key_all == 'favicon')
 												{
 													if(isset($_POST['btnFaviconUpdate']) && isset($_POST['_wpnonce_favicon_update']) && wp_verify_nonce($_POST['_wpnonce_favicon_update'], 'favicon_update_'.get_current_user_id()))
 													{
-														$attachment_id = $this->upload_image_from_url_to_media_library($value2);
+														$attachment_id = $this->upload_image_from_url_to_media_library($arr_value_remote);
 
 														if(is_numeric($attachment_id))
 														{
@@ -2535,7 +2638,7 @@ class mf_site_manager
 
 															$done_text = __("Image uploaded successfully!", 'lang_site_manager');
 														}
-														
+
 														else
 														{
 															$error_text = __("Error uploading image", 'lang_site_manager');
@@ -2548,7 +2651,7 @@ class mf_site_manager
 													{
 														$out_temp .= "<form method='post' action=''>
 															<div".get_form_button_classes().">"
-																.show_button(array('name' => 'btnFaviconUpdate', 'text' => __("Update", 'lang_site_manager')))
+																.show_button(array('name' => 'btnFaviconUpdate', 'text' => __("Update", 'lang_site_manager'), 'xtra' => " rel='confirm'"))
 																.wp_nonce_field('favicon_update_'.get_current_user_id(), '_wpnonce_favicon_update', true, false)
 															."</div>
 														</form>";
@@ -2561,118 +2664,6 @@ class mf_site_manager
 										$has_equal_version = false;
 									}
 								}
-
-								/*$out_temp .= "--------------------------";
-
-								foreach($arr_data['array'] as $key2 => $value2)
-								{
-									$value_check = (isset($arr_data_check['array'][$key2]) ? $arr_data_check['array'][$key2] : '');
-
-									$value2 = $this->clear_domain_from_urls($value2, get_site_url());
-									$value_check = $this->clear_domain_from_urls($value_check, "//".$site);
-
-									if(!in_array($key2, $arr_exclude) && $value2 != $value_check)
-									{
-										$out_temp .= "<li rel='".__LINE__.": ".$key2."'>
-											<i class='fa fa-times fa-lg red'></i> <strong>".$key2.": </strong>
-											<span class='color_red'>";
-
-												if(is_array($value_check))
-												{
-													$out_temp .= var_export($value_check, true);
-												}
-
-												else
-												{
-													$out_temp .= shorten_text(array('string' => $value_check, 'limit' => 50, 'count' => true));
-												}
-
-											$out_temp .= "</span>
-											<strong> -> </strong>
-											<span>";
-
-												if(is_array($value2))
-												{
-													$out_temp .= var_export($value2, true);
-												}
-
-												else
-												{
-													$out_temp .= shorten_text(array('string' => $value2, 'limit' => 50, 'count' => true));
-												}
-
-											$out_temp .= "</span>
-										</li>";
-
-										$has_equal_version = false;
-									}
-
-									unset($arr_data_check['array'][$key2]);
-								}
-
-								foreach($arr_data_check['array'] as $key2 => $value2)
-								{
-									$value_check = (isset($arr_data['array'][$key2]) ? $arr_data['array'][$key2] : '');
-
-									$value2 = $this->clear_domain_from_urls($value2, get_site_url());
-									$value_check = $this->clear_domain_from_urls($value_check, "//".$site);
-
-									if(!in_array($key2, $arr_exclude) && $value2 != $value_check)
-									{
-										if(is_array($value2) || is_array($value_check))
-										{
-											$out_temp .= "<li rel='".__LINE__.": ".$key2."'>
-												<i class='fa fa-times fa-lg red'></i> "
-												."<strong>";
-												
-													if(in_array($value2['post_type'], $this->editor_block_parts))
-													{
-														$out_temp .= $value2['post_title'];
-													}
-
-													else
-													{
-														$out_temp .= $key2;
-													}
-													
-												$out_temp .= ":</strong> "
-												."<span class='color_red'>";
-
-													if(in_array($value2['post_type'], $this->editor_block_parts))
-													{
-														$out_temp .= htmlspecialchars($value2['post_content'])."</span><strong> -> </strong>".htmlspecialchars($value_check['post_content']);
-													}
-
-													else
-													{
-														$out_temp .= var_export($value2, true)."</span><strong> -> </strong>".var_export($value_check, true);
-													}
-
-													if(in_array($value2['post_type'], $this->editor_block_parts))
-													{
-														$out_temp .= " [button to update part]";
-													}
-
-													else if($key2 == 'favicon')
-													{
-														$out_temp .= " [button to update favicon]";
-													}
-
-											$out_temp .= "</li>";
-										}
-
-										else
-										{
-											$out_temp .= "<li rel='".__LINE__.": ".$key2."'>
-												<i class='fa fa-times fa-lg red'></i> "
-												."<strong>".$key2.":</strong> "
-												."<span class='color_red'>".shorten_text(array('string' => $value2, 'limit' => 50, 'count' => true))."</span><strong> -> </strong>".shorten_text(array('string' => $value_check, 'limit' => 50, 'count' => true))
-											."</li>";
-										}
-
-										$has_equal_version = false;
-									}
-								}*/
 
 								$out .= "<td>";
 
@@ -2719,9 +2710,9 @@ class mf_site_manager
 		{
 			if(is_array($array[$site2]))
 			{
-				foreach($array[$site2] as $key => $value)
+				foreach($array[$site2] as $key => $arr_value)
 				{
-					$name = $value['name'];
+					$name = $arr_value['name'];
 					$version = 0;
 
 					echo "<tr>
