@@ -2226,12 +2226,6 @@ class mf_site_manager
 	
 	function replace_content($post_content_parent, $post_content_child = "")
 	{
-		//$post_content_parent = stripslashes($post_content_parent);
-		//$post_content_parent = str_replace("\/", "/", $post_content_parent);
-		$post_content_parent = str_replace(':""', ':"\"', $post_content_parent);
-		$post_content_parent = str_replace('""', '"\"', $post_content_parent);
-		$post_content_parent = str_replace('", ', '\", ', $post_content_parent);
-
 		if($post_content_child != '')
 		{
 			$navigation_id = (int)get_match("/wp\:mf\/navigation \{\"navigation_id\"\:\"(.*?)\"\}/is", $post_content_child, false);
@@ -2245,27 +2239,42 @@ class mf_site_manager
 		return $post_content_parent;
 	}
 
-	function extractAttributes($html) {
-		$attributes = [];
+	/*function extractAttributes($html)
+	{
+		$attributes = array();
+
 		preg_match_all('/<!-- wp:[^ ]+ ({.*?}) -->/', $html, $matches);
-		foreach ($matches[1] as $json) {
+
+		foreach($matches[1] as $json)
+		{
 			$attributes[] = json_decode($json, true);
 		}
+
 		return $attributes;
 	}
 
-	function compareAttributes($attr1, $attr2) {
-		$differences = [];
-		foreach ($attr1 as $key => $value) {
-			if (!array_key_exists($key, $attr2)) {
-				$differences[$key] = ['block1' => $value, 'block2' => null];
-			} elseif ($value !== $attr2[$key]) {
-				$differences[$key] = ['block1' => $value, 'block2' => $attr2[$key]];
+	function compareAttributes($attr1, $attr2)
+	{
+		$differences = array();
+
+		foreach($attr1 as $key => $value)
+		{
+			if(!array_key_exists($key, $attr2))
+			{
+				$differences[$key] = array('block1' => $value, 'block2' => null);
+			}
+			
+			else if($value !== $attr2[$key])
+			{
+				$differences[$key] = array('block1' => $value, 'block2' => $attr2[$key]);
 			}
 		}
-		foreach ($attr2 as $key => $value) {
-			if (!array_key_exists($key, $attr1)) {
-				$differences[$key] = ['block1' => null, 'block2' => $value];
+
+		foreach($attr2 as $key => $value)
+		{
+			if(!array_key_exists($key, $attr1))
+			{
+				$differences[$key] = array('block1' => null, 'block2' => $value);
 			}
 		}
 		return $differences;
@@ -2276,20 +2285,28 @@ class mf_site_manager
 		$attributes1 = $this->extractAttributes($block1);
 		$attributes2 = $this->extractAttributes($block2);
 
-		$differences = [];
-		foreach ($attributes1 as $index => $attr1) {
-			if (isset($attributes2[$index])) {
+		$differences = array();
+
+		foreach($attributes1 as $index => $attr1)
+		{
+			if(isset($attributes2[$index]))
+			{
 				$diff = $this->compareAttributes($attr1, $attributes2[$index]);
-				if (!empty($diff)) {
-					$differences[] = ['index' => $index, 'differences' => $diff];
+			
+				if(!empty($diff))
+				{
+					$differences[] = array('index' => $index, 'differences' => $diff);
 				}
-			} else {
-				$differences[] = ['index' => $index, 'differences' => 'Block missing in block 2'];
+			}
+			
+			else
+			{
+				$differences[] = array('index' => $index, 'differences' => 'Block missing in block 2');
 			}
 		}
 
-		return $differences;
-	}
+		return array($attributes1, $attributes2, $differences);
+	}*/
 
 	function check_version($type)
 	{
@@ -2459,22 +2476,16 @@ class mf_site_manager
 
 									$is_different = ($arr_value_remote != $arr_value_this);
 
-									if(isset($arr_value_remote['post_type']) && in_array($arr_value_remote['post_type'], $this->editor_block_parts))
+									if(isset($arr_value_this['post_type']) && in_array($arr_value_this['post_type'], $this->editor_block_parts) && isset($arr_value_this['post_content']))
 									{
-										if(isset($arr_value_remote['post_content']))
-										{
-											$arr_value_remote['post_content'] = utf8_decode($arr_value_remote['post_content']);
-											//$arr_value_remote['post_content'] = $this->replace_content($arr_value_remote['post_content']); //, $arr_value_this['post_content']
-										}
+										$arr_value_this['post_content'] = utf8_decode($arr_value_this['post_content']);
 									}
 
-									if(isset($arr_value_this['post_type']) && in_array($arr_value_this['post_type'], $this->editor_block_parts))
+									if(isset($arr_value_remote['post_type']) && in_array($arr_value_remote['post_type'], $this->editor_block_parts) && isset($arr_value_remote['post_content']))
 									{
-										if(isset($arr_value_this['post_content']))
-										{
-											$arr_value_this['post_content'] = utf8_decode($arr_value_this['post_content']);
-											//$arr_value_this['post_content'] = $this->replace_content($arr_value_this['post_content']); //, $arr_value_this['post_content']
-										}
+										$arr_value_remote['post_content'] = utf8_decode($arr_value_remote['post_content']);
+
+										$arr_value_remote['post_content'] = $this->replace_content($arr_value_remote['post_content'], (isset($arr_value_this['post_content']) ? $arr_value_this['post_content'] : ''));
 									}
 
 									if(isset($arr_value_remote['post_content']) && isset($arr_value_this['post_content']) && $arr_value_remote['post_content'] == $arr_value_this['post_content'])
@@ -2509,8 +2520,6 @@ class mf_site_manager
 														{
 															if(isset($arr_value_remote['post_content']))
 															{
-																$arr_value_remote['post_content'] = $this->replace_content($arr_value_remote['post_content'], (isset($arr_value_this['post_content']) ? $arr_value_this['post_content'] : ''));
-
 																$out_temp .= htmlspecialchars($arr_value_remote['post_content']);
 															}
 
@@ -2521,9 +2530,12 @@ class mf_site_manager
 																$out_temp .= htmlspecialchars($arr_value_this['post_content']);
 															}
 
-															$differences = $this->compare_remote_and_this_post_content($arr_value_remote['post_content'], $arr_value_this['post_content']);
+															/*$out_temp .= "<br><br>";
 
-															$out_temp .= "Diff: ".var_export($differences, true);
+															list($attributes1, $attributes2, $differences) = $this->compare_remote_and_this_post_content($arr_value_remote['post_content'], $arr_value_this['post_content']);
+
+															$out_temp .= var_export($attributes1, true)." != ".var_export($attributes2, true);
+															$out_temp .= " -> ".var_export($differences, true);*/
 														}
 
 														else
@@ -2565,7 +2577,8 @@ class mf_site_manager
 
 																	wp_update_post($post_data);
 
-																	$done_text = "Update with ".var_export($post_data, true);
+																	//$done_text = "Update with ".var_export($post_data, true);
+																	$done_text = __("I updated the data for you", 'lang_site_manager');
 																}
 
 																else
@@ -2574,7 +2587,7 @@ class mf_site_manager
 																}
 															}
 
-															else
+															/*else
 															{
 																$post_data = array(
 																	'post_name' => $key_all,
@@ -2586,33 +2599,36 @@ class mf_site_manager
 
 																$post_id = wp_insert_post($post_data);
 
-																$done_text = "Insert with ".var_export($post_data, true);
-															}
+																//$done_text = "Insert with ".var_export($post_data, true);
+																$done_text = __("I inserted the data for you", 'lang_site_manager');
+															}*/
 
-															if($post_id > 0)
+															/*if($post_id > 0)
 															{
-																$post_content_temp = $arr_value_remote['post_content'];
-																$post_content_temp = str_replace("\\", "\\\\", $post_content_temp);
-																$post_content_temp = str_replace('"', '\\"', $post_content_temp);
-																$post_content_temp = str_replace("\\\\\\\\\\", "\\\\\\", $post_content_temp);
-																$post_content_temp = str_replace('\\\\\\"\\\\\\"', '\\\\\\"\\"', $post_content_temp);
+																$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->posts." SET post_content = '".$arr_value_remote['post_content']."' WHERE ID = '%d'", $post_id));
 
-																$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->posts." SET post_content = '".$post_content_temp."' WHERE ID = '%d'", $post_id));
-
-																$done_text .= " and updated with ".$wpdb->last_query;
-															}
+																//$done_text .= " and updated with ".$wpdb->last_query;
+															}*/
 
 															$out_temp .= get_notification();
 														}
 
 														else
 														{
-															$out_temp .= "<form method='post' action=''>
-																<div".get_form_button_classes().">"
-																	.show_button(array('name' => 'btnBlockPart_'.$key_all.'_Update', 'text' => ($arr_value_this['post_content'] != '' ? __("Update", 'lang_site_manager') : __("Add", 'lang_site_manager')), 'xtra' => " rel='confirm'"))
-																	.wp_nonce_field('block_part_'.$key_all.'_update_'.get_current_user_id(), '_wpnonce_block_part_'.$key_all.'_update', true, false)
-																."</div>
-															</form>";
+															if($arr_value_this['post_content'] != '')
+															{
+																$out_temp .= "<form method='post' action=''>
+																	<div".get_form_button_classes().">"
+																		.show_button(array('name' => 'btnBlockPart_'.$key_all.'_Update', 'text' => __("Update", 'lang_site_manager'), 'xtra' => " rel='confirm'"))
+																		.wp_nonce_field('block_part_'.$key_all.'_update_'.get_current_user_id(), '_wpnonce_block_part_'.$key_all.'_update', true, false)
+																	."</div>
+																</form>";
+															}
+
+															else
+															{
+																$out_temp .= __("You have to create it first. Then you can update from the source site", 'lang_site_manager');
+															}
 														}
 													}
 
