@@ -2312,8 +2312,9 @@ class mf_site_manager
 	{
 		global $wpdb, $done_text, $error_text;
 
-		$this->echoed = false;
+		$out = "";
 
+		$this->echoed = false;
 		$this->type = $type;
 
 		switch($this->type)
@@ -2340,7 +2341,7 @@ class mf_site_manager
 
 			$has_equal_version = true;
 
-			$out = "<tr title='".$key."'>
+			$out .= "<tr title='".$key."'>
 				<td title='".$directory."'>".$name."</td>
 				<td title='".__("Version", 'lang_site_manager')."'>".$version."</td>";
 
@@ -2470,8 +2471,33 @@ class mf_site_manager
 
 									if($key_all == 'favicon')
 									{
+										$arr_value_remote_orig = $arr_value_remote;
+										$arr_value_this_orig = $arr_value_this;
+
 										$arr_value_remote = basename($arr_value_remote);
 										$arr_value_this = basename($arr_value_this);
+
+										if(isset($_POST['btnFaviconCopy']) && isset($_POST['_wpnonce_favicon_copy']) && wp_verify_nonce($_POST['_wpnonce_favicon_copy'], 'favicon_copy_'.get_current_user_id()))
+										{
+											$result = $this->upload_image_from_url_to_media_library($arr_value_remote_orig);
+
+											if(is_numeric($result))
+											{
+												update_option('site_icon', $result, true);
+
+												$arr_value_this_orig = $arr_value_remote_orig;
+												$arr_value_this = $arr_value_remote;
+
+												$done_text = __("Image uploaded successfully!", 'lang_site_manager');
+											}
+
+											else
+											{
+												$error_text = __("Error uploading image", 'lang_site_manager')." (".var_export($result, true).")";
+											}
+
+											$out_temp .= get_notification();
+										}
 									}
 
 									$is_different = ($arr_value_remote != $arr_value_this);
@@ -2520,14 +2546,30 @@ class mf_site_manager
 														{
 															if(isset($arr_value_remote['post_content']))
 															{
-																$out_temp .= htmlspecialchars($arr_value_remote['post_content']);
+																if($arr_value_remote['post_content'] != '')
+																{
+																	$out_temp .= htmlspecialchars($arr_value_remote['post_content']);
+																}
+
+																else
+																{
+																	$out_temp .= "(".__("empty", 'lang_site_manager').")";
+																}
 															}
 
 															$out_temp .= "</span><strong> -> </strong>";
 
 															if(isset($arr_value_this['post_content']))
 															{
-																$out_temp .= htmlspecialchars($arr_value_this['post_content']);
+																if($arr_value_this['post_content'] != '')
+																{
+																	$out_temp .= htmlspecialchars($arr_value_this['post_content']);
+																}
+
+																else
+																{
+																	$out_temp .= "(".__("empty", 'lang_site_manager').")";
+																}
 															}
 
 															/*$out_temp .= "<br><br>";
@@ -2577,7 +2619,6 @@ class mf_site_manager
 
 																	wp_update_post($post_data);
 
-																	//$done_text = "Update with ".var_export($post_data, true);
 																	$done_text = __("I updated the data for you", 'lang_site_manager');
 																}
 
@@ -2587,7 +2628,7 @@ class mf_site_manager
 																}
 															}
 
-															/*else
+															else
 															{
 																$post_data = array(
 																	'post_name' => $key_all,
@@ -2599,9 +2640,8 @@ class mf_site_manager
 
 																$post_id = wp_insert_post($post_data);
 
-																//$done_text = "Insert with ".var_export($post_data, true);
 																$done_text = __("I inserted the data for you", 'lang_site_manager');
-															}*/
+															}
 
 															/*if($post_id > 0)
 															{
@@ -2615,11 +2655,13 @@ class mf_site_manager
 
 														else
 														{
-															if($arr_value_this['post_content'] != '')
+															$post_content_exists = (isset($arr_value_this['post_content']) && $arr_value_this['post_content'] != '');
+
+															if($arr_value_remote['post_type'] == 'wp_template' || $post_content_exists == true)
 															{
 																$out_temp .= "<form method='post' action=''>
 																	<div".get_form_button_classes().">"
-																		.show_button(array('name' => 'btnBlockPart_'.$key_all.'_Update', 'text' => __("Update", 'lang_site_manager'), 'xtra' => " rel='confirm'"))
+																		.show_button(array('name' => 'btnBlockPart_'.$key_all.'_Update', 'text' => ($post_content_exists == true ? __("Update", 'lang_site_manager') : __("Create", 'lang_site_manager')), 'xtra' => " rel='confirm'"))
 																		.wp_nonce_field('block_part_'.$key_all.'_update_'.get_current_user_id(), '_wpnonce_block_part_'.$key_all.'_update', true, false)
 																	."</div>
 																</form>";
@@ -2627,7 +2669,24 @@ class mf_site_manager
 
 															else
 															{
-																$out_temp .= __("You have to create it first. Then you can update from the source site", 'lang_site_manager');
+																switch($arr_value_remote['post_type'])
+																{
+																	case 'wp_template':
+																		$editor_url = admin_url("site-editor.php?postType=wp_template");
+																	break;
+
+																	case 'wp_template_part':
+																		$editor_url = admin_url("site-editor.php");
+																	break;
+
+																	default:
+																		$editor_url = "#";
+
+																		do_log(__FUNCTION__.": Unknown post_type (".var_export($arr_value_remote, true).")");
+																	break;
+																}
+
+																$out_temp .= "<p class='italic'>".sprintf(__("You have to create it in the %seditor%s first. Then you can update from the source site.", 'lang_site_manager'), "<a href='".$editor_url."'>", "</a>")."</p>";
 															}
 														}
 													}
@@ -2640,38 +2699,38 @@ class mf_site_manager
 											$out_temp .= "<li rel='".__LINE__.": ".$key_all."'>
 												<i class='fa fa-times fa-lg red'></i> "
 												."<strong>".$key_all.":</strong> "
-												."<span class='color_red'>".shorten_text(array('string' => $arr_value_remote, 'limit' => 50, 'count' => true))."</span><strong> -> </strong>".shorten_text(array('string' => $arr_value_this, 'limit' => 50, 'count' => true));
-
-												if($key_all == 'favicon')
-												{
-													if(isset($_POST['btnFaviconUpdate']) && isset($_POST['_wpnonce_favicon_update']) && wp_verify_nonce($_POST['_wpnonce_favicon_update'], 'favicon_update_'.get_current_user_id()))
+												."<span class='color_red'>";
+												
+													if($arr_value_remote != '')
 													{
-														$attachment_id = $this->upload_image_from_url_to_media_library($arr_value_remote);
-
-														if(is_numeric($attachment_id))
-														{
-															update_option('site_icon', $attachment_id, true);
-
-															$done_text = __("Image uploaded successfully!", 'lang_site_manager');
-														}
-
-														else
-														{
-															$error_text = __("Error uploading image", 'lang_site_manager');
-														}
-
-														$out_temp .= get_notification();
+														$out_temp .= shorten_text(array('string' => $arr_value_remote, 'limit' => 50, 'count' => true));
 													}
 
 													else
 													{
-														$out_temp .= "<form method='post' action=''>
-															<div".get_form_button_classes().">"
-																.show_button(array('name' => 'btnFaviconUpdate', 'text' => __("Update", 'lang_site_manager'), 'xtra' => " rel='confirm'"))
-																.wp_nonce_field('favicon_update_'.get_current_user_id(), '_wpnonce_favicon_update', true, false)
-															."</div>
-														</form>";
+														$out_temp .= "(".__("empty", 'lang_site_manager').")";
 													}
+													
+												$out_temp .= "</span><strong> -> </strong>";
+
+												if($arr_value_this != '')
+												{
+													$out_temp .= shorten_text(array('string' => $arr_value_this, 'limit' => 50, 'count' => true));
+												}
+
+												else
+												{
+													$out_temp .= "(".__("empty", 'lang_site_manager').")";
+												}
+
+												if($key_all == 'favicon')
+												{
+													$out_temp .= "<form method='post' action=''>
+														<div".get_form_button_classes().">"
+															.show_button(array('name' => 'btnFaviconCopy', 'text' => __("Copy", 'lang_site_manager'), 'xtra' => " rel='confirm'"))
+															.wp_nonce_field('favicon_copy_'.get_current_user_id(), '_wpnonce_favicon_copy', true, false)
+														."</div>
+													</form>";
 												}
 
 											$out_temp .= "</li>";
