@@ -3214,6 +3214,17 @@ class mf_site_manager
 
 		if($obj_cron->is_running == false)
 		{
+			replace_option(array('old' => 'setting_server_ip', 'new' => 'setting_site_manager_server_ip'));
+			replace_option(array('old' => 'setting_server_ip_target', 'new' => 'setting_site_manager_server_ip_target'));
+			replace_option(array('old' => 'setting_server_ips_allowed', 'new' => 'setting_site_manager_server_ips_allowed'));
+			replace_option(array('old' => 'setting_site_comparison', 'new' => 'setting_site_manager_site_comparison'));
+			replace_option(array('old' => 'setting_site_clone_path', 'new' => 'setting_site_manager_site_clone_path'));
+			replace_option(array('old' => 'setting_base_template_site', 'new' => 'setting_site_manager_template_site'));
+
+			mf_uninstall_plugin(array(
+				'options' => array('setting_site_manager_template_site'),
+			));
+
 			if(is_main_site())
 			{
 				$this->get_server_ip();

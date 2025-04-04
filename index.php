@@ -3,7 +3,7 @@
 Plugin Name: MF Site Manager
 Plugin URI: https://github.com/frostkom/mf_site_manager
 Description:
-Version: 5.6.18
+Version: 5.6.19
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://martinfors.se
@@ -20,14 +20,12 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 
 	$obj_site_manager = new mf_site_manager();
 
-	add_action('cron_base', 'activate_site_manager', mt_rand(1, 10));
 	add_action('cron_base', array($obj_site_manager, 'cron_base'), mt_rand(1, 10));
 
 	add_action('wp_before_admin_bar_render', array($obj_site_manager, 'wp_before_admin_bar_render'));
 
 	if(is_admin())
 	{
-		register_activation_hook(__FILE__, 'activate_site_manager');
 		register_uninstall_hook(__FILE__, 'uninstall_site_manager');
 
 		if(is_multisite())
@@ -61,20 +59,6 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 	add_action('wp_ajax_api_site_manager_force_server_ip', array($obj_site_manager, 'api_site_manager_force_server_ip'));
 
 	load_plugin_textdomain('lang_site_manager', false, dirname(plugin_basename(__FILE__))."/lang/");
-
-	function activate_site_manager()
-	{
-		replace_option(array('old' => 'setting_server_ip', 'new' => 'setting_site_manager_server_ip'));
-		replace_option(array('old' => 'setting_server_ip_target', 'new' => 'setting_site_manager_server_ip_target'));
-		replace_option(array('old' => 'setting_server_ips_allowed', 'new' => 'setting_site_manager_server_ips_allowed'));
-		replace_option(array('old' => 'setting_site_comparison', 'new' => 'setting_site_manager_site_comparison'));
-		replace_option(array('old' => 'setting_site_clone_path', 'new' => 'setting_site_manager_site_clone_path'));
-		replace_option(array('old' => 'setting_base_template_site', 'new' => 'setting_site_manager_template_site'));
-
-		mf_uninstall_plugin(array(
-			'options' => array('setting_site_manager_template_site'),
-		));
-	}
 
 	function uninstall_site_manager()
 	{
