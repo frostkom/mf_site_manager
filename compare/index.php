@@ -78,6 +78,7 @@ echo "<div class='wrap'>
 				if($has_equal_version == false)
 				{
 					echo $out;
+					$out = "";
 
 					$has_echoed = true;
 				}
@@ -172,6 +173,7 @@ echo "<div class='wrap'>
 				if($has_equal_version == false)
 				{
 					echo $out;
+					$out = "";
 
 					$has_echoed = true;
 				}

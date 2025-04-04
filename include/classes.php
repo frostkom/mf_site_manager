@@ -2171,6 +2171,8 @@ class mf_site_manager
 
 	function get_type_url($site, $plugin_name = '')
 	{
+		$site = trim($site, "/");
+
 		if($this->type == 'plugins' && $plugin_name != '')
 		{
 			return validate_url($site."/wp-admin".($this->is_multisite ? "/network" : "")."/plugin-install.php?tab=search&s=".$plugin_name);
@@ -2223,7 +2225,7 @@ class mf_site_manager
 
 		return $file_id;
 	}
-	
+
 	function replace_content($post_content_parent, $post_content_child = "")
 	{
 		if($post_content_child != '')
@@ -2263,7 +2265,7 @@ class mf_site_manager
 			{
 				$differences[$key] = array('block1' => $value, 'block2' => null);
 			}
-			
+
 			else if($value !== $attr2[$key])
 			{
 				$differences[$key] = array('block1' => $value, 'block2' => $attr2[$key]);
@@ -2292,13 +2294,13 @@ class mf_site_manager
 			if(isset($attributes2[$index]))
 			{
 				$diff = $this->compareAttributes($attr1, $attributes2[$index]);
-			
+
 				if(!empty($diff))
 				{
 					$differences[] = array('index' => $index, 'differences' => $diff);
 				}
 			}
-			
+
 			else
 			{
 				$differences[] = array('index' => $index, 'differences' => 'Block missing in block 2');
@@ -2313,6 +2315,11 @@ class mf_site_manager
 		global $wpdb, $done_text, $error_text;
 
 		$out = "";
+
+		$site_url = get_site_url();
+
+		$column_count = 1;
+		$columns_total = (count($this->arr_sites) + 2);
 
 		$this->echoed = false;
 		$this->type = $type;
@@ -2334,452 +2341,460 @@ class mf_site_manager
 
 		foreach($array['this'] as $key => $arr_value)
 		{
-			$name = $arr_value['name'];
-			$directory = $arr_value['dir'];
-			$version = $arr_value['version'];
-			$arr_data_this = (isset($arr_value['data']) ? $arr_value['data'] : array());
+			/*if(isset($array['this'][$key]))
+			{*/
+				$name = $arr_value['name'];
+				$directory = $arr_value['dir'];
+				$version = $arr_value['version'];
+				$arr_data_this = (isset($arr_value['data']) ? $arr_value['data'] : array());
 
-			$has_equal_version = true;
+				$has_equal_version = true;
 
-			$out .= "<tr title='".$key."'>
-				<td title='".$directory."'>".$name."</td>
-				<td title='".__("Version", 'lang_site_manager')."'>".$version."</td>";
+				$out .= "<tr rel='".$type.", ".$key."'>
+					<td rel='".$directory."'>".$name."</td>
+					<td rel='version'>".$version."</td>";
 
-				foreach($this->arr_sites as $site)
-				{
-					$out .= "<td title='".$site.": ".$key."'>";
-
-						if(isset($array[$site][$key]))
-						{
-							$version_check = $array[$site][$key]['version'];
-							$this->is_multisite = $this->arr_core[$site]['is_multisite'];
-
-							$out .= $this->get_version_check_cell(array('version' => $version, 'version_check' => $version_check, 'link' => $this->get_type_url($site), 'dir' => $this->type."/".$array[$site][$key]['dir']));
-
-							if($version_check != $version)
-							{
-								$has_equal_version = false;
-							}
-
-							if(count($arr_data_this) == 0)
-							{
-								unset($array[$site][$key]);
-							}
-						}
-
-						else
-						{
-							$has_equal_version = false;
-
-							$out .= "<a href='".$this->get_type_url($site, $name)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a>"
-							.$this->copy_differences(array('dir' => $this->type."/".$directory));
-						}
-
-					$out .= "</td>";
-				}
-
-			$out .= "</tr>";
-
-			if(count($arr_data_this) > 0)
-			{
-				$out .= "<tr>
-					<td title='".__("Data", 'lang_site_manager')."'>
-						<i class='fa fa-info-circle fa-lg blue'></i>
-					</td>";
-
-					if(isset($arr_data_this['value']))
+					foreach($this->arr_sites as $site)
 					{
-						$out .= "<td>"
-							.($arr_data_this['value'] > 0 ? "<i class='fa fa-times fa-lg red'></i> <a href='".$arr_data_this['link']."'>".$arr_data_this['value']."</a>" : "<i class='fa fa-check fa-lg green'></i>")
-						."</td>";
+						$out .= "<td title='".$site.": ".$key."'>";
 
-						foreach($this->arr_sites as $site)
-						{
-							$arr_data_remote = (isset($array[$site][$key]['data']) ? $array[$site][$key]['data'] : array());
-
-							if(count($arr_data_remote) > 0)
+							if(isset($array[$site][$key]))
 							{
-								$out .= "<td title='".$key."'>";
+								$version_check = $array[$site][$key]['version'];
+								$this->is_multisite = $this->arr_core[$site]['is_multisite'];
 
-									if($arr_data_remote['value'] > 0)
-									{
-										$out .= "<i class='fa fa-times fa-lg red'></i> <a href='".$arr_data_remote['link']."'>".$arr_data_remote['value']."</a>";
+								$out .= $this->get_version_check_cell(array('version' => $version, 'version_check' => $version_check, 'link' => $this->get_type_url($site), 'dir' => $this->type."/".$array[$site][$key]['dir']));
 
-										$has_equal_version = false;
-									}
+								if($version_check != $version)
+								{
+									$has_equal_version = false;
+								}
 
-									else
-									{
-										$out .= "<i class='fa fa-check fa-lg green'></i>";
-									}
-
-								$out .= "</td>";
+								if(count($arr_data_this) == 0)
+								{
+									unset($array[$site][$key]);
+								}
 							}
 
 							else
 							{
-								$out .= "<td title='".$key."'><a href='".$this->get_type_url($site)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a></td>";
-
 								$has_equal_version = false;
+
+								$out .= "<a href='".$this->get_type_url($site, $name)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a>"
+								.$this->copy_differences(array('dir' => $this->type."/".$directory));
 							}
 
-							unset($array[$site][$key]);
-						}
+						$out .= "</td>";
 					}
 
-					else if(isset($arr_data_this['array']))
-					{
-						$arr_exclude = array('style_source');
+				$out .= "</tr>";
 
-						$out .= "<td></td>";
+				if(count($arr_data_this) > 0)
+				{
+					$out .= "<tr rel='data'>
+						<td>
+							<i class='fa fa-info-circle fa-lg blue'></i>
+						</td>";
 
-						foreach($this->arr_sites as $site)
+						if(isset($arr_data_this['value']))
 						{
-							$arr_data_remote = (isset($array[$site][$key]['data']) ? $array[$site][$key]['data'] : array());
+							$out .= "<td>"
+								.($arr_data_this['value'] > 0 ? "<i class='fa fa-times fa-lg red'></i> <a href='".$arr_data_this['link']."'>".$arr_data_this['value']."</a>" : "<i class='fa fa-check fa-lg green'></i>")
+							."</td>";
 
-							if(count($arr_data_remote) > 0)
+							foreach($this->arr_sites as $site)
 							{
-								$out_temp = "";
+								$arr_data_remote = (isset($array[$site][$key]['data']) ? $array[$site][$key]['data'] : array());
 
-								$arr_data_keys = array();
-
-								foreach($arr_data_this['array'] as $key_this => $rest)
+								if(count($arr_data_remote) > 0)
 								{
-									if(!isset($arr_data_keys[$key_this]))
-									{
-										$arr_data_keys[$key_this] = '';
-									}
-								}
+									$out .= "<td title='".$key."'>";
 
-								foreach($arr_data_remote['array'] as $key_remote => $rest)
-								{
-									if(!isset($arr_data_keys[$key_remote]))
-									{
-										$arr_data_keys[$key_remote] = '';
-									}
-								}
-
-								//$out_temp .= var_export($arr_data_keys, true);
-
-								foreach($arr_data_keys as $key_all => $rest)
-								{
-									$arr_value_remote = (isset($arr_data_remote['array'][$key_all]) ? $arr_data_remote['array'][$key_all] : '');
-									$arr_value_this = (isset($arr_data_this['array'][$key_all]) ? $arr_data_this['array'][$key_all] : '');
-
-									//$arr_value_remote = $this->clear_domain_from_urls($arr_value_remote, get_site_url());
-									//$arr_value_this = $this->clear_domain_from_urls($arr_value_this, "//".$site);
-
-									if($key_all == 'favicon')
-									{
-										$arr_value_remote_orig = $arr_value_remote;
-										$arr_value_this_orig = $arr_value_this;
-
-										$arr_value_remote = basename($arr_value_remote);
-										$arr_value_this = basename($arr_value_this);
-
-										if(isset($_POST['btnFaviconCopy']) && isset($_POST['_wpnonce_favicon_copy']) && wp_verify_nonce($_POST['_wpnonce_favicon_copy'], 'favicon_copy_'.get_current_user_id()))
+										if($arr_data_remote['value'] > 0)
 										{
-											$result = $this->upload_image_from_url_to_media_library($arr_value_remote_orig);
+											$out .= "<i class='fa fa-times fa-lg red'></i> <a href='".$arr_data_remote['link']."'>".$arr_data_remote['value']."</a>";
 
-											if(is_numeric($result))
+											$has_equal_version = false;
+										}
+
+										else
+										{
+											$out .= "<i class='fa fa-check fa-lg green'></i>";
+										}
+
+									$out .= "</td>";
+								}
+
+								else
+								{
+									$out .= "<td title='".$key."'><a href='".$this->get_type_url($site)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a></td>";
+
+									$has_equal_version = false;
+								}
+
+								unset($array[$site][$key]);
+							}
+						}
+
+						else if(isset($arr_data_this['array']))
+						{
+							$arr_exclude = array('style_source');
+
+							$out .= "<td></td>";
+
+							foreach($this->arr_sites as $site)
+							{
+								$arr_data_remote = (isset($array[$site][$key]['data']) ? $array[$site][$key]['data'] : array());
+
+								if(count($arr_data_remote) > 0)
+								{
+									$out_temp = "";
+
+									$arr_data_keys = array();
+
+									foreach($arr_data_this['array'] as $key_this => $rest)
+									{
+										if(!isset($arr_data_keys[$key_this]))
+										{
+											$arr_data_keys[$key_this] = '';
+										}
+									}
+
+									foreach($arr_data_remote['array'] as $key_remote => $rest)
+									{
+										if(!isset($arr_data_keys[$key_remote]))
+										{
+											$arr_data_keys[$key_remote] = '';
+										}
+									}
+
+									foreach($arr_data_keys as $key_all => $rest)
+									{
+										$arr_value_remote = (isset($arr_data_remote['array'][$key_all]) ? $arr_data_remote['array'][$key_all] : '');
+										$arr_value_this = (isset($arr_data_this['array'][$key_all]) ? $arr_data_this['array'][$key_all] : '');
+
+										//$arr_value_remote = $this->clear_domain_from_urls($arr_value_remote, $site_url);
+										//$arr_value_this = $this->clear_domain_from_urls($arr_value_this, "//".$site);
+
+										if($key_all == 'favicon')
+										{
+											$arr_value_remote_orig = $arr_value_remote;
+											$arr_value_this_orig = $arr_value_this;
+
+											$arr_value_remote = basename($arr_value_remote);
+											$arr_value_this = basename($arr_value_this);
+
+											if(isset($_POST['btnFaviconCopy']) && isset($_POST['_wpnonce_favicon_copy']) && wp_verify_nonce($_POST['_wpnonce_favicon_copy'], 'favicon_copy_'.get_current_user_id()))
 											{
-												update_option('site_icon', $result, true);
+												$result = $this->upload_image_from_url_to_media_library($arr_value_remote_orig);
 
-												$arr_value_this_orig = $arr_value_remote_orig;
-												$arr_value_this = $arr_value_remote;
+												if(is_numeric($result))
+												{
+													update_option('site_icon', $result, true);
 
-												$done_text = __("Image uploaded successfully!", 'lang_site_manager');
+													$arr_value_this_orig = $arr_value_remote_orig;
+													$arr_value_this = $arr_value_remote;
+
+													$done_text = __("Image uploaded successfully!", 'lang_site_manager');
+												}
+
+												else
+												{
+													$error_text = __("Error uploading image", 'lang_site_manager')." (".var_export($result, true).")";
+												}
+
+												$out_temp .= get_notification();
+											}
+										}
+
+										$is_different = ($arr_value_remote != $arr_value_this);
+
+										if(isset($arr_value_this['post_type']) && in_array($arr_value_this['post_type'], $this->editor_block_parts) && isset($arr_value_this['post_content']))
+										{
+											$arr_value_this['post_content'] = utf8_decode($arr_value_this['post_content']);
+										}
+
+										if(isset($arr_value_remote['post_type']) && in_array($arr_value_remote['post_type'], $this->editor_block_parts) && isset($arr_value_remote['post_content']))
+										{
+											$arr_value_remote['post_content'] = utf8_decode($arr_value_remote['post_content']);
+
+											$arr_value_remote['post_content'] = $this->replace_content($arr_value_remote['post_content'], (isset($arr_value_this['post_content']) ? $arr_value_this['post_content'] : ''));
+										}
+
+										if(isset($arr_value_remote['post_content']) && isset($arr_value_this['post_content']) && $arr_value_remote['post_content'] == $arr_value_this['post_content'])
+										{
+											$is_different = false;
+										}
+
+										if(!in_array($key_all, $arr_exclude) && $is_different)
+										{
+											if(is_array($arr_value_remote) || is_array($arr_value_this))
+											{
+												$out_temp .= "<li rel='".__LINE__.": ".$key_all."'>
+													<i class='fa fa-times fa-lg red'></i> "
+													."<strong>";
+
+														if(isset($arr_value_remote['post_type']) && in_array($arr_value_remote['post_type'], $this->editor_block_parts))
+														{
+															$out_temp .= $arr_value_remote['post_title']." (".$key_all.")";
+														}
+
+														else
+														{
+															$out_temp .= $key_all;
+														}
+
+													$out_temp .= ":</strong> "
+													."<span class='color_red'>";
+
+														if(isset($arr_value_remote['post_type']) && in_array($arr_value_remote['post_type'], $this->editor_block_parts))
+														{
+															if(isset($arr_value_this['post_content']) && $arr_value_this['post_content'] != '')
+															{
+																if(isset($arr_value_remote['post_content']))
+																{
+																	if($arr_value_remote['post_content'] != '')
+																	{
+																		//$out_temp .= htmlspecialchars($arr_value_remote['post_content']);
+																		$out_temp .= strlen($arr_value_remote['post_content']);
+																	}
+
+																	else
+																	{
+																		$out_temp .= "(".__("empty", 'lang_site_manager').")";
+																	}
+																}
+
+																$out_temp .= "</span><strong> -> </strong>";
+
+																if(isset($arr_value_this['post_content']))
+																{
+																	if($arr_value_this['post_content'] != '')
+																	{
+																		//$out_temp .= htmlspecialchars($arr_value_this['post_content']);
+																		$out_temp .= strlen($arr_value_this['post_content']);
+																	}
+
+																	else
+																	{
+																		$out_temp .= "(".__("empty", 'lang_site_manager').")";
+																	}
+																}
+
+																/*$out_temp .= "<br><br>";
+
+																list($attributes1, $attributes2, $differences) = $this->compare_remote_and_this_post_content($arr_value_remote['post_content'], $arr_value_this['post_content']);
+
+																$out_temp .= var_export($attributes1, true)." != ".var_export($attributes2, true);
+																$out_temp .= " -> ".var_export($differences, true);*/
+															}
+
+															else
+															{
+																$out_temp .= "(".__("empty", 'lang_site_manager').")";
+															}
+														}
+
+														else
+														{
+															$out_temp .= var_export($arr_value_remote, true)."</span><strong> -> </strong>".var_export($arr_value_this, true);
+														}
+
+														if(isset($arr_value_remote['post_type']) && in_array($arr_value_remote['post_type'], $this->editor_block_parts))
+														{
+															if(isset($_POST['btnBlockPart_'.$key_all.'_Update']) && isset($_POST['_wpnonce_block_part_'.$key_all.'_update']) && wp_verify_nonce($_POST['_wpnonce_block_part_'.$key_all.'_update'], 'block_part_'.$key_all.'_update_'.get_current_user_id()))
+															{
+																$post_id = 0;
+
+																$result = $wpdb->get_results($wpdb->prepare("SELECT ID, post_content FROM ".$wpdb->posts." WHERE post_name = %s AND post_type = %s", $key_all, $arr_value_remote['post_type']));
+
+																if($wpdb->num_rows > 0)
+																{
+																	if($wpdb->num_rows == 1)
+																	{
+																		foreach($result as $r)
+																		{
+																			$post_id = $r->ID;
+																			$post_content = $r->post_content;
+
+																			$arr_value_remote['post_content'] = $this->replace_content($arr_value_remote['post_content'], $post_content);
+																		}
+
+																		$post_data = array(
+																			'ID' => $post_id,
+																			'post_content' => $arr_value_remote['post_content'],
+																			'post_modified' => date("Y-m-d H:i:s"),
+																		);
+
+																		wp_update_post($post_data);
+
+																		$done_text = __("I updated the data for you", 'lang_site_manager');
+																	}
+
+																	else
+																	{
+																		$error_text = __("There were several posts", 'lang_site_manager')." (".$wpdb->last_query.")";
+																	}
+																}
+
+																else
+																{
+																	$post_data = array(
+																		'post_name' => $key_all,
+																		'post_title' => $arr_value_remote['post_title'],
+																		'post_content' => $arr_value_remote['post_content'],
+																		'post_type' => $arr_value_remote['post_type'],
+																		'post_status' => 'publish',
+																	);
+
+																	$post_id = wp_insert_post($post_data);
+
+																	$done_text = __("I inserted the data for you", 'lang_site_manager');
+																}
+
+																/*if($post_id > 0)
+																{
+																	$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->posts." SET post_content = '".$arr_value_remote['post_content']."' WHERE ID = '%d'", $post_id));
+
+																	//$done_text .= " and updated with ".$wpdb->last_query;
+																}*/
+
+																$out_temp .= get_notification();
+															}
+
+															else
+															{
+																$post_content_exists = (isset($arr_value_this['post_content']) && $arr_value_this['post_content'] != '');
+
+																if($arr_value_remote['post_type'] == 'wp_template' || $post_content_exists == true)
+																{
+																	$out_temp .= "<form method='post' action=''>
+																		<div".get_form_button_classes().">"
+																			.show_button(array('name' => 'btnBlockPart_'.$key_all.'_Update', 'text' => ($post_content_exists == true ? __("Update", 'lang_site_manager') : __("Create", 'lang_site_manager')), 'xtra' => " rel='confirm'"))
+																			.wp_nonce_field('block_part_'.$key_all.'_update_'.get_current_user_id(), '_wpnonce_block_part_'.$key_all.'_update', true, false)
+																		."</div>
+																	</form>";
+																}
+
+																else
+																{
+																	switch($arr_value_remote['post_type'])
+																	{
+																		case 'wp_template':
+																			$editor_url = admin_url("site-editor.php?postType=wp_template");
+																		break;
+
+																		case 'wp_template_part':
+																			$editor_url = admin_url("site-editor.php");
+																		break;
+
+																		default:
+																			$editor_url = "#";
+
+																			do_log(__FUNCTION__.": Unknown post_type (".var_export($arr_value_remote, true).")");
+																		break;
+																	}
+
+																	$out_temp .= "<p class='italic'>".sprintf(__("You have to create it in the %seditor%s first. Then you can update from the source site.", 'lang_site_manager'), "<a href='".$editor_url."'>", "</a>")."</p>";
+																}
+															}
+														}
+
+												$out_temp .= "</li>";
 											}
 
 											else
 											{
-												$error_text = __("Error uploading image", 'lang_site_manager')." (".var_export($result, true).")";
-											}
+												$out_temp .= "<li rel='".__LINE__.": ".$key_all."'>
+													<i class='fa fa-times fa-lg red'></i> "
+													."<strong>".$key_all.":</strong> "
+													."<span class='color_red'>";
 
-											$out_temp .= get_notification();
-										}
-									}
-
-									$is_different = ($arr_value_remote != $arr_value_this);
-
-									if(isset($arr_value_this['post_type']) && in_array($arr_value_this['post_type'], $this->editor_block_parts) && isset($arr_value_this['post_content']))
-									{
-										$arr_value_this['post_content'] = utf8_decode($arr_value_this['post_content']);
-									}
-
-									if(isset($arr_value_remote['post_type']) && in_array($arr_value_remote['post_type'], $this->editor_block_parts) && isset($arr_value_remote['post_content']))
-									{
-										$arr_value_remote['post_content'] = utf8_decode($arr_value_remote['post_content']);
-
-										$arr_value_remote['post_content'] = $this->replace_content($arr_value_remote['post_content'], (isset($arr_value_this['post_content']) ? $arr_value_this['post_content'] : ''));
-									}
-
-									if(isset($arr_value_remote['post_content']) && isset($arr_value_this['post_content']) && $arr_value_remote['post_content'] == $arr_value_this['post_content'])
-									{
-										$is_different = false;
-									}
-
-									if(!in_array($key_all, $arr_exclude) && $is_different)
-									{
-										if(is_array($arr_value_remote) || is_array($arr_value_this))
-										{
-											$out_temp .= "<li rel='".__LINE__.": ".$key_all."'>
-												<i class='fa fa-times fa-lg red'></i> "
-												."<strong>";
-
-													if(isset($arr_value_remote['post_type']) && in_array($arr_value_remote['post_type'], $this->editor_block_parts))
-													{
-														$out_temp .= $arr_value_remote['post_title']." (".$key_all.")";
-													}
-
-													else
-													{
-														$out_temp .= $key_all;
-													}
-
-												$out_temp .= ":</strong> "
-												."<span class='color_red'>";
-
-													if(isset($arr_value_remote['post_type']) && in_array($arr_value_remote['post_type'], $this->editor_block_parts))
-													{
-														if(isset($arr_value_this['post_content']) && $arr_value_this['post_content'] != '')
+														if($arr_value_remote != '')
 														{
-															if(isset($arr_value_remote['post_content']))
-															{
-																if($arr_value_remote['post_content'] != '')
-																{
-																	$out_temp .= htmlspecialchars($arr_value_remote['post_content']);
-																}
-
-																else
-																{
-																	$out_temp .= "(".__("empty", 'lang_site_manager').")";
-																}
-															}
-
-															$out_temp .= "</span><strong> -> </strong>";
-
-															if(isset($arr_value_this['post_content']))
-															{
-																if($arr_value_this['post_content'] != '')
-																{
-																	$out_temp .= htmlspecialchars($arr_value_this['post_content']);
-																}
-
-																else
-																{
-																	$out_temp .= "(".__("empty", 'lang_site_manager').")";
-																}
-															}
-
-															/*$out_temp .= "<br><br>";
-
-															list($attributes1, $attributes2, $differences) = $this->compare_remote_and_this_post_content($arr_value_remote['post_content'], $arr_value_this['post_content']);
-
-															$out_temp .= var_export($attributes1, true)." != ".var_export($attributes2, true);
-															$out_temp .= " -> ".var_export($differences, true);*/
+															$out_temp .= shorten_text(array('string' => $arr_value_remote, 'limit' => 50, 'count' => true));
 														}
 
 														else
 														{
 															$out_temp .= "(".__("empty", 'lang_site_manager').")";
 														}
-													}
 
-													else
+													$out_temp .= "</span><strong> -> </strong>";
+
+													if($arr_value_this != '')
 													{
-														$out_temp .= var_export($arr_value_remote, true)."</span><strong> -> </strong>".var_export($arr_value_this, true);
-													}
-
-													if(isset($arr_value_remote['post_type']) && in_array($arr_value_remote['post_type'], $this->editor_block_parts))
-													{
-														if(isset($_POST['btnBlockPart_'.$key_all.'_Update']) && isset($_POST['_wpnonce_block_part_'.$key_all.'_update']) && wp_verify_nonce($_POST['_wpnonce_block_part_'.$key_all.'_update'], 'block_part_'.$key_all.'_update_'.get_current_user_id()))
-														{
-															$post_id = 0;
-
-															$result = $wpdb->get_results($wpdb->prepare("SELECT ID, post_content FROM ".$wpdb->posts." WHERE post_name = %s AND post_type = %s", $key_all, $arr_value_remote['post_type']));
-
-															if($wpdb->num_rows > 0)
-															{
-																if($wpdb->num_rows == 1)
-																{
-																	foreach($result as $r)
-																	{
-																		$post_id = $r->ID;
-																		$post_content = $r->post_content;
-
-																		$arr_value_remote['post_content'] = $this->replace_content($arr_value_remote['post_content'], $post_content);
-																	}
-
-																	$post_data = array(
-																		'ID' => $post_id,
-																		'post_content' => $arr_value_remote['post_content'],
-																		'post_modified' => date("Y-m-d H:i:s"),
-																	);
-
-																	wp_update_post($post_data);
-
-																	$done_text = __("I updated the data for you", 'lang_site_manager');
-																}
-
-																else
-																{
-																	$error_text = __("There were several posts", 'lang_site_manager')." (".$wpdb->last_query.")";
-																}
-															}
-
-															else
-															{
-																$post_data = array(
-																	'post_name' => $key_all,
-																	'post_title' => $arr_value_remote['post_title'],
-																	'post_content' => $arr_value_remote['post_content'],
-																	'post_type' => $arr_value_remote['post_type'],
-																	'post_status' => 'publish',
-																);
-
-																$post_id = wp_insert_post($post_data);
-
-																$done_text = __("I inserted the data for you", 'lang_site_manager');
-															}
-
-															/*if($post_id > 0)
-															{
-																$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->posts." SET post_content = '".$arr_value_remote['post_content']."' WHERE ID = '%d'", $post_id));
-
-																//$done_text .= " and updated with ".$wpdb->last_query;
-															}*/
-
-															$out_temp .= get_notification();
-														}
-
-														else
-														{
-															$post_content_exists = (isset($arr_value_this['post_content']) && $arr_value_this['post_content'] != '');
-
-															if($arr_value_remote['post_type'] == 'wp_template' || $post_content_exists == true)
-															{
-																$out_temp .= "<form method='post' action=''>
-																	<div".get_form_button_classes().">"
-																		.show_button(array('name' => 'btnBlockPart_'.$key_all.'_Update', 'text' => ($post_content_exists == true ? __("Update", 'lang_site_manager') : __("Create", 'lang_site_manager')), 'xtra' => " rel='confirm'"))
-																		.wp_nonce_field('block_part_'.$key_all.'_update_'.get_current_user_id(), '_wpnonce_block_part_'.$key_all.'_update', true, false)
-																	."</div>
-																</form>";
-															}
-
-															else
-															{
-																switch($arr_value_remote['post_type'])
-																{
-																	case 'wp_template':
-																		$editor_url = admin_url("site-editor.php?postType=wp_template");
-																	break;
-
-																	case 'wp_template_part':
-																		$editor_url = admin_url("site-editor.php");
-																	break;
-
-																	default:
-																		$editor_url = "#";
-
-																		do_log(__FUNCTION__.": Unknown post_type (".var_export($arr_value_remote, true).")");
-																	break;
-																}
-
-																$out_temp .= "<p class='italic'>".sprintf(__("You have to create it in the %seditor%s first. Then you can update from the source site.", 'lang_site_manager'), "<a href='".$editor_url."'>", "</a>")."</p>";
-															}
-														}
-													}
-
-											$out_temp .= "</li>";
-										}
-
-										else
-										{
-											$out_temp .= "<li rel='".__LINE__.": ".$key_all."'>
-												<i class='fa fa-times fa-lg red'></i> "
-												."<strong>".$key_all.":</strong> "
-												."<span class='color_red'>";
-												
-													if($arr_value_remote != '')
-													{
-														$out_temp .= shorten_text(array('string' => $arr_value_remote, 'limit' => 50, 'count' => true));
+														$out_temp .= shorten_text(array('string' => $arr_value_this, 'limit' => 50, 'count' => true));
 													}
 
 													else
 													{
 														$out_temp .= "(".__("empty", 'lang_site_manager').")";
 													}
-													
-												$out_temp .= "</span><strong> -> </strong>";
 
-												if($arr_value_this != '')
-												{
-													$out_temp .= shorten_text(array('string' => $arr_value_this, 'limit' => 50, 'count' => true));
-												}
+													if($key_all == 'favicon')
+													{
+														$out_temp .= "<form method='post' action=''>
+															<div".get_form_button_classes().">"
+																.show_button(array('name' => 'btnFaviconCopy', 'text' => __("Copy", 'lang_site_manager'), 'xtra' => " rel='confirm'"))
+																.wp_nonce_field('favicon_copy_'.get_current_user_id(), '_wpnonce_favicon_copy', true, false)
+															."</div>
+														</form>";
+													}
 
-												else
-												{
-													$out_temp .= "(".__("empty", 'lang_site_manager').")";
-												}
+												$out_temp .= "</li>";
+											}
 
-												if($key_all == 'favicon')
-												{
-													$out_temp .= "<form method='post' action=''>
-														<div".get_form_button_classes().">"
-															.show_button(array('name' => 'btnFaviconCopy', 'text' => __("Copy", 'lang_site_manager'), 'xtra' => " rel='confirm'"))
-															.wp_nonce_field('favicon_copy_'.get_current_user_id(), '_wpnonce_favicon_copy', true, false)
-														."</div>
-													</form>";
-												}
+											$has_equal_version = false;
+										}
+									}
 
-											$out_temp .= "</li>";
+									$out .= "<td>";
+
+										if($out_temp != '')
+										{
+											$out .= "<ul>".$out_temp."</ul>";
+
+											$out_temp = "";
+
+											$has_equal_version = false;
 										}
 
-										$has_equal_version = false;
-									}
+										else
+										{
+											$out .= "<i class='fa fa-check fa-lg green'></i>";
+										}
+
+									$out .= "</td>";
 								}
 
-								$out .= "<td>";
+								else
+								{
+									$out .= "<td><a href='".$this->get_type_url($site)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a></td>";
 
-									if($out_temp != '')
-									{
-										$out .= "<ul>".$out_temp."</ul>";
+									$has_equal_version = false;
+								}
 
-										$has_equal_version = false;
-									}
-
-									else
-									{
-										$out .= "<i class='fa fa-check fa-lg green'></i>";
-									}
-
-								$out .= "</td>";
+								unset($array[$site][$key]);
 							}
-
-							else
-							{
-								$out .= "<td><a href='".$this->get_type_url($site)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a></td>";
-
-								$has_equal_version = false;
-							}
-
-							unset($array[$site][$key]);
 						}
-					}
 
-				$out .= "</tr>";
-			}
+					$out .= "</tr>";
+				}
 
-			if($has_equal_version == false)
-			{
-				echo $out;
+				if($has_equal_version == false)
+				{
+					echo $out;
+					$out = "";
 
-				$this->echoed = true;
-			}
+					$this->echoed = true;
+				}
 
-			unset($array['this'][$key]);
+				//unset($array['this'][$key]);
+			//}
 		}
+
+		$column_count++;
 
 		foreach($this->arr_sites as $site2)
 		{
@@ -2792,7 +2807,7 @@ class mf_site_manager
 
 					echo "<tr>
 						<td>".$name."</td>
-						<td><em>(".__("does not exist", 'lang_site_manager').")</em></td>";
+						<td><a href='".$this->get_type_url($site_url, $name)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a></td>";
 
 						foreach($this->arr_sites as $site)
 						{
@@ -2827,6 +2842,8 @@ class mf_site_manager
 			{
 				do_log(__FUNCTION__.": ".$site2." does not exist in ".var_export($array, true));
 			}
+
+			$column_count++;
 		}
 
 		switch($this->type)
