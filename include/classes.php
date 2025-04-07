@@ -1698,7 +1698,7 @@ class mf_site_manager
 					{
 						$arr_sites = array();
 
-						$result = get_sites();
+						$result = get_sites(array('deleted' => 0));
 
 						foreach($result as $r)
 						{
