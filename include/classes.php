@@ -2688,6 +2688,10 @@ class mf_site_manager
 																			$editor_url = admin_url("site-editor.php");
 																		break;
 
+																		case 'wp_global_styles':
+																			$editor_url = admin_url("site-editor.php");
+																		break;
+
 																		default:
 																			$editor_url = "#";
 
