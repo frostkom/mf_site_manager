@@ -2551,34 +2551,42 @@ class mf_site_manager
 														{
 															if(isset($arr_value_this['post_content']) && $arr_value_this['post_content'] != '')
 															{
-																if(isset($arr_value_remote['post_content']))
+																if(isset($arr_value_remote['post_content']) && $arr_value_remote['post_content'] != '')
 																{
-																	if($arr_value_remote['post_content'] != '')
+																	if(IS_SUPER_ADMIN)
 																	{
-																		//$out_temp .= htmlspecialchars($arr_value_remote['post_content']);
-																		$out_temp .= strlen($arr_value_remote['post_content']);
+																		$out_temp .= htmlspecialchars($arr_value_remote['post_content']);
 																	}
 
 																	else
 																	{
-																		$out_temp .= "(".__("empty", 'lang_site_manager').")";
+																		$out_temp .= strlen($arr_value_remote['post_content']);
 																	}
+																}
+
+																else
+																{
+																	$out_temp .= "(".__("empty", 'lang_site_manager').")";
 																}
 
 																$out_temp .= "</span><strong> -> </strong>";
 
-																if(isset($arr_value_this['post_content']))
+																if(isset($arr_value_this['post_content']) && $arr_value_this['post_content'] != '')
 																{
-																	if($arr_value_this['post_content'] != '')
+																	if(IS_SUPER_ADMIN)
 																	{
-																		//$out_temp .= htmlspecialchars($arr_value_this['post_content']);
-																		$out_temp .= strlen($arr_value_this['post_content']);
+																		$out_temp .= htmlspecialchars($arr_value_this['post_content']);
 																	}
 
 																	else
 																	{
-																		$out_temp .= "(".__("empty", 'lang_site_manager').")";
+																		$out_temp .= strlen($arr_value_this['post_content']);
 																	}
+																}
+
+																else
+																{
+																	$out_temp .= "(".__("empty", 'lang_site_manager').")";
 																}
 
 																/*$out_temp .= "<br><br>";
@@ -2610,26 +2618,31 @@ class mf_site_manager
 
 																if($wpdb->num_rows > 0)
 																{
-																	if($wpdb->num_rows == 1)
-																	{
+																	/*if($wpdb->num_rows == 1)
+																	{*/
 																		foreach($result as $r)
 																		{
 																			$post_id = $r->ID;
 																			$post_content = $r->post_content;
 
 																			$arr_value_remote['post_content'] = $this->replace_content($arr_value_remote['post_content'], $post_content);
+
+																			$post_data = array(
+																				'ID' => $post_id,
+																				'post_content' => wp_slash($arr_value_remote['post_content']),
+																				'post_modified' => date("Y-m-d H:i:s"),
+																			);
+
+																			wp_update_post($post_data);
+
+																			$done_text = __("I updated the data for you", 'lang_site_manager');
+
+																			/*if(IS_SUPER_ADMIN)
+																			{
+																				$done_text .= " with ".$arr_value_remote['post_content'];
+																			}*/
 																		}
-
-																		$post_data = array(
-																			'ID' => $post_id,
-																			'post_content' => $arr_value_remote['post_content'],
-																			'post_modified' => date("Y-m-d H:i:s"),
-																		);
-
-																		wp_update_post($post_data);
-
-																		$done_text = __("I updated the data for you", 'lang_site_manager');
-																	}
+																	/*}
 
 																	else
 																	{
@@ -2642,7 +2655,7 @@ class mf_site_manager
 																	$post_data = array(
 																		'post_name' => $key_all,
 																		'post_title' => $arr_value_remote['post_title'],
-																		'post_content' => $arr_value_remote['post_content'],
+																		'post_content' => wp_slash($arr_value_remote['post_content']),
 																		'post_type' => $arr_value_remote['post_type'],
 																		'post_status' => 'publish',
 																	);
@@ -2650,14 +2663,12 @@ class mf_site_manager
 																	$post_id = wp_insert_post($post_data);
 
 																	$done_text = __("I inserted the data for you", 'lang_site_manager');
+
+																	/*if(IS_SUPER_ADMIN)
+																	{
+																		$done_text .= " with ".$arr_value_remote['post_content'];
+																	}*/
 																}
-
-																/*if($post_id > 0)
-																{
-																	$wpdb->query($wpdb->prepare("UPDATE ".$wpdb->posts." SET post_content = '".$arr_value_remote['post_content']."' WHERE ID = '%d'", $post_id));
-
-																	//$done_text .= " and updated with ".$wpdb->last_query;
-																}*/
 
 																$out_temp .= get_notification();
 															}

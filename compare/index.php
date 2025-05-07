@@ -266,7 +266,6 @@ echo "<div class='wrap'>
 		<table class='widefat striped'>";
 
 			$arr_header = array();
-
 			$arr_header[] = __("Site", 'lang_site_manager');
 			$arr_header[] = __("Error", 'lang_site_manager');
 
