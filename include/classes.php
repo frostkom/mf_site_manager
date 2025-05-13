@@ -905,7 +905,7 @@ class mf_site_manager
 			{
 				if(!file_exists($file_dir_to))
 				{
-					mkdir(dirname($file_dir_to), 0755, true);
+					@mkdir(dirname($file_dir_to), 0755, true);
 				}
 
 				if(!copy($file_dir_from, $file_dir_to))
