@@ -1185,8 +1185,6 @@ class mf_site_manager
 						}
 						#######################
 
-						do_action('do_clone_site', array('from' => $wpdb->blogid, 'to' => $this->blog_id));
-
 						$done_text = __("All data was cloned", 'lang_site_manager');
 						//$done_text .= " (".$strBasePrefixFrom." -> ".$strBasePrefixTo.")";
 						//$done_text .= " [".nl2br($str_queries)."]";
@@ -1360,8 +1358,6 @@ class mf_site_manager
 							$str_queries .= $wpdb->last_query.";\n";
 						}
 					}
-
-					do_action('do_switch_sites', array('from' => $wpdb->blogid, 'to' => $this->blog_id));
 
 					$done_text = __("I have switched all the data on the two domain as you requested.", 'lang_site_manager')." (".$strBasePrefixFrom." -> ".$strBasePrefixTo.")";
 					//$done_text .= " [".nl2br($str_queries)."]";
