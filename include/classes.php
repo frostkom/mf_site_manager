@@ -2122,6 +2122,7 @@ class mf_site_manager
 			$arr_plugins_this_site[$key] = array(
 				'name' => $value['Name'],
 				'dir' => $plugin_dir,
+				'is_active' => is_plugin_active($key),
 				'version' => $value['Version'],
 				'data' => $arr_data_this,
 			);
@@ -2345,60 +2346,65 @@ class mf_site_manager
 			{*/
 				$name = $arr_value['name'];
 				$directory = $arr_value['dir'];
+				$is_active = (isset($arr_value['is_active']) ? ($arr_value['is_active'] ? 'yes' : 'no') : '');
 				$version = $arr_value['version'];
 				$arr_data_this = (isset($arr_value['data']) ? $arr_value['data'] : array());
 
 				$has_equal_version = true;
 
-				$out .= "<tr rel='".$type.", ".$key."'>
-					<td rel='".$directory."'>".$name."</td>
-					<td rel='version'>".$version."</td>";
+				$out_temp = "";
 
-					foreach($this->arr_sites as $site)
-					{
-						$out .= "<td title='".$site.": ".$key."'>";
+				$out_temp .= "<td title='".$directory."'>".$name."</td>
+				<td rel='version'>
+					<span".($this->type == 'plugins' && $is_active == 'no' ? " class='grey' style='text-decoration: line-through' title='".__("Inactive", 'lang_site_manager')."'" : "").">"
+						.$version
+					."</span>
+				</td>";
 
-							if(isset($array[$site][$key]))
-							{
-								$version_check = $array[$site][$key]['version'];
-								$this->is_multisite = $this->arr_core[$site]['is_multisite'];
+				foreach($this->arr_sites as $site)
+				{
+					$out_temp .= "<td title='".$site.": ".$key."'>";
 
-								$out .= $this->get_version_check_cell(array('version' => $version, 'version_check' => $version_check, 'link' => $this->get_type_url($site), 'dir' => $this->type."/".$array[$site][$key]['dir']));
+						if(isset($array[$site][$key]))
+						{
+							$is_active_check = (isset($array[$site][$key]['is_active']) ? ($array[$site][$key]['is_active'] ? 'yes' : 'no') : '');
+							$version_check = $array[$site][$key]['version'];
+							$this->is_multisite = $this->arr_core[$site]['is_multisite'];
 
-								if($version_check != $version)
-								{
-									$has_equal_version = false;
-								}
+							$out_temp .= $this->get_version_check_cell(array('version' => $version, 'version_check' => $version_check, 'is_active_check' => $is_active_check, 'link' => $this->get_type_url($site), 'dir' => $this->type."/".$array[$site][$key]['dir']));
 
-								if(count($arr_data_this) == 0)
-								{
-									unset($array[$site][$key]);
-								}
-							}
-
-							else
+							if($version_check != $version || $is_active != $is_active_check)
 							{
 								$has_equal_version = false;
-
-								$out .= "<a href='".$this->get_type_url($site, $name)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a>"
-								.$this->copy_differences(array('dir' => $this->type."/".$directory));
 							}
 
-						$out .= "</td>";
-					}
+							if(count($arr_data_this) == 0)
+							{
+								unset($array[$site][$key]);
+							}
+						}
 
-				$out .= "</tr>";
+						else
+						{
+							$has_equal_version = false;
+
+							$out_temp .= "<a href='".$this->get_type_url($site, $name)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a>"
+							.$this->copy_differences(array('dir' => $this->type."/".$directory));
+						}
+
+					$out_temp .= "</td>";
+				}
 
 				if(count($arr_data_this) > 0)
 				{
-					$out .= "<tr rel='data'>
+					$out_temp .= "<tr rel='data'>
 						<td>
 							<i class='fa fa-info-circle fa-lg blue'></i>
 						</td>";
 
 						if(isset($arr_data_this['value']))
 						{
-							$out .= "<td>"
+							$out_temp .= "<td>"
 								.($arr_data_this['value'] > 0 ? "<i class='fa fa-times fa-lg red'></i> <a href='".$arr_data_this['link']."'>".$arr_data_this['value']."</a>" : "<i class='fa fa-check fa-lg green'></i>")
 							."</td>";
 
@@ -2408,26 +2414,26 @@ class mf_site_manager
 
 								if(count($arr_data_remote) > 0)
 								{
-									$out .= "<td title='".$key."'>";
+									$out_temp .= "<td title='".$key."'>";
 
 										if($arr_data_remote['value'] > 0)
 										{
-											$out .= "<i class='fa fa-times fa-lg red'></i> <a href='".$arr_data_remote['link']."'>".$arr_data_remote['value']."</a>";
+											$out_temp .= "<i class='fa fa-times fa-lg red'></i> <a href='".$arr_data_remote['link']."'>".$arr_data_remote['value']."</a>";
 
 											$has_equal_version = false;
 										}
 
 										else
 										{
-											$out .= "<i class='fa fa-check fa-lg green'></i>";
+											$out_temp .= "<i class='fa fa-check fa-lg green'></i>";
 										}
 
-									$out .= "</td>";
+									$out_temp .= "</td>";
 								}
 
 								else
 								{
-									$out .= "<td title='".$key."'><a href='".$this->get_type_url($site)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a></td>";
+									$out_temp .= "<td title='".$key."'><a href='".$this->get_type_url($site)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a></td>";
 
 									$has_equal_version = false;
 								}
@@ -2440,7 +2446,7 @@ class mf_site_manager
 						{
 							$arr_exclude = array('style_source');
 
-							$out .= "<td></td>";
+							$out_temp .= "<td></td>";
 
 							foreach($this->arr_sites as $site)
 							{
@@ -2764,11 +2770,11 @@ class mf_site_manager
 										}
 									}
 
-									$out .= "<td>";
+									$out_temp .= "<td>";
 
 										if($out_temp != '')
 										{
-											$out .= "<ul>".$out_temp."</ul>";
+											$out_temp .= "<ul>".$out_temp."</ul>";
 
 											$out_temp = "";
 
@@ -2777,15 +2783,15 @@ class mf_site_manager
 
 										else
 										{
-											$out .= "<i class='fa fa-check fa-lg green'></i>";
+											$out_temp .= "<i class='fa fa-check fa-lg green'></i>";
 										}
 
-									$out .= "</td>";
+									$out_temp .= "</td>";
 								}
 
 								else
 								{
-									$out .= "<td><a href='".$this->get_type_url($site)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a></td>";
+									$out_temp .= "<td><a href='".$this->get_type_url($site)."' class='italic'>(".__("does not exist", 'lang_site_manager').")</a></td>";
 
 									$has_equal_version = false;
 								}
@@ -2795,6 +2801,11 @@ class mf_site_manager
 						}
 
 					$out .= "</tr>";
+				}
+
+				if($has_equal_version == false)
+				{
+					$out .= "<tr rel='".$type.", ".$key."'>".$out_temp."</tr>";
 				}
 
 				if($has_equal_version == false)
@@ -2830,9 +2841,10 @@ class mf_site_manager
 
 								if(isset($array[$site][$key]))
 								{
+									$is_active_check = (isset($array[$site][$key]['is_active']) ? ($array[$site][$key]['is_active'] ? 'yes' : 'no') : '');
 									$version_check = $array[$site][$key]['version'];
 
-									echo $this->get_version_check_cell(array('version' => $version, 'version_check' => $version_check, 'dir' => $this->type."/".$array[$site][$key]['dir']));
+									echo $this->get_version_check_cell(array('version' => $version, 'version_check' => $version_check, 'is_active_check' => $is_active_check, 'dir' => $this->type."/".$array[$site][$key]['dir']));
 
 									unset($array[$site][$key]);
 								}
@@ -2879,13 +2891,14 @@ class mf_site_manager
 
 	function get_version_check_cell($data)
 	{
-		if(!isset($data['link'])){		$data['link'] = "";}
+		if(!isset($data['link'])){				$data['link'] = "";}
+		if(!isset($data['is_active_check'])){	$data['is_active_check'] = "";}
 
 		$out = "";
 
 		if($data['version_check'] == $data['version'])
 		{
-			$class = "fa fa-check green";
+			$class = "fa fa-check ".($data['is_active_check'] == 'no' ? "grey" : "green");
 			$version_out = "";
 		}
 
@@ -2893,25 +2906,25 @@ class mf_site_manager
 		{
 			if(version_compare($data['version_check'], $data['version'], ">"))
 			{
-				$class = "fa fa-less-than green";
+				$class = "fa fa-less-than ".($data['is_active_check'] == 'no' ? "grey" : "green");
 			}
 
 			else
 			{
-				$class = "fa fa-greater-than red";
+				$class = "fa fa-greater-than ".($data['is_active_check'] == 'no' ? "grey" : "red");
 			}
 
 			$version_out = $data['version_check'];
 		}
 
-		$out .= "<i class='".$class." fa-lg'></i> ";
+		$out .= "<i class='".$class." fa-lg'".($data['is_active_check'] == 'no' ? " title='".__("Inactive", 'lang_site_manager')."'" : "")."></i> ";
 
 		if($data['version_check'] != $data['version'] && $data['link'] != '')
 		{
 			$out .= "<a href='".$data['link']."'>";
 		}
 
-			$out .= $version_out;
+			$out .= "<span".($data['is_active_check'] == 'no' ? " class='grey' style='text-decoration: line-through'" : "").">".$version_out."</span>";
 
 		if($data['version_check'] != $data['version'])
 		{

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-03 08:28+0100\n"
+"POT-Creation-Date: 2025-05-14 14:32+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Martin Fors\n"
 "Language-Team: \n"
@@ -96,60 +96,60 @@ msgid "Core"
 msgstr "Kärna"
 
 #: ../compare/index.php:67
-#: ../compare/index.php:161
+#: ../compare/index.php:162
 msgid "Does not support this"
 msgstr "Har inte support för detta"
 
-#: ../compare/index.php:117
+#: ../compare/index.php:118
 #: ../include/classes.php:1674
 msgid "Media"
 msgstr ""
 
-#: ../compare/index.php:194
+#: ../compare/index.php:196
 msgid "Copy differences"
 msgstr "Kopiera skillnader"
 
-#: ../compare/index.php:209
+#: ../compare/index.php:211
 #, php-format
 msgid "The differences were test copied into %s"
 msgstr "Skillnaderna testkopierades till %s"
 
-#: ../compare/index.php:214
+#: ../compare/index.php:216
 #, php-format
 msgid "The differences were copied into %s"
 msgstr "Skillnaderna kopierades till %s"
 
-#: ../compare/index.php:220
+#: ../compare/index.php:222
 #, php-format
 msgid "Copy Differences Into %s"
 msgstr "Kopiera skillnader till %s"
 
-#: ../compare/index.php:221
+#: ../compare/index.php:223
 msgid "Copy Differences"
 msgstr "Kopiera skillnader"
 
-#: ../compare/index.php:225
+#: ../compare/index.php:227
 msgid "Test Copy"
 msgstr "Testa kopiering"
 
-#: ../compare/index.php:240
+#: ../compare/index.php:242
 msgid "I could not find any differences"
 msgstr "Jag kunde inte hitta några skillnader"
 
-#: ../compare/index.php:244
+#: ../compare/index.php:246
 msgid "Source"
 msgstr "Källa"
 
-#: ../compare/index.php:268
+#: ../compare/index.php:269
 #: ../theme/index.php:13
 msgid "Site"
 msgstr "Webbplats"
 
-#: ../compare/index.php:269
+#: ../compare/index.php:270
 msgid "Error"
 msgstr "Fel"
 
-#: ../compare/index.php:290
+#: ../compare/index.php:291
 #, php-format
 msgid "I could not find any sites to compare with. Convert to MultiSite and add sites or add external ones in %sMy Settings%s"
 msgstr "Jag kunde inte hitta några webbplatser att jämföra med. Konvertera till MultiSite och lägga till webbplatser eller lägg till externa via %sMina inställningar%s"
@@ -439,80 +439,70 @@ msgstr "okänd"
 msgid "Background"
 msgstr "Bakgrund"
 
-#: ../include/classes.php:2345
-msgid "Version"
-msgstr ""
+#: ../include/classes.php:2359
+msgid "Inactive"
+msgstr "Inaktiv"
 
-#: ../include/classes.php:2373
-#: ../include/classes.php:2420
-#: ../include/classes.php:2740
-#: ../include/classes.php:2773
-#: ../include/classes.php:2790
+#: ../include/classes.php:2391
+#: ../include/classes.php:2436
+#: ../include/classes.php:2794
+#: ../include/classes.php:2836
+#: ../include/classes.php:2854
 msgid "does not exist"
 msgstr "finns inte"
 
-#: ../include/classes.php:2385
-msgid "Data"
-msgstr ""
+#: ../include/classes.php:2504
+msgid "Image uploaded successfully!"
+msgstr "Bilden laddades upp!"
 
-#: ../include/classes.php:2530
-#: ../include/classes.php:2545
-#: ../include/classes.php:2559
+#: ../include/classes.php:2509
+msgid "Error uploading image"
+msgstr "Fel på uppladdning av bilden"
+
+#: ../include/classes.php:2575
+#: ../include/classes.php:2595
+#: ../include/classes.php:2608
+#: ../include/classes.php:2741
+#: ../include/classes.php:2753
 msgid "empty"
 msgstr "tom"
 
-#: ../include/classes.php:2599
+#: ../include/classes.php:2644
 msgid "I updated the data for you"
 msgstr "Jag har uppdaterat datan åt dig"
 
-#: ../include/classes.php:2604
-msgid "There were several posts"
-msgstr "Det fanns flera inlägg"
-
-#: ../include/classes.php:2621
-msgid "I inserted the data for you"
-msgstr "Jag har lagt in datan åt dig"
-
-#: ../include/classes.php:2642
+#: ../include/classes.php:2690
 msgid "Update"
 msgstr "Uppdatera"
 
-#: ../include/classes.php:2642
+#: ../include/classes.php:2690
 msgid "Create"
 msgstr "Skapa"
 
-#: ../include/classes.php:2667
+#: ../include/classes.php:2719
 #, php-format
 msgid "You have to create it in the %seditor%s first. Then you can update from the source site."
 msgstr "Du behöver skapa den i %sredigeraren%s först. Sen kan du uppdatera från den andra webbplatsen."
 
-#: ../include/classes.php:2692
-msgid "Image uploaded successfully!"
-msgstr "Bilden laddades upp!"
-
-#: ../include/classes.php:2697
-msgid "Error uploading image"
-msgstr "Fel på uppladdning av bilden"
-
-#: ../include/classes.php:2707
+#: ../include/classes.php:2760
 msgid "Copy"
 msgstr "Kopiera"
 
-#: ../include/classes.php:2997
+#: ../include/classes.php:3064
 msgid "I would have copied:"
 msgstr "Jag hade kopierat:"
 
-#: ../include/classes.php:3147
+#: ../include/classes.php:3214
 #, php-format
 msgid "I successfully fetched the server IP (%s) for you"
 msgstr "Jag lyckades hämta Server-IP (%s) åt dig"
 
-#: ../include/classes.php:3152
+#: ../include/classes.php:3219
 #, php-format
 msgid "The IP (%s) is the same as before"
 msgstr "IP-adressen (%s) är samma som innan"
 
-#: ../include/classes.php:3159
+#: ../include/classes.php:3226
 #, php-format
 msgid "I could not fetch the server IP (%s) for you"
 msgstr "Jag kunde inte hämta Server-IP (%s) åt dig"
@@ -581,6 +571,12 @@ msgstr "Är du helt säker? Detta kommer att byta tema för webbplatsen men inte
 #, php-format
 msgid "There are no other themes activated for this site. %sPlease, add another theme%s"
 msgstr "Det finns inga andra teman aktiverade för denna webbplats. %sVar vänlig, lägg till ett annat tema%s"
+
+#~ msgid "There were several posts"
+#~ msgstr "Det fanns flera inlägg"
+
+#~ msgid "I inserted the data for you"
+#~ msgstr "Jag har lagt in datan åt dig"
 
 #~ msgid "domain"
 #~ msgstr "domän"
