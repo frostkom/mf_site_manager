@@ -86,7 +86,7 @@ echo "<div class='wrap'>
 
 				// Themes
 				##############################
-				$obj_site_manager->check_version('themes');
+				echo $obj_site_manager->check_version('themes');
 
 				if($obj_site_manager->echoed == true)
 				{
@@ -98,7 +98,7 @@ echo "<div class='wrap'>
 
 				// Plugins
 				##############################
-				$obj_site_manager->check_version('plugins');
+				echo $obj_site_manager->check_version('plugins');
 
 				if($obj_site_manager->echoed == true)
 				{
