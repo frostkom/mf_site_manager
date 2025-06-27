@@ -28,6 +28,13 @@ $remote_server_ip = apply_filters('get_current_visitor_ip', $_SERVER['REMOTE_ADD
 $setting_site_manager_server_ips_allowed = get_option('setting_site_manager_server_ips_allowed');
 $arr_setting_site_manager_server_ips_allowed = array_map('trim', explode(",", $setting_site_manager_server_ips_allowed));
 
+$setting_site_manager_server_ip = get_option('setting_site_manager_server_ip');
+
+if($setting_site_manager_server_ip != '')
+{
+	$arr_setting_site_manager_server_ips_allowed[] = $setting_site_manager_server_ip;
+}
+
 if(count($arr_setting_site_manager_server_ips_allowed) > 0 && in_array($remote_server_ip, $arr_setting_site_manager_server_ips_allowed))
 {
 	switch($type_action)

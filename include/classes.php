@@ -2152,8 +2152,8 @@ class mf_site_manager
 					$arr_content = json_decode($content, true);
 
 					$this->arr_core[$site] = (isset($arr_content['core']) ? $arr_content['core'] : '');
-					$this->arr_themes[$site] = $arr_content['themes'];
-					$this->arr_plugins[$site] = $arr_content['plugins'];
+					$this->arr_themes[$site] = (isset($arr_content['themes']) ? $arr_content['themes'] : '');
+					$this->arr_plugins[$site] = (isset($arr_content['plugins']) ? $arr_content['plugins'] : '');
 				}
 
 				else
