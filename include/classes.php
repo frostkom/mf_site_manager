@@ -347,16 +347,7 @@ class mf_site_manager
 					<span>";
 			}
 
-				// "#wpadminbar *" overrides style for FA icons
-				/*if($arr_site_status['icon'] != '')
-				{
-					$title .= "<i class='".$arr_site_status['icon']."' title='".$arr_site_status['text']."'></i>";
-				}
-
-				else
-				{*/
-					$title .= $arr_site_status['text'];
-				//}
+				$title .= $arr_site_status['text'];
 
 			if($flag_image != '')
 			{
