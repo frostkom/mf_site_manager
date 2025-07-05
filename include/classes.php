@@ -2,14 +2,14 @@
 
 class mf_site_manager
 {
-	var $arr_core = array();
-	var $arr_themes = array();
-	var $arr_plugins = array();
-	var $arr_sites = array();
-	var $arr_sites_error = array();
+	var $arr_core = [];
+	var $arr_themes = [];
+	var $arr_plugins = [];
+	var $arr_sites = [];
+	var $arr_sites_error = [];
 	var $server_ip_old = "";
 	var $server_ip_new = "";
-	var $arr_errors = array();
+	var $arr_errors = [];
 	var $blog_id = "";
 	var $site_backup = "";
 	var $keep_title = "";
@@ -37,9 +37,9 @@ class mf_site_manager
 
 	function __construct(){}
 
-	function get_sites_for_select($data = array())
+	function get_sites_for_select($data = [])
 	{
-		if(!isset($data['exclude'])){	$data['exclude'] = array();}
+		if(!isset($data['exclude'])){	$data['exclude'] = [];}
 
 		$arr_data = array(
 			'' => "-- ".__("Choose Here", 'lang_site_manager')." --"
@@ -61,7 +61,7 @@ class mf_site_manager
 
 	function get_themes_for_select()
 	{
-		$arr_data = array();
+		$arr_data = [];
 
 		foreach(wp_get_themes(array('errors' => false, 'allowed' => true)) as $key => $value)
 		{
@@ -243,7 +243,7 @@ class mf_site_manager
 		}
 	}
 
-	function get_site_status_data($data = array())
+	function get_site_status_data($data = [])
 	{
 		$status = $this->get_site_status();
 
@@ -387,7 +387,7 @@ class mf_site_manager
 		{
 			$main_site_id = get_main_site_id();
 
-			$arr_names = array();
+			$arr_names = [];
 			$arr_sites = $wp_admin_bar->user->blogs;
 
 			foreach($arr_sites as $site_id => $site)
@@ -402,7 +402,7 @@ class mf_site_manager
 
 			asort($arr_names);
 
-			$wp_admin_bar->user->blogs = array();
+			$wp_admin_bar->user->blogs = [];
 
 			foreach($arr_names as $site_id => $name)
 			{
@@ -486,7 +486,7 @@ class mf_site_manager
 
 			add_settings_section($options_area, "", array($this, $options_area.'_callback'), BASE_OPTIONS_PAGE);
 
-			$arr_settings = array();
+			$arr_settings = [];
 
 			if(is_multisite() == false)
 			{
@@ -925,7 +925,7 @@ class mf_site_manager
 
 			else if($this->new_url != $this->site_url || defined('WP_HOME'))
 			{
-				$this->arr_errors = array();
+				$this->arr_errors = [];
 
 				if(is_multisite())
 				{
@@ -999,7 +999,7 @@ class mf_site_manager
 					$strBasePrefixFrom = $wpdb->prefix;
 					$strBlogDomainFrom = get_site_url_clean(array('trim' => "/"));
 
-					$arr_tables_from = array();
+					$arr_tables_from = [];
 
 					$result = $wpdb->get_results("SHOW TABLES LIKE '".$strBasePrefixFrom."%'");
 					$str_queries .= $wpdb->last_query.";\n";
@@ -1018,7 +1018,7 @@ class mf_site_manager
 					$strBasePrefixTo = ($this->blog_id > 1 ? $wpdb->base_prefix.$this->blog_id."_" : $wpdb->base_prefix);
 					$strBlogDomainTo = get_site_url_clean(array('id' => $this->blog_id, 'trim' => "/"));
 
-					$arr_tables_to = array();
+					$arr_tables_to = [];
 
 					$result = $wpdb->get_results("SHOW TABLES LIKE '".$strBasePrefixTo."%'");
 					$str_queries .= $wpdb->last_query.";\n";
@@ -1239,7 +1239,7 @@ class mf_site_manager
 				$strBasePrefixFrom = $wpdb->prefix;
 				$strBlogDomainFrom = get_site_url_clean(array('trim' => "/"));
 
-				$arr_tables_from = array();
+				$arr_tables_from = [];
 
 				$result = $wpdb->get_results("SHOW TABLES LIKE '".$strBasePrefixFrom."%'");
 				$str_queries .= $wpdb->last_query.";\n";
@@ -1256,7 +1256,7 @@ class mf_site_manager
 				$strBlogDomainTo = get_site_url_clean(array('id' => $this->blog_id, 'trim' => "/"));
 
 				$strBlogDomain_temp = "mf_cloner.com";
-				$arr_tables_to = array();
+				$arr_tables_to = [];
 
 				$result = $wpdb->get_results("SHOW TABLES LIKE '".$strBasePrefixTo."%'");
 				$str_queries .= $wpdb->last_query.";\n";
@@ -1390,7 +1390,7 @@ class mf_site_manager
 
 			else
 			{
-				$arr_errors = array();
+				$arr_errors = [];
 
 				update_option('stylesheet', $new_theme, false);
 
@@ -1503,7 +1503,7 @@ class mf_site_manager
 								}
 							}
 
-							$arr_errors = array();
+							$arr_errors = [];
 
 							$result = $wpdb->get_results("SHOW TABLES LIKE '".$this->table_prefix."%'", ARRAY_N);
 
@@ -1683,7 +1683,7 @@ class mf_site_manager
 				case 'activated':
 					if(!is_plugin_active_for_network($plugin_file))
 					{
-						$arr_sites = array();
+						$arr_sites = [];
 
 						$result = get_sites(array('deleted' => 0));
 
@@ -1767,7 +1767,7 @@ class mf_site_manager
 				break;
 
 				case 'settings':
-					$arr_settings_types = apply_filters('filter_sites_table_settings', array());
+					$arr_settings_types = apply_filters('filter_sites_table_settings', []);
 
 					$out_temp = "";
 
@@ -1845,7 +1845,7 @@ class mf_site_manager
 				break;
 
 				case 'pages':
-					$arr_pages = apply_filters('filter_sites_table_pages', array());
+					$arr_pages = apply_filters('filter_sites_table_pages', []);
 
 					if(count($arr_pages) > 0)
 					{
@@ -1920,7 +1920,7 @@ class mf_site_manager
 
 				case 'last_updated':
 					$arr_post_types = $obj_base->get_post_types_for_metabox();
-					$last_updated_manual_post_types = array_diff($arr_post_types, apply_filters('filter_last_updated_post_types', array(), 'manual'));
+					$last_updated_manual_post_types = array_diff($arr_post_types, apply_filters('filter_last_updated_post_types', [], 'manual'));
 
 					$result = $wpdb->get_results("SELECT ID, post_title, post_modified FROM ".$wpdb->posts." WHERE post_type IN ('".implode("','", $last_updated_manual_post_types)."') AND post_status != 'auto-draft' ORDER BY post_modified DESC LIMIT 0, 1");
 
@@ -1972,12 +1972,12 @@ class mf_site_manager
 		}
 	}
 
-	function sites_row_actions($actions)
+	function sites_row_actions($arr_actions)
 	{
-		unset($actions['archive']);
-		unset($actions['spam']);
+		unset($arr_actions['archive']);
+		unset($arr_actions['spam']);
 
-		return $actions;
+		return $arr_actions;
 	}
 
 	function admin_footer()
@@ -2004,7 +2004,7 @@ class mf_site_manager
 	{
 		global $wpdb;
 
-		$array = array();
+		$array = [];
 
 		$site_icon = get_option('site_icon');
 
@@ -2048,7 +2048,7 @@ class mf_site_manager
 
 		// Themes
 		#############################
-		$arr_themes_this_site = array();
+		$arr_themes_this_site = [];
 
 		$current_theme = wp_get_theme();
 		$theme_name = $current_theme->get('Name');
@@ -2056,7 +2056,7 @@ class mf_site_manager
 
 		$theme_slug = get_stylesheet();
 
-		$arr_data_this = array();
+		$arr_data_this = [];
 
 		switch($theme_slug)
 		{
@@ -2084,11 +2084,11 @@ class mf_site_manager
 		// Plugins
 		#############################
 		$arr_plugins = get_plugins();
-		$arr_plugins_this_site = array();
+		$arr_plugins_this_site = [];
 
 		foreach($arr_plugins as $key => $value)
 		{
-			$arr_data_this = array();
+			$arr_data_this = [];
 
 			switch($key)
 			{
@@ -2259,7 +2259,7 @@ class mf_site_manager
 			break;
 
 			default:
-				$array = array();
+				$array = [];
 			break;
 		}
 
@@ -2271,7 +2271,7 @@ class mf_site_manager
 				$directory = $arr_value['dir'];
 				$is_active = (isset($arr_value['is_active']) ? ($arr_value['is_active'] ? 'yes' : 'no') : '');
 				$version = $arr_value['version'];
-				$arr_data_this = (isset($arr_value['data']) ? $arr_value['data'] : array());
+				$arr_data_this = (isset($arr_value['data']) ? $arr_value['data'] : []);
 
 				$has_equal_version = true;
 
@@ -2338,7 +2338,7 @@ class mf_site_manager
 
 							foreach($this->arr_sites as $site)
 							{
-								$arr_data_remote = (isset($array[$site][$key]['data']) ? $array[$site][$key]['data'] : array());
+								$arr_data_remote = (isset($array[$site][$key]['data']) ? $array[$site][$key]['data'] : []);
 
 								if(count($arr_data_remote) > 0)
 								{
@@ -2378,13 +2378,13 @@ class mf_site_manager
 
 							foreach($this->arr_sites as $site)
 							{
-								$arr_data_remote = (isset($array[$site][$key]['data']) ? $array[$site][$key]['data'] : array());
+								$arr_data_remote = (isset($array[$site][$key]['data']) ? $array[$site][$key]['data'] : []);
 
 								if(count($arr_data_remote) > 0)
 								{
 									$out_li_temp = "";
 
-									$arr_data_keys = array();
+									$arr_data_keys = [];
 
 									foreach($arr_data_this['array'] as $key_this => $rest)
 									{
@@ -2932,7 +2932,7 @@ class mf_site_manager
 		}
 	}
 
-	function copy_differences($data = array())
+	function copy_differences($data = [])
 	{
 		global $error_notice;
 

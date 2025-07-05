@@ -14,7 +14,7 @@ if(!isset($obj_site_manager))
 	$obj_site_manager = new mf_site_manager();
 }
 
-$json_output = array();
+$json_output = [];
 
 $type = check_var('type', 'char');
 
