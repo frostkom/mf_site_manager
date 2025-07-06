@@ -2024,7 +2024,8 @@ class mf_site_manager
 				$array[$r->post_name] = array(
 					'post_type' => $r->post_type,
 					'post_title' => $r->post_title,
-					'post_content' => utf8_encode($r->post_content),
+					//'post_content' => utf8_encode($r->post_content),
+					'post_content' => mb_convert_encoding($r->post_content, 'UTF-8', 'ISO-8859-1'),
 					//'post_modified' => $r->post_modified,
 				);
 			}
