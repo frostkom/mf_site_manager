@@ -438,7 +438,10 @@ class mf_site_manager
 			case 'options-general.php':
 				if($page == 'settings_mf_base')
 				{
-					mf_enqueue_script('script_site_manager_settings', $plugin_include_url."script_wp_settings.js", array('plugin_url' => $plugin_include_url, 'ajax_url' => admin_url('admin-ajax.php')));
+					mf_enqueue_script('script_site_manager_settings', $plugin_include_url."script_wp_settings.js", array(
+						'ajax_url' => admin_url('admin-ajax.php'),
+						'loading_animation' => apply_filters('get_loading_animation', ''),
+					));
 				}
 			break;
 

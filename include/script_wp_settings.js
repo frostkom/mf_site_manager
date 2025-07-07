@@ -12,7 +12,7 @@ jQuery(function($)
 			obj.button.addClass('is_disabled');
 		}
 
-		obj.selector.html("<i class='fa fa-spinner fa-spin fa-2x'></i>");
+		obj.selector.html(script_site_manager_settings.loading_animation);
 
 		$.ajax(
 		{
