@@ -2039,6 +2039,8 @@ class mf_site_manager
 
 	function get_content_versions()
 	{
+		global $wpdb;
+
 		list($upload_path, $upload_url) = get_uploads_folder();
 
 		$this->uploads_amount = 0;
@@ -2101,6 +2103,8 @@ class mf_site_manager
 
 					$tbl_group->select_data(array(
 						'select' => "ID",
+						'debug' => true,
+						'debug_type' => 'log',
 					));
 
 					$arr_data_this['value'] = count($tbl_group->data);
