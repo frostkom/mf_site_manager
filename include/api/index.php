@@ -23,7 +23,7 @@ $arr_input = explode("/", $type);
 $type_action = $arr_input[0];
 $type_table = (isset($arr_input[1]) ? $arr_input[1] : '');
 
-$remote_server_ip = apply_filters('get_current_visitor_ip', $_SERVER['REMOTE_ADDR']);
+$remote_server_ip = apply_filters('get_current_visitor_ip', "");
 
 $setting_site_manager_server_ips_allowed = get_option('setting_site_manager_server_ips_allowed');
 $arr_setting_site_manager_server_ips_allowed = array_map('trim', explode(",", $setting_site_manager_server_ips_allowed));
