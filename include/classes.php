@@ -2099,15 +2099,17 @@ class mf_site_manager
 			switch($key)
 			{
 				case 'mf_log/index.php':
-					$tbl_group = new mf_log_table();
+					/*$tbl_group = new mf_log_table();
 
 					$tbl_group->select_data(array(
 						'select' => "ID",
 						'debug' => true,
 						'debug_type' => 'log',
-					));
+					));*/
 
-					$arr_data_this['value'] = count($tbl_group->data);
+					$wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." WHERE post_type = %s AND post_status NOT IN ('notification', 'ignore', 'trash')", 'mf_log'));
+
+					$arr_data_this['value'] = $wpdb->num_rows;
 					$arr_data_this['link'] = admin_url("admin.php?page=mf_log/list/index.php");
 				break;
 			}
