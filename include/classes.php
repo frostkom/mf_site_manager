@@ -2455,12 +2455,12 @@ class mf_site_manager
 
 										if(isset($arr_value_this['post_type']) && in_array($arr_value_this['post_type'], $this->editor_block_parts) && isset($arr_value_this['post_content']))
 										{
-											$arr_value_this['post_content'] = utf8_decode($arr_value_this['post_content']);
+											$arr_value_this['post_content'] = mb_convert_encoding($arr_value_this['post_content'], 'ISO-8859-1', 'UTF-8');
 										}
 
 										if(isset($arr_value_remote['post_type']) && in_array($arr_value_remote['post_type'], $this->editor_block_parts) && isset($arr_value_remote['post_content']))
 										{
-											$arr_value_remote['post_content'] = utf8_decode($arr_value_remote['post_content']);
+											$arr_value_remote['post_content'] = mb_convert_encoding($arr_value_remote['post_content'], 'ISO-8859-1', 'UTF-8');
 
 											$arr_value_remote['post_content'] = $this->replace_content($arr_value_remote['post_content'], (isset($arr_value_this['post_content']) ? $arr_value_this['post_content'] : ''));
 										}
