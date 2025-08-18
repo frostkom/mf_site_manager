@@ -330,7 +330,7 @@ class mf_site_manager
 
 		$title = "";
 
-		if($arr_site_status['url'] != '' && IS_ADMINISTRATOR)
+		if($arr_site_status['url'] != '')
 		{
 			$title .= "<a href='".$arr_site_status['url']."' class='".$arr_site_status['color']."'>";
 		}
