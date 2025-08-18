@@ -664,18 +664,32 @@ class mf_site_manager
 				}
 			}
 
-			/*$menu_title = __("Edit Tables", 'lang_site_manager');
-			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."tables/index.php");*/
-
 			$menu_title = __("Change URL", 'lang_site_manager');
 			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."change/index.php");
-
-			/*$menu_title = __("Change Theme", 'lang_site_manager');
-			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."theme/index.php");*/
 		}
 
 		if(IS_EDITOR)
 		{
+			if(get_option('setting_site_manager_site_comparison') != '')
+			{
+				global $menu, $submenu;
+
+				foreach($menu as $key => $menu_item)
+				{
+					if($menu_item[2] == 'themes.php' && isset($submenu[$menu_item[2]]))
+					{
+						foreach($submenu[$menu_item[2]] as $submenu_key => $submenu_item)
+						{
+							if($submenu[$menu_item[2]][$submenu_key][2] == 'site-editor.php')	
+							{
+								$submenu[$menu_item[2]][$submenu_key][0] .= " <i class='fa fa-exclamation-triangle yellow' title='".__("This site is using a template site and any changes in the editor might be overriden", 'lang_site_manager')."'></i>";
+								break;
+							}
+						}
+					}
+				}
+			}
+
 			$menu_title = __("Settings", 'lang_site_manager');
 			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, admin_url("options-general.php?page=settings_mf_base#settings_site_manager"));
 		}
