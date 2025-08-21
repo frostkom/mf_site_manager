@@ -676,11 +676,11 @@ class mf_site_manager
 
 				foreach($menu as $key => $menu_item)
 				{
-					if($menu_item[2] == 'themes.php' && isset($submenu[$menu_item[2]]))
+					if(isset($menu_item[2]) && $menu_item[2] == 'themes.php' && isset($submenu[$menu_item[2]]))
 					{
 						foreach($submenu[$menu_item[2]] as $submenu_key => $submenu_item)
 						{
-							if($submenu[$menu_item[2]][$submenu_key][2] == 'site-editor.php')	
+							if(isset($submenu[$menu_item[2]][$submenu_key][2]) && $submenu[$menu_item[2]][$submenu_key][2] == 'site-editor.php')
 							{
 								$submenu[$menu_item[2]][$submenu_key][0] .= " <i class='fa fa-exclamation-triangle yellow' title='".__("This site is using a template site and any changes in the editor might be overriden", 'lang_site_manager')."'></i>";
 								break;
