@@ -343,7 +343,7 @@ class mf_site_manager
 			if($flag_image != '')
 			{
 				$title .= "<div class='flex_flow tight'>
-					<img src='".$flag_image."'>&nbsp;
+					<img src='".$flag_image."'>
 					<span>";
 			}
 
