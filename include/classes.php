@@ -379,7 +379,7 @@ class mf_site_manager
 
 			$flag_image = $this->get_flag_image();
 
-			$title = "<a href='".admin_url("index.php")."'>";
+			$title = "<a href='".admin_url("index.php")."' class='".$arr_site_status['color']."'>";
 
 				if($flag_image != '')
 				{
