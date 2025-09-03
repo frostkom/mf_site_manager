@@ -324,51 +324,85 @@ class mf_site_manager
 
 		$wp_admin_bar->remove_menu('site-name');
 
-		$arr_site_status = $this->get_site_status_data(array('type' => 'admin_bar'));
-
-		$flag_image = $this->get_flag_image();
-
-		$title = "";
-
-		if($arr_site_status['url'] != '')
+		if(is_admin())
 		{
-			$title .= "<a href='".$arr_site_status['url']."' class='".$arr_site_status['color']."'>";
+			$arr_site_status = $this->get_site_status_data(array('type' => 'admin_bar'));
+
+			$flag_image = $this->get_flag_image();
+
+			$title = "";
+
+			if($arr_site_status['url'] != '')
+			{
+				$title .= "<a href='".$arr_site_status['url']."' class='".$arr_site_status['color']."'>";
+			}
+
+			else
+			{
+				$title .= "<span class='".$arr_site_status['color']."'>";
+			}
+
+				if($flag_image != '')
+				{
+					$title .= "<div class='flex_flow tight'>
+						<img src='".$flag_image."'>
+						<span>";
+				}
+
+					$title .= $arr_site_status['text'];
+
+				if($flag_image != '')
+				{
+						$title .= "</span>
+					</div>";
+				}
+
+			if($arr_site_status['url'] != '')
+			{
+				$title .= "</a>";
+			}
+
+			else
+			{
+				$title .= "</span>";
+			}
+
+			$wp_admin_bar->add_node(array(
+				'id' => 'live',
+				'title' => $title,
+			));
 		}
 
 		else
 		{
-			$title .= "<span class='".$arr_site_status['color']."'>";
-		}
+			$arr_site_status = $this->get_site_status_data(array('type' => 'admin_bar'));
 
-			if($flag_image != '')
-			{
-				$title .= "<div class='flex_flow tight'>
-					<img src='".$flag_image."'>
-					<span>";
-			}
+			$flag_image = $this->get_flag_image();
 
-				$title .= $arr_site_status['text'];
+			$title = "<a href='".admin_url("index.php")."'>";
 
-			if($flag_image != '')
-			{
-					$title .= "</span>
-				</div>";
-			}
+				if($flag_image != '')
+				{
+					$title .= "<div class='flex_flow tight'>
+						<img src='".$flag_image."'>
+						<span>";
+				}
 
-		if($arr_site_status['url'] != '')
-		{
+					$title .= __("Admin", 'lang_site_manager');
+
+				if($flag_image != '')
+				{
+						$title .= "</span>
+					</div>";
+				}
+
 			$title .= "</a>";
-		}
 
-		else
-		{
-			$title .= "</span>";
+			$wp_admin_bar->add_node(array(
+				'id' => 'live',
+				'title' => $title,
+			));
 		}
-
-		$wp_admin_bar->add_node(array(
-			'id' => 'live',
-			'title' => $title,
-		));
 
 		if($arr_site_status['status'] == 'public')
 		{
