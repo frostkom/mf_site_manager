@@ -1,5 +1,3 @@
-document.createElement("mf-form-row");
-
 jQuery(function($)
 {
 	function toggle_settings()
