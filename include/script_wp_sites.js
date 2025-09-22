@@ -6,14 +6,14 @@ jQuery(function($)
 	{
 		var dom_obj_parent = $(this);
 
-		dom_obj_parent.find(".settings.column-settings .nowrap > a").each(function()
+		dom_obj_parent.find(".settings.column-settings div > a").each(function()
 		{
 			var dom_obj = $(this),
 				data_setting = dom_obj.data('setting'),
 				data_color = dom_obj.data('color'),
 				settings_are_equal = true;
 
-			dom_obj_parent.siblings("tr").find(".settings.column-settings .nowrap > a[data-setting='" + data_setting + "']").each(function()
+			dom_obj_parent.siblings("tr").find(".settings.column-settings div > a[data-setting='" + data_setting + "']").each(function()
 			{
 				if($(this).data('color') != data_color)
 				{
@@ -25,7 +25,7 @@ jQuery(function($)
 			{
 				dom_obj.addClass('hide');
 
-				dom_obj_parent.siblings("tr").find(".settings.column-settings .nowrap > a[data-setting='" + data_setting + "']").addClass('hide');
+				dom_obj_parent.siblings("tr").find(".settings.column-settings div > a[data-setting='" + data_setting + "']").addClass('hide');
 			}
 		});
 
@@ -34,7 +34,7 @@ jQuery(function($)
 
 	$(document).on('click', ".wp-list-table tbody tr .settings.column-settings .toggle_all", function()
 	{
-		$(this).parents(".column-settings").find(".nowrap > a").each(function()
+		$(this).parents(".column-settings").find("div > a").each(function()
 		{
 			var dom_obj = $(this);
 

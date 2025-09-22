@@ -1888,7 +1888,7 @@ class mf_site_manager
 
 					if($out_temp != '')
 					{
-						echo "<div class='nowrap'>".$out_temp."</div>
+						echo "<div>".$out_temp."</div>
 						<div class='row-actions'>"
 							."<a class='toggle_all' href='#'>".__("Toggle All", 'lang_site_manager')."</a>"
 						."</div>";
@@ -1898,38 +1898,31 @@ class mf_site_manager
 				case 'pages':
 					$arr_pages = apply_filters('filter_sites_table_pages', []);
 
-					if(count($arr_pages) > 0)
+					foreach($arr_pages as $key => $arr_value)
 					{
-						echo "<div class='nowrap'>";
+						switch_to_blog($id);
 
-							foreach($arr_pages as $key => $arr_value)
-							{
-								switch_to_blog($id);
+						switch($key)
+						{
+							case 'attachment':
+								$post_status = 'inherit';
+							break;
 
-								switch($key)
-								{
-									case 'attachment':
-										$post_status = 'inherit';
-									break;
+							default:
+								$post_status = 'publish';
+							break;
+						}
 
-									default:
-										$post_status = 'publish';
-									break;
-								}
+						$amount = $wpdb->get_var($wpdb->prepare("SELECT COUNT(ID) FROM ".$wpdb->posts." WHERE post_type = %s AND post_status = %s", $key, $post_status));
 
-								$amount = $wpdb->get_var($wpdb->prepare("SELECT COUNT(ID) FROM ".$wpdb->posts." WHERE post_type = %s AND post_status = %s", $key, $post_status));
+						if($amount > 0)
+						{
+							echo "<a href='".get_admin_url($id, "edit.php?post_type=".$key)."'>"
+								." <i class='".$arr_value['icon']." ".($amount > 0 ? "green" : "grey")."' title='".$arr_value['title']." (".$amount.")'></i>"
+							."</a>";
+						}
 
-								if($amount > 0)
-								{
-									echo "<a href='".get_admin_url($id, "edit.php?post_type=".$key)."'>"
-										." <i class='".$arr_value['icon']." ".($amount > 0 ? "green" : "grey")."' title='".$arr_value['title']." (".$amount.")'></i>"
-									."</a>";
-								}
-
-								restore_current_blog();
-							}
-
-						echo "</div>";
+						restore_current_blog();
 					}
 				break;
 
@@ -1938,16 +1931,16 @@ class mf_site_manager
 
 					if($flag_image != '')
 					{
-						echo "<img src='".$flag_image."' class='alignleft'>&nbsp;";
+						echo "<img src='".$flag_image."'> ";
 					}
 
 					$arr_site_status = $this->get_site_status_data(array('type' => 'sites_column'));
 
-					echo "<i class='".$arr_site_status['icon']." fa-2x ".$arr_site_status['color']."' title='".$arr_site_status['text']."'></i>";
+					echo "<i class='".$arr_site_status['icon']." ".$arr_site_status['color']." fa-lg' title='".$arr_site_status['text']."'></i> ";
 
 					if($arr_site_status['status'] == 'public')
 					{
-						echo "&nbsp;<a href='".get_site_url($id)."/sitemap.xml'><i class='fas fa-sitemap fa-2x' title='".__("Sitemap", 'lang_site_manager')."'></i></a>";
+						echo "<a href='".get_site_url($id)."/sitemap.xml'><i class='fas fa-sitemap fa-lg' title='".__("Sitemap", 'lang_site_manager')."'></i></a> ";
 					}
 				break;
 
