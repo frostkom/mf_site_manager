@@ -567,11 +567,11 @@ class mf_site_manager
 					<p class='input'>".nl2br(htmlspecialchars($multisite_step_1))."</p>
 				</li>
 				<li>
-					<strong><a href='/wp-admin/plugins.php' rel='external'>".__("Deactivate all plugins", 'lang_site_manager')."</a></strong>
+					<strong><a href='/wp-admin/plugins.php'>".__("Deactivate all plugins", 'lang_site_manager')."</a></strong>
 					<br><br>
 				</li>
 				<li>
-					<strong><a href='/wp-admin/network.php' rel='external'>".__("Go to Network Settings", 'lang_site_manager')."</a></strong>
+					<strong><a href='/wp-admin/network.php'>".__("Go to Network Settings", 'lang_site_manager')."</a></strong>
 					<p>".__("...and follow the instructions on that page...", 'lang_site_manager')."</p>
 				</li>
 				<li>
@@ -579,11 +579,11 @@ class mf_site_manager
 					<p class='input'>".nl2br(htmlspecialchars($multisite_step_2))."</p>
 				</li>
 				<li>
-					<strong><a href='/wp-admin/' rel='external'>".__("Login", 'lang_site_manager')."</a></strong>
+					<strong><a href='/wp-admin/'>".__("Login", 'lang_site_manager')."</a></strong>
 					<br><br>
 				</li>
 				<li>
-					<strong><a href='/wp-admin/network/plugins.php' rel='external'>".__("Activate all plugins", 'lang_site_manager')."</a></strong>
+					<strong><a href='/wp-admin/network/plugins.php'>".__("Activate all plugins", 'lang_site_manager')."</a></strong>
 					<br><br>
 				</li>
 			</ul>";
