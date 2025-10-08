@@ -219,7 +219,7 @@ echo "<div class='wrap'>
 
 									else
 									{
-										echo "<a href='".wp_nonce_url(admin_url("admin.php?page=".check_var('page')."&btnDifferencesCopy&strSiteURL=".$site."&intSiteKey=".$site_key), 'differences_copy_'.$site_key, '_wpnonce_differences_copy')."' class='button' rel='confirm' title='".sprintf(__("Copy Differences Into %s", 'lang_site_manager'), $arr_setting_site_manager_site_clone_path[$site_key])."'>"
+										echo "<a href='".wp_nonce_url(admin_url("admin.php?page=".check_var('page')."&btnDifferencesCopy&strSiteURL=".$site."&intSiteKey=".$site_key), 'differences_copy_'.$site_key, '_wpnonce_differences_copy')."' class='button'".make_link_confirm()." title='".sprintf(__("Copy Differences Into %s", 'lang_site_manager'), $arr_setting_site_manager_site_clone_path[$site_key])."'>"
 											.__("Copy Differences", 'lang_site_manager')
 										."</a>";
 
