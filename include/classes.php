@@ -2054,7 +2054,7 @@ class mf_site_manager
 
 		if($site_icon > 0)
 		{
-			$site_icon_url = mf_get_post_content($site_icon, 'guid');
+			$site_icon_url = get_post_field('guid', $site_icon);
 
 			$array['favicon'] = $site_icon_url;
 		}
