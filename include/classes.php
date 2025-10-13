@@ -303,6 +303,11 @@ class mf_site_manager
 		return $arr_out;
 	}
 
+	function init()
+	{
+		load_plugin_textdomain('lang_site_manager', false, str_replace("/include", "", dirname(plugin_basename(__FILE__)))."/lang/");
+	}
+
 	function wp_before_admin_bar_render()
 	{
 		global $wp_admin_bar;
