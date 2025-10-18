@@ -329,91 +329,106 @@ class mf_site_manager
 
 		$wp_admin_bar->remove_menu('site-name');
 
+		$node_title = "";
+
 		if(is_admin())
 		{
+			$node_id = 'to_live';
+
 			$arr_site_status = $this->get_site_status_data(array('type' => 'admin_bar'));
 
 			$flag_image = $this->get_flag_image();
 
-			$title = "";
-
 			if($arr_site_status['url'] != '')
 			{
-				$title .= "<a href='".$arr_site_status['url']."' class='".$arr_site_status['color']."'>";
+				$node_title .= "<a href='".$arr_site_status['url']."' class='".$arr_site_status['color']."'>";
 			}
 
 			else
 			{
-				$title .= "<span class='".$arr_site_status['color']."'>";
+				$node_title .= "<span class='".$arr_site_status['color']."'>";
 			}
 
 				if($flag_image != '')
 				{
-					$title .= "<div class='flex_flow tight'>
+					$node_title .= "<div class='flex_flow tight'>
 						<img src='".$flag_image."'>
 						<span>";
 				}
 
-					$title .= $arr_site_status['text'];
+					$node_title .= $arr_site_status['text'];
 
 				if($flag_image != '')
 				{
-						$title .= "</span>
+						$node_title .= "</span>
 					</div>";
 				}
 
 			if($arr_site_status['url'] != '')
 			{
-				$title .= "</a>";
+				$node_title .= "</a>";
 			}
 
 			else
 			{
-				$title .= "</span>";
+				$node_title .= "</span>";
 			}
-
-			$wp_admin_bar->add_node(array(
-				'id' => 'live',
-				'title' => $title,
-			));
 		}
 
 		else
 		{
+			$node_id = 'to_admin';
+
 			$arr_site_status = $this->get_site_status_data(array('type' => 'admin_bar'));
 
 			$flag_image = $this->get_flag_image();
 
-			$title = "<a href='".admin_url("index.php")."' class='".$arr_site_status['color']."'>";
+			$node_title = "<a href='".admin_url("index.php")."' class='".$arr_site_status['color']."'>";
 
 				if($flag_image != '')
 				{
-					$title .= "<div class='flex_flow tight'>
+					$node_title .= "<div class='flex_flow tight'>
 						<img src='".$flag_image."'>
 						<span>";
 				}
 
-					$title .= __("Admin", 'lang_site_manager');
+					$node_title .= __("Admin", 'lang_site_manager');
 
 				if($flag_image != '')
 				{
-						$title .= "</span>
+						$node_title .= "</span>
 					</div>";
 				}
 
-			$title .= "</a>";
-
-			$wp_admin_bar->add_node(array(
-				'id' => 'live',
-				'title' => $title,
-			));
+			$node_title .= "</a>";
 		}
+
+		$wp_admin_bar->add_node(array(
+			'id' => $node_id,
+			'title' => $node_title,
+		));
 
 		if($arr_site_status['status'] == 'public')
 		{
 			$wp_admin_bar->add_node(array(
-				'id' => 'sitemap',
-				'title' => "<a href='".get_site_url()."/sitemap.xml'>".__("Sitemap", 'lang_site_manager')."</a>",
+				'parent' => $node_id,
+				'id' => $node_id.'_sitemap',
+				'title' => __("Sitemap", 'lang_site_manager'),
+				'href' => get_site_url()."/sitemap.xml",
+			));
+
+			$wp_admin_bar->add_node(array(
+				'parent' => $node_id,
+				'id' => $node_id.'_robots',
+				'title' => __("For Robots", 'lang_site_manager'),
+				'href' => get_site_url()."/robots.txt",
+			));
+
+			$wp_admin_bar->add_node(array(
+				'parent' => $node_id,
+				'id' => $node_id.'_llms',
+				'title' => __("For LLMs", 'lang_site_manager'),
+				'href' => get_site_url()."/llms.txt",
 			));
 		}
 	}
