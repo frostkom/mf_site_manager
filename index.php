@@ -3,7 +3,7 @@
 Plugin Name: MF Site Manager
 Plugin URI: https://github.com/frostkom/mf_site_manager
 Description:
-Version: 5.6.51
+Version: 5.6.52
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://martinfors.se
