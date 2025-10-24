@@ -9,7 +9,7 @@ echo "<div class='wrap'>
 	.get_notification()
 	."<div id='poststuff' class='postbox'>
 		<div class='inside'>
-			<form method='post' action='' class='mf_form'>"
+			<form".apply_filters('get_form_attr', "").">"
 				.show_textfield(array('name' => 'intBlogID_old', 'text' => __("Switch this site...", 'lang_site_manager'), 'value' => get_site_url_clean(), 'xtra' => "readonly"));
 
 				if(is_multisite())
