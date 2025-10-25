@@ -20,7 +20,7 @@ echo "<div class='wrap'>
 
 	if(count($obj_site_manager->arr_sites) > 0)
 	{
-		echo "<table class='widefat striped'>";
+		echo "<table".apply_filters('get_table_attr', "").">";
 
 			$arr_header[] = __("Name", 'lang_site_manager');
 			$arr_header[] = __("This Site", 'lang_site_manager');
@@ -263,7 +263,7 @@ echo "<div class='wrap'>
 	if(count($obj_site_manager->arr_sites_error) > 0)
 	{
 		echo "<br>
-		<table class='widefat striped'>";
+		<table".apply_filters('get_table_attr', "").">";
 
 			$arr_header = [];
 			$arr_header[] = __("Site", 'lang_site_manager');
