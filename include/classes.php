@@ -351,7 +351,7 @@ class mf_site_manager
 
 				if($flag_image != '')
 				{
-					$node_title .= "<div class='flex_flow tight'>
+					$node_title .= "<div".apply_filters('get_flex_flow', "", ['class' => ['tight']]).">
 						<img src='".$flag_image."'>
 						<span>";
 				}
@@ -387,7 +387,7 @@ class mf_site_manager
 
 				if($flag_image != '')
 				{
-					$node_title .= "<div class='flex_flow tight'>
+					$node_title .= "<div".apply_filters('get_flex_flow', "", ['class' => ['tight']]).">
 						<img src='".$flag_image."'>
 						<span>";
 				}
