@@ -439,6 +439,8 @@ class mf_site_manager
 
 		if(count($wp_admin_bar->user->blogs) > 1)
 		{
+			do_action('load_font_awesome');
+
 			$main_site_id = get_main_site_id();
 
 			$arr_names = [];
@@ -727,6 +729,8 @@ class mf_site_manager
 			if(get_option('setting_site_manager_site_comparison') != '')
 			{
 				global $menu, $submenu;
+
+				do_action('load_font_awesome');
 
 				foreach($menu as $key => $menu_item)
 				{
@@ -1793,6 +1797,8 @@ class mf_site_manager
 	{
 		unset($cols['registered']);
 		unset($cols['lastupdated']);
+
+		do_action('load_font_awesome');
 
 		$cols['ssl'] = __("SSL", 'lang_site_manager');
 		$cols['settings'] = __("Settings", 'lang_site_manager');

@@ -11,6 +11,8 @@ $obj_site_manager = new mf_site_manager();
 $obj_site_manager->fetch_request();
 $obj_site_manager->save_data();
 
+do_action('load_font_awesome');
+
 echo "<div class='wrap'>
 	<h2>".__("Compare Sites", 'lang_site_manager')."</h2>"
 	.get_notification();
