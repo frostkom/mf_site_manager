@@ -627,7 +627,7 @@ class mf_site_manager
 			<div".get_form_button_classes().">"
 				.show_button(array('type' => 'button', 'name' => 'btnGetServerIP', 'text' => __("Get Server IP", 'lang_site_manager'), 'class' => 'button-secondary'))
 			."</div>
-			<div class='api_site_manager_force_server_ip'></div>";
+			<p class='api_site_manager_force_server_ip'></p>";
 		}
 
 		function setting_site_manager_server_ip_target_callback()
