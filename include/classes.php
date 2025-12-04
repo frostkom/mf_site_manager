@@ -222,16 +222,6 @@ class mf_site_manager
 			return 'maintenance_mode';
 		}
 
-		else if(get_option('setting_no_public_pages') == 'yes')
-		{
-			return 'not_public';
-		}
-
-		else if(get_option('setting_theme_core_login') == 'yes')
-		{
-			return 'requires_login';
-		}
-
 		else if(get_option('blog_public') == 0)
 		{
 			return 'no_index';
@@ -1521,7 +1511,7 @@ class mf_site_manager
 							$table_source = $r[0];
 							$table_destination = str_replace($this->table_prefix, $table_prefix_destination, $table_source);
 
-							if(does_table_exist($table_destination))
+							if(apply_filters('does_table_exist', false, $table_destination))
 							{
 								$error_text = sprintf(__("The table %s already exists", 'lang_site_manager'), $table_destination);
 
@@ -1566,7 +1556,7 @@ class mf_site_manager
 								$table_name = $r[0];
 								$table_name_backup = str_replace($this->table_prefix_destination, $table_prefix_backup, $table_name);
 
-								if(does_table_exist($table_name_backup))
+								if(apply_filters('does_table_exist', false, $table_name_backup))
 								{
 									//$done_text = "Drop ".$table_name.", ";
 									$wpdb->query("DROP TABLE IF EXISTS ".$table_name);
@@ -1587,7 +1577,7 @@ class mf_site_manager
 								$table_source = $r[0];
 								$table_destination = str_replace($this->table_prefix, $this->table_prefix_destination, $table_source);
 
-								if(does_table_exist($table_destination))
+								if(apply_filters('does_table_exist', false, $table_destination))
 								{
 									$error_text = sprintf(__("The table %s already exists", 'lang_site_manager'), $table_destination);
 
