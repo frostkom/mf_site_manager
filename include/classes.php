@@ -137,9 +137,9 @@ class mf_site_manager
 		return $arr_data;
 	}
 
-	function get_language_code($language)
+	function get_language_code($blog_language, $blog_id)
 	{
-		switch($language)
+		switch($blog_language)
 		{
 			case 'da-DK':
 			case 'da_DK':
@@ -175,9 +175,9 @@ class mf_site_manager
 			break;
 
 			default:
-				if($id > 0)
+				if($blog_id > 0)
 				{
-					do_log("Someone chose '".$blog_language."' as the language for the site '".$id."'. Please add the flag for this language");
+					do_log("Someone chose '".$blog_language."' as the language for the site '".$blog_id."'. Please add the flag for this language");
 				}
 
 				else
@@ -190,13 +190,13 @@ class mf_site_manager
 		}
 	}
 
-	function get_flag_image($id = 0)
+	function get_flag_image($blog_id = 0)
 	{
 		global $wpdb;
 
-		if($id > 0)
+		if($blog_id > 0)
 		{
-			switch_to_blog($id);
+			switch_to_blog($blog_id);
 
 			$blog_language = $wpdb->get_var($wpdb->prepare("SELECT option_value FROM ".$wpdb->options." WHERE option_name = %s", 'WPLANG'));
 
@@ -208,7 +208,7 @@ class mf_site_manager
 			$blog_language = get_bloginfo('language');
 		}
 
-		$language_code = $this->get_language_code($blog_language);
+		$language_code = $this->get_language_code($blog_language, $blog_id);
 
 		$plugin_url = str_replace("/include", "", plugin_dir_url(__FILE__));
 
@@ -1801,30 +1801,30 @@ class mf_site_manager
 		return $cols;
 	}
 
-	function sites_column_cell($col, $id)
+	function sites_column_cell($column, $blog_id)
 	{
 		global $wpdb, $obj_base;
 
-		if(get_blog_status($id, 'deleted') == 0 && get_blog_status($id, 'archived') == 0)
+		if(get_blog_status($blog_id, 'deleted') == 0 && get_blog_status($blog_id, 'archived') == 0)
 		{
 			if(!isset($obj_base))
 			{
 				$obj_base = new mf_base();
 			}
 
-			switch_to_blog($id);
+			switch_to_blog($blog_id);
 
-			switch($col)
+			switch($column)
 			{
 				case 'ssl':
-					if(substr(get_home_url($id, '/'), 0, 5) == 'https')
+					if(substr(get_home_url($blog_id, '/'), 0, 5) == 'https')
 					{
 						echo "<i class='fa fa-lock fa-2x green'></i>";
 					}
 
 					else
 					{
-						echo "<a href='".get_admin_url($id, "admin.php?page=mf_site_manager/change/index.php")."'>
+						echo "<a href='".get_admin_url($blog_id, "admin.php?page=mf_site_manager/change/index.php")."'>
 							<span class='fa-stack fa-lg'>
 								<i class='fa fa-lock fa-stack-1x'></i>
 								<i class='fa fa-ban fa-stack-2x red'></i>
@@ -1844,9 +1844,9 @@ class mf_site_manager
 						{
 							$color = $icon = $title = "";
 
-							if(is_multisite() && is_main_site($id) || $arr_value['global'] == false)
+							if(is_multisite() && is_main_site($blog_id) || $arr_value['global'] == false)
 							{
-								$option = ($arr_value['global'] ? get_site_option($key) : get_blog_option($id, $key));
+								$option = ($arr_value['global'] ? get_site_option($key) : get_blog_option($blog_id, $key));
 
 								switch($arr_value['type'])
 								{
@@ -1895,7 +1895,7 @@ class mf_site_manager
 
 							if($color != '' || $title != '')
 							{
-								$out_temp .= "<a href='".get_admin_url($id, "options-general.php?page=settings_mf_base#".$type_key)."' data-setting='".$key."' data-color='".$color."'>"
+								$out_temp .= "<a href='".get_admin_url($blog_id, "options-general.php?page=settings_mf_base#".$type_key)."' data-setting='".$key."' data-color='".$color."'>"
 									." <i class='".$arr_value['icon']." ".$color."' title='".$title."'></i>"
 								."</a>";
 							}
@@ -1916,7 +1916,7 @@ class mf_site_manager
 
 					foreach($arr_pages as $key => $arr_value)
 					{
-						switch_to_blog($id);
+						switch_to_blog($blog_id);
 
 						switch($key)
 						{
@@ -1933,7 +1933,7 @@ class mf_site_manager
 
 						if($amount > 0)
 						{
-							echo "<a href='".get_admin_url($id, "edit.php?post_type=".$key)."'>"
+							echo "<a href='".get_admin_url($blog_id, "edit.php?post_type=".$key)."'>"
 								." <i class='".$arr_value['icon']." ".($amount > 0 ? "green" : "grey")."' title='".$arr_value['title']." (".$amount.")'></i>"
 							."</a>";
 						}
@@ -1943,7 +1943,7 @@ class mf_site_manager
 				break;
 
 				case 'site_status':
-					$flag_image = $this->get_flag_image($id);
+					$flag_image = $this->get_flag_image($blog_id);
 
 					if($flag_image != '')
 					{
@@ -1956,12 +1956,12 @@ class mf_site_manager
 
 					if($arr_site_status['status'] == 'public')
 					{
-						echo "<a href='".get_site_url($id)."/sitemap.xml'><i class='fas fa-sitemap fa-lg' title='".__("Sitemap", 'lang_site_manager')."'></i></a> ";
+						echo "<a href='".get_site_url($blog_id)."/sitemap.xml'><i class='fas fa-sitemap fa-lg' title='".__("Sitemap", 'lang_site_manager')."'></i></a> ";
 					}
 				break;
 
 				case 'theme':
-					echo get_blog_option($id, 'stylesheet');
+					echo get_blog_option($blog_id, 'stylesheet');
 				break;
 
 				case 'email':
