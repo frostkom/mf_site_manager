@@ -2433,7 +2433,10 @@ class mf_site_manager
 									$has_equal_version = false;
 								}
 
-								unset($array[$site][$key]);
+								if(isset($array[$site][$key]))
+								{
+									unset($array[$site][$key]);
+								}
 							}
 						}
 
@@ -3145,7 +3148,7 @@ class mf_site_manager
 
 		if($http_host != '')
 		{
-			if(preg_match("/staging|development|dev\./", $http_host))
+			if(preg_match("/staging|test|dev/", $http_host))
 			{
 				$plugin_images_url = str_replace("/include/", "/images/", plugin_dir_url(__FILE__));
 
