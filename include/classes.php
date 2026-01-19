@@ -2207,11 +2207,11 @@ class mf_site_manager
 
 				if($headers['http_code'] == 200)
 				{
-					$arr_content = json_decode($content, true);
+					$arr_json = json_decode($content, true);
 
-					$this->arr_core[$site] = (isset($arr_content['core']) ? $arr_content['core'] : '');
-					$this->arr_themes[$site] = (isset($arr_content['themes']) ? $arr_content['themes'] : '');
-					$this->arr_plugins[$site] = (isset($arr_content['plugins']) ? $arr_content['plugins'] : '');
+					$this->arr_core[$site] = (isset($arr_json['core']) ? $arr_json['core'] : '');
+					$this->arr_themes[$site] = (isset($arr_json['themes']) ? $arr_json['themes'] : '');
+					$this->arr_plugins[$site] = (isset($arr_json['plugins']) ? $arr_json['plugins'] : '');
 				}
 
 				else
@@ -3054,8 +3054,8 @@ class mf_site_manager
 		switch($headers['http_code'])
 		{
 			case 200:
-				$json_content = json_decode($content, true);
-				$this->server_ip_new = (isset($json_content['ip']) ? $json_content['ip'] : "");
+				$arr_json = json_decode($content, true);
+				$this->server_ip_new = (isset($arr_json['ip']) ? $arr_json['ip'] : "");
 
 				do_log($log_message, 'trash');
 			break;
