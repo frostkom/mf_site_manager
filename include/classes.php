@@ -3228,9 +3228,10 @@ class mf_site_manager
 			{
 				$this->get_server_ip();
 
+				// DO NOT DO THIS
 				// Remove empty tables and revisions from posts on inactive sites
 				###################################
-				if(is_multisite())
+				/*if(is_multisite())
 				{
 					$result_sites = get_sites(array('deleted' => 1, 'order' => 'ASC'));
 
@@ -3275,7 +3276,7 @@ class mf_site_manager
 							}
 						}
 					}
-				}
+				}*/
 				###################################
 			}
 		}
