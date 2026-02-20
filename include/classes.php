@@ -34,6 +34,9 @@ class mf_site_manager
 	var $file_dir_from;
 	var $file_dir_to;
 	var $editor_block_parts = array('wp_global_styles', 'wp_template', 'wp_template_part');
+	var $footer_output;
+	var $staging_reqexp = "/staging/";
+	var $development_regexp = "/development|dev\.|test\./";
 
 	function __construct(){}
 
@@ -296,6 +299,96 @@ class mf_site_manager
 	function init()
 	{
 		load_plugin_textdomain('lang_site_manager', false, str_replace("/include", "", dirname(plugin_basename(__FILE__)))."/lang/");
+
+		$http_host = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '' ? $_SERVER['HTTP_HOST'] : get_site_url());
+
+		if($http_host != '')
+		{
+			if(preg_match($this->staging_reqexp, $http_host) || preg_match($this->development_regexp, $http_host))
+			{
+				$this->is_dev_site();
+			}
+		}
+	}
+
+	function cron_base()
+	{
+		global $wpdb;
+
+		$obj_cron = new mf_cron();
+		$obj_cron->start(__CLASS__);
+
+		if($obj_cron->is_running == false)
+		{
+			replace_option(array('old' => 'setting_server_ip', 'new' => 'setting_site_manager_server_ip'));
+			replace_option(array('old' => 'setting_server_ip_target', 'new' => 'setting_site_manager_server_ip_target'));
+			replace_option(array('old' => 'setting_server_ips_allowed', 'new' => 'setting_site_manager_server_ips_allowed'));
+			replace_option(array('old' => 'setting_site_comparison', 'new' => 'setting_site_manager_site_comparison'));
+			replace_option(array('old' => 'setting_site_clone_path', 'new' => 'setting_site_manager_site_clone_path'));
+			replace_option(array('old' => 'setting_base_template_site', 'new' => 'setting_site_manager_template_site'));
+
+			mf_uninstall_plugin(array(
+				'options' => array('setting_site_manager_template_site'),
+			));
+
+			if(is_main_site())
+			{
+				$this->get_server_ip();
+
+				// DO NOT DO THIS
+				// Remove empty tables and revisions from posts on inactive sites
+				###################################
+				/*if(is_multisite())
+				{
+					$result_sites = get_sites(array('deleted' => 1, 'order' => 'ASC'));
+
+					foreach($result_sites as $r)
+					{
+						switch_to_blog($r->blog_id);
+
+						$table_prefix = $wpdb->prefix;
+
+						restore_current_blog();
+
+						$result_tables = $wpdb->get_results("SHOW TABLES LIKE '".$table_prefix."%'", ARRAY_N);
+
+						foreach($result_tables as $r)
+						{
+							$table_name = $r[0];
+
+							$wpdb->get_results("SELECT * FROM ".$table_name." LIMIT 0, 1");
+
+							if($wpdb->num_rows == 0)
+							{
+								// This will create log errors when WP can't find comments table. So maybe if we only drop non-core tables???
+								//$wpdb->query("DROP TABLE IF EXISTS ".$table_name);
+							}
+
+							else
+							{
+								switch($table_name)
+								{
+									case $table_prefix.'posts':
+										$result_posts = $wpdb->get_results("SELECT ID FROM ".$table_prefix."posts WHERE post_status IN ('".implode("','", array('auto-draft', 'draft', 'ignore', 'inherit', 'trash'))."')");
+
+										foreach($result_posts as $r)
+										{
+											$post_id = $r->ID;
+
+											$wpdb->query($wpdb->prepare("DELETE FROM ".$table_prefix."postmeta WHERE post_id = '%d'", $post_id));
+											$wpdb->query($wpdb->prepare("DELETE FROM ".$table_prefix."posts WHERE ID = '%d'", $post_id));
+										}
+									break;
+								}
+							}
+						}
+					}
+				}*/
+				###################################
+			}
+		}
+
+		$obj_cron->end();
 	}
 
 	function wp_before_admin_bar_render()
@@ -2039,20 +2132,6 @@ class mf_site_manager
 
 		return $arr_actions;
 	}
-
-	function admin_footer()
-	{
-		$screen = get_current_screen();
-
-		if(in_array($screen->base, array('site-info-network', 'site-settings-network')))
-		{
-			$blog_id = check_var('id', 'int');
-
-			$plugin_include_url = plugin_dir_url(__FILE__);
-
-			mf_enqueue_script('script_site_manager_url', $plugin_include_url."script_wp_url.js", array('change_url_link' => get_admin_url($blog_id, "admin.php?page=mf_site_manager/change/index.php"), 'change_url_text' => __("Change URL", 'lang_site_manager')));
-		}
-	}
 	###########################
 
 	function count_uploads_callback($data)
@@ -3117,55 +3196,23 @@ class mf_site_manager
 		}
 	}
 
-	function option_blogname($value, $option)
+	function admin_footer()
 	{
-		if(!preg_match("/\[/", $value))
+		if(is_multisite())
 		{
-			$http_host = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '' ? $_SERVER['HTTP_HOST'] : get_site_url());
+			$screen = get_current_screen();
 
-			if($http_host != '')
+			if(in_array($screen->base, array('site-info-network', 'site-settings-network')))
 			{
-				$value = trim(str_replace(array("[STAGING]", "[DEV]"), "", $value));
+				$blog_id = check_var('id', 'int');
 
-				if(preg_match("/staging/", $http_host))
-				{
-					$value = "[STAGING] ".$value;
-				}
+				$plugin_include_url = plugin_dir_url(__FILE__);
 
-				if(preg_match("/development|dev\./", $http_host))
-				{
-					$value = "[DEV] ".$value;
-				}
+				mf_enqueue_script('script_site_manager_url', $plugin_include_url."script_wp_url.js", array('change_url_link' => get_admin_url($blog_id, "admin.php?page=mf_site_manager/change/index.php"), 'change_url_text' => __("Change URL", 'lang_site_manager')));
 			}
 		}
 
-		return $value;
-	}
-
-	function get_site_icon_url($url, $size, $blog_id)
-	{
-		$http_host = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '' ? $_SERVER['HTTP_HOST'] : get_site_url());
-
-		if($http_host != '')
-		{
-			if(preg_match("/staging|test|dev/", $http_host))
-			{
-				$plugin_images_url = str_replace("/include/", "/images/", plugin_dir_url(__FILE__));
-
-				switch($size)
-				{
-					case 32:
-						return $plugin_images_url."staging-favicon-150x150.png";
-					break;
-
-					default:
-						return $plugin_images_url."staging-favicon-300x300.png";
-					break;
-				}
-			}
-		}
-
-		return $url;
+		$this->wp_footer();
 	}
 
 	function api_site_manager_force_server_ip()
@@ -3204,83 +3251,70 @@ class mf_site_manager
 		die();
 	}
 
-	function cron_base()
+	function wp_footer()
 	{
-		global $wpdb;
-
-		$obj_cron = new mf_cron();
-		$obj_cron->start(__CLASS__);
-
-		if($obj_cron->is_running == false)
+		if($this->footer_output != '')
 		{
-			replace_option(array('old' => 'setting_server_ip', 'new' => 'setting_site_manager_server_ip'));
-			replace_option(array('old' => 'setting_server_ip_target', 'new' => 'setting_site_manager_server_ip_target'));
-			replace_option(array('old' => 'setting_server_ips_allowed', 'new' => 'setting_site_manager_server_ips_allowed'));
-			replace_option(array('old' => 'setting_site_comparison', 'new' => 'setting_site_manager_site_comparison'));
-			replace_option(array('old' => 'setting_site_clone_path', 'new' => 'setting_site_manager_site_clone_path'));
-			replace_option(array('old' => 'setting_base_template_site', 'new' => 'setting_site_manager_template_site'));
+			echo $this->footer_output;
+		}
+	}
 
-			mf_uninstall_plugin(array(
-				'options' => array('setting_site_manager_template_site'),
-			));
+	function is_dev_site()
+	{
+		$plugin_include_url = plugin_dir_url(__FILE__);
+		mf_enqueue_style('style_site_manager_dev', $plugin_include_url."style_dev.css");
 
-			if(is_main_site())
+		$this->footer_output = "<div id='dev_site'>".__("Development Site", 'lang_site_manager')."</div>";
+	}
+
+	function option_blogname($value, $option)
+	{
+		if(!preg_match("/\[/", $value))
+		{
+			$http_host = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '' ? $_SERVER['HTTP_HOST'] : get_site_url());
+
+			if($http_host != '')
 			{
-				$this->get_server_ip();
+				$value = trim(str_replace(array("[STAGING]", "[DEV]"), "", $value));
 
-				// DO NOT DO THIS
-				// Remove empty tables and revisions from posts on inactive sites
-				###################################
-				/*if(is_multisite())
+				if(preg_match($this->staging_reqexp, $http_host))
 				{
-					$result_sites = get_sites(array('deleted' => 1, 'order' => 'ASC'));
+					$value = "[STAGING] ".$value;
+				}
 
-					foreach($result_sites as $r)
-					{
-						switch_to_blog($r->blog_id);
-
-						$table_prefix = $wpdb->prefix;
-
-						restore_current_blog();
-
-						$result_tables = $wpdb->get_results("SHOW TABLES LIKE '".$table_prefix."%'", ARRAY_N);
-
-						foreach($result_tables as $r)
-						{
-							$table_name = $r[0];
-
-							$wpdb->get_results("SELECT * FROM ".$table_name." LIMIT 0, 1");
-
-							if($wpdb->num_rows == 0)
-							{
-								// This will create log errors when WP can't find comments table. So maybe if we only drop non-core tables???
-								//$wpdb->query("DROP TABLE IF EXISTS ".$table_name);
-							}
-
-							else
-							{
-								switch($table_name)
-								{
-									case $table_prefix.'posts':
-										$result_posts = $wpdb->get_results("SELECT ID FROM ".$table_prefix."posts WHERE post_status IN ('".implode("','", array('auto-draft', 'draft', 'ignore', 'inherit', 'trash'))."')");
-
-										foreach($result_posts as $r)
-										{
-											$post_id = $r->ID;
-
-											$wpdb->query($wpdb->prepare("DELETE FROM ".$table_prefix."postmeta WHERE post_id = '%d'", $post_id));
-											$wpdb->query($wpdb->prepare("DELETE FROM ".$table_prefix."posts WHERE ID = '%d'", $post_id));
-										}
-									break;
-								}
-							}
-						}
-					}
-				}*/
-				###################################
+				if(preg_match($this->development_regexp, $http_host))
+				{
+					$value = "[DEV] ".$value;
+				}
 			}
 		}
 
-		$obj_cron->end();
+		return $value;
+	}
+
+	function get_site_icon_url($url, $size, $blog_id)
+	{
+		$http_host = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '' ? $_SERVER['HTTP_HOST'] : get_site_url());
+
+		if($http_host != '')
+		{
+			if(preg_match($this->staging_reqexp, $http_host) || preg_match($this->development_regexp, $http_host))
+			{
+				$plugin_images_url = str_replace("/include/", "/images/", plugin_dir_url(__FILE__));
+
+				switch($size)
+				{
+					case 32:
+						$url = $plugin_images_url."staging-favicon-150x150.png";
+					break;
+
+					default:
+						$url = $plugin_images_url."staging-favicon-300x300.png";
+					break;
+				}
+			}
+		}
+
+		return $url;
 	}
 }
