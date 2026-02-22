@@ -35,8 +35,7 @@ class mf_site_manager
 	var $file_dir_to;
 	var $editor_block_parts = array('wp_global_styles', 'wp_template', 'wp_template_part');
 	var $footer_output;
-	var $staging_reqexp = "/staging/";
-	var $development_regexp = "/development|dev\.|test\./";
+	var $development_regexp = "/development\.|dev\.|staging\.|test\./";
 
 	function __construct(){}
 
@@ -302,12 +301,9 @@ class mf_site_manager
 
 		$http_host = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '' ? $_SERVER['HTTP_HOST'] : get_site_url());
 
-		if($http_host != '')
+		if($http_host != '' && preg_match($this->development_regexp, $http_host))
 		{
-			if(preg_match($this->staging_reqexp, $http_host) || preg_match($this->development_regexp, $http_host))
-			{
-				$this->is_dev_site();
-			}
+			$this->is_dev_site();
 		}
 	}
 
@@ -3275,12 +3271,7 @@ class mf_site_manager
 
 			if($http_host != '')
 			{
-				$value = trim(str_replace(array("[STAGING]", "[DEV]"), "", $value));
-
-				if(preg_match($this->staging_reqexp, $http_host))
-				{
-					$value = "[STAGING] ".$value;
-				}
+				$value = trim(str_replace(array("[DEV]"), "", $value));
 
 				if(preg_match($this->development_regexp, $http_host))
 				{
@@ -3296,22 +3287,19 @@ class mf_site_manager
 	{
 		$http_host = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '' ? $_SERVER['HTTP_HOST'] : get_site_url());
 
-		if($http_host != '')
+		if($http_host != '' && preg_match($this->development_regexp, $http_host))
 		{
-			if(preg_match($this->staging_reqexp, $http_host) || preg_match($this->development_regexp, $http_host))
+			$plugin_images_url = str_replace("/include/", "/images/", plugin_dir_url(__FILE__));
+
+			switch($size)
 			{
-				$plugin_images_url = str_replace("/include/", "/images/", plugin_dir_url(__FILE__));
+				case 32:
+					$url = $plugin_images_url."staging-favicon-150x150.png";
+				break;
 
-				switch($size)
-				{
-					case 32:
-						$url = $plugin_images_url."staging-favicon-150x150.png";
-					break;
-
-					default:
-						$url = $plugin_images_url."staging-favicon-300x300.png";
-					break;
-				}
+				default:
+					$url = $plugin_images_url."staging-favicon-300x300.png";
+				break;
 			}
 		}
 
