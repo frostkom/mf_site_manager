@@ -3,7 +3,7 @@
 Plugin Name: MF Site Manager
 Plugin URI: https://github.com/frostkom/mf_site_manager
 Description: Add MultiSite functionality to compare sites, clone data etc.
-Version: 5.6.65
+Version: 5.6.66
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://martinfors.se

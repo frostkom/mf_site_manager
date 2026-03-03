@@ -2700,7 +2700,7 @@ class mf_site_manager
 																		$post_data = array(
 																			'ID' => $post_id,
 																			'post_content' => wp_slash($arr_value_remote['post_content']),
-																			'post_modified' => date("Y-m-d H:i:s"),
+																			'post_modified' => current_time('mysql'),
 																		);
 
 																		wp_update_post($post_data);
