@@ -3267,16 +3267,14 @@ class mf_site_manager
 	{
 		if(!preg_match("/\[/", $value))
 		{
-			$http_host = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '' ? $_SERVER['HTTP_HOST'] : get_site_url());
+			$value = trim(str_replace(array("[DEV]"), "", $value));
 
-			if($http_host != '')
+			//$site_url = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '' ? $_SERVER['HTTP_HOST'] : get_site_url());
+			$site_url = get_site_url($GLOBALS['blog_id']);
+
+			if($site_url != '' && preg_match($this->development_regexp, $site_url))
 			{
-				$value = trim(str_replace(array("[DEV]"), "", $value));
-
-				if(preg_match($this->development_regexp, $http_host))
-				{
-					$value = "[DEV] ".$value;
-				}
+				$value = "[DEV] ".$value;
 			}
 		}
 
@@ -3285,9 +3283,10 @@ class mf_site_manager
 
 	function get_site_icon_url($url, $size, $blog_id)
 	{
-		$http_host = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '' ? $_SERVER['HTTP_HOST'] : get_site_url());
+		//$site_url = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '' ? $_SERVER['HTTP_HOST'] : get_site_url());
+		$site_url = get_site_url($GLOBALS['blog_id']);
 
-		if($http_host != '' && preg_match($this->development_regexp, $http_host))
+		if($site_url != '' && preg_match($this->development_regexp, $site_url))
 		{
 			$plugin_images_url = str_replace("/include/", "/images/", plugin_dir_url(__FILE__));
 
