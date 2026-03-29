@@ -1,0 +1,5 @@
+#wpadminbar .has_flag span
+{
+	float: right;
+	padding-left: .5em;
+}

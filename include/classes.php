@@ -410,6 +410,9 @@ class mf_site_manager
 
 		$node_title = "";
 
+		$plugin_include_url = plugin_dir_url(__FILE__);
+		mf_enqueue_style('style_site_manager_admin_bar', $plugin_include_url."style_admin_bar.css");
+
 		if(is_admin())
 		{
 			$node_id = 'to_live';
@@ -430,7 +433,7 @@ class mf_site_manager
 
 				if($flag_image != '')
 				{
-					$node_title .= "<div".apply_filters('get_flex_flow', "", ['class' => ['tight']]).">
+					$node_title .= "<div class='has_flag'>
 						<img src='".$flag_image."'>
 						<span>";
 				}
@@ -466,7 +469,7 @@ class mf_site_manager
 
 				if($flag_image != '')
 				{
-					$node_title .= "<div".apply_filters('get_flex_flow', "", ['class' => ['tight']]).">
+					$node_title .= "<div class='has_flag'>
 						<img src='".$flag_image."'>
 						<span>";
 				}
