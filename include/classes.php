@@ -812,18 +812,21 @@ class mf_site_manager
 			{
 				global $menu, $submenu;
 
-				do_action('load_font_awesome');
-
-				foreach($menu as $key => $menu_item)
+				if(is_array($menu))
 				{
-					if(isset($menu_item[2]) && $menu_item[2] == 'themes.php' && isset($submenu[$menu_item[2]]))
+					foreach($menu as $key => $menu_item)
 					{
-						foreach($submenu[$menu_item[2]] as $submenu_key => $submenu_item)
+						if(isset($menu_item[2]) && $menu_item[2] == 'themes.php' && isset($submenu[$menu_item[2]]))
 						{
-							if(isset($submenu[$menu_item[2]][$submenu_key][2]) && $submenu[$menu_item[2]][$submenu_key][2] == 'site-editor.php')
+							foreach($submenu[$menu_item[2]] as $submenu_key => $submenu_item)
 							{
-								$submenu[$menu_item[2]][$submenu_key][0] .= " <i class='fa fa-exclamation-triangle yellow' title='".__("This site is using a template site and any changes in the editor might be overriden", 'lang_site_manager')."'></i>";
-								break;
+								if(isset($submenu[$menu_item[2]][$submenu_key][2]) && $submenu[$menu_item[2]][$submenu_key][2] == 'site-editor.php')
+								{
+									do_action('load_font_awesome');
+
+									$submenu[$menu_item[2]][$submenu_key][0] .= " <i class='fa fa-exclamation-triangle yellow' title='".__("This site is using a template site and any changes in the editor might be overriden", 'lang_site_manager')."'></i>";
+									break;
+								}
 							}
 						}
 					}
@@ -2734,14 +2737,26 @@ class mf_site_manager
 															{
 																$post_content_exists = (isset($arr_value_this['post_content']) && $arr_value_this['post_content'] != '');
 
-																if($arr_value_remote['post_type'] == 'wp_template' || $post_content_exists == true)
+																if($post_content_exists == true)
 																{
 																	$out_li_temp .= "<form method='post' action=''>
+																		<div".get_form_button_classes().">"
+																			.show_button(array('name' => 'btnBlockPart_'.$key_all.'_Update', 'text' => __("Update", 'lang_site_manager'), 'xtra' => " rel='confirm'"))
+																			.wp_nonce_field('block_part_'.$key_all.'_update_'.get_current_user_id(), '_wpnonce_block_part_'.$key_all.'_update', true, false)
+																		."</div>
+																	</form>";
+																}
+
+																else if($arr_value_remote['post_type'] == 'wp_template')
+																{
+																	/*$out_li_temp .= "<form method='post' action=''>
 																		<div".get_form_button_classes().">"
 																			.show_button(array('name' => 'btnBlockPart_'.$key_all.'_Update', 'text' => ($post_content_exists == true ? __("Update", 'lang_site_manager') : __("Create", 'lang_site_manager')), 'xtra' => " rel='confirm'"))
 																			.wp_nonce_field('block_part_'.$key_all.'_update_'.get_current_user_id(), '_wpnonce_block_part_'.$key_all.'_update', true, false)
 																		."</div>
-																	</form>";
+																	</form>";*/
+																	
+																	$out_li_temp .= "<p class='italic'>".sprintf(__("You have to add the template in the %seditor%s first. Then you can update from the source site.", 'lang_site_manager'), "<a href='".admin_url("site-editor.php?p=/template")."'>", "</a>")."</p>";
 																}
 
 																else
