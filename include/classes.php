@@ -2755,7 +2755,7 @@ class mf_site_manager
 																			.wp_nonce_field('block_part_'.$key_all.'_update_'.get_current_user_id(), '_wpnonce_block_part_'.$key_all.'_update', true, false)
 																		."</div>
 																	</form>";*/
-																	
+
 																	$out_li_temp .= "<p class='italic'>".sprintf(__("You have to add the template in the %seditor%s first. Then you can update from the source site.", 'lang_site_manager'), "<a href='".admin_url("site-editor.php?p=/template")."'>", "</a>")."</p>";
 																}
 
@@ -2862,7 +2862,10 @@ class mf_site_manager
 									$has_equal_version = false;
 								}
 
-								unset($array[$site][$key]);
+								if(isset($array[$site][$key]))
+								{
+									unset($array[$site][$key]);
+								}
 							}
 						}
 
