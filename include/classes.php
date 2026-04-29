@@ -2281,25 +2281,34 @@ class mf_site_manager
 			for($i = 0; $i < $count_temp; $i++)
 			{
 				$this->arr_sites[$i] = $site = $this->arr_sites[$i];
-
 				$site_ajax = $site.$this->compare_uri;
 
 				list($content, $headers) = get_url_content(array('url' => $site_ajax, 'catch_head' => true));
 
-				if($headers['http_code'] == 200)
+				//do_log(__FUNCTION__.": ".var_export($headers, true)." -> ".$content);
+
+				switch($headers['http_code'])
 				{
-					$arr_json = json_decode($content, true);
+					case 200:
+						$arr_json = json_decode($content, true);
 
-					$this->arr_core[$site] = (isset($arr_json['core']) ? $arr_json['core'] : '');
-					$this->arr_themes[$site] = (isset($arr_json['themes']) ? $arr_json['themes'] : '');
-					$this->arr_plugins[$site] = (isset($arr_json['plugins']) ? $arr_json['plugins'] : '');
-				}
+						$this->arr_core[$site] = (isset($arr_json['core']) ? $arr_json['core'] : '');
+						$this->arr_themes[$site] = (isset($arr_json['themes']) ? $arr_json['themes'] : '');
+						$this->arr_plugins[$site] = (isset($arr_json['plugins']) ? $arr_json['plugins'] : '');
+						
+						if(!isset($arr_json['core']) || isset($arr_json['error']))
+						{
+							do_log(__FUNCTION__.": ".var_export($headers, true)." -> ".$content);
+						}
+					break;
 
-				else
-				{
-					$this->arr_sites_error[$site] = array('headers' => $headers, 'content' => $content);
+					default:
+						do_log(__FUNCTION__.": ".var_export($headers, true)." -> ".$content);
 
-					unset($this->arr_sites[$i]);
+						$this->arr_sites_error[$site] = array('url' => $site_ajax, 'headers' => $headers, 'content' => $content);
+
+						unset($this->arr_sites[$i]);
+					break;
 				}
 			}
 		}

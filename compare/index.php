@@ -66,7 +66,7 @@ echo "<div class='wrap'>
 
 							else
 							{
-								$out .= __("Does not support this", 'lang_site_manager')." (".var_export($obj_site_manager->arr_core, true).")";
+								$out .= __("Does not support this", 'lang_site_manager')." (".$setting_site_manager_site_comparison." -> ".$site." -> ".var_export($obj_site_manager->arr_sites, true)." -> ".var_export($obj_site_manager->arr_sites_error, true).")";
 
 								$has_equal_version = false;
 							}
