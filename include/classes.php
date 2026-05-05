@@ -3290,7 +3290,7 @@ class mf_site_manager
 		$plugin_include_url = plugin_dir_url(__FILE__);
 		mf_enqueue_style('style_site_manager_dev', $plugin_include_url."style_dev.css");
 
-		$this->footer_output .= "<div id='dev_site'>".__("Development Site", 'lang_site_manager')."</div>";
+		$this->footer_output .= "<a href='".admin_url()."' class='dev_site'>".__("Development Site", 'lang_site_manager')."</a>";
 	}
 
 	function option_blogname($value, $option)

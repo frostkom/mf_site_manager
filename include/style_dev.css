@@ -1,9 +1,10 @@
-#dev_site
+.dev_site
 {
 	background: #e47676;
 	border: .1em solid #000;
 	border-top-width: 0;
 	border-radius: 0 0 .5em .5em;
+	display: block;
 	top: 0;
 	color: #fff;
 	opacity: .7;
@@ -15,12 +16,12 @@
 	z-index: 100000;
 }
 
-body:hover #dev_site
-{
-	transform: translateY(-80%);
-}
+	body:hover .dev_site
+	{
+		transform: translateY(-80%);
+	}
 
-body:hover #dev_site:hover
-{
-	transform: translateY(0);
-}
+		body:hover .dev_site:hover
+		{
+			transform: translateY(0);
+		}
