@@ -316,13 +316,6 @@ class mf_site_manager
 
 		if($obj_cron->is_running == false)
 		{
-			replace_option(array('old' => 'setting_server_ip', 'new' => 'setting_site_manager_server_ip'));
-			replace_option(array('old' => 'setting_server_ip_target', 'new' => 'setting_site_manager_server_ip_target'));
-			replace_option(array('old' => 'setting_server_ips_allowed', 'new' => 'setting_site_manager_server_ips_allowed'));
-			replace_option(array('old' => 'setting_site_comparison', 'new' => 'setting_site_manager_site_comparison'));
-			replace_option(array('old' => 'setting_site_clone_path', 'new' => 'setting_site_manager_site_clone_path'));
-			replace_option(array('old' => 'setting_base_template_site', 'new' => 'setting_site_manager_template_site'));
-
 			mf_uninstall_plugin(array(
 				'options' => array('setting_site_manager_template_site'),
 			));
@@ -330,57 +323,6 @@ class mf_site_manager
 			if(is_main_site())
 			{
 				$this->get_server_ip();
-
-				// DO NOT DO THIS
-				// Remove empty tables and revisions from posts on inactive sites
-				###################################
-				/*if(is_multisite())
-				{
-					$result_sites = get_sites(array('deleted' => 1, 'order' => 'ASC'));
-
-					foreach($result_sites as $r)
-					{
-						switch_to_blog($r->blog_id);
-
-						$table_prefix = $wpdb->prefix;
-
-						restore_current_blog();
-
-						$result_tables = $wpdb->get_results("SHOW TABLES LIKE '".$table_prefix."%'", ARRAY_N);
-
-						foreach($result_tables as $r)
-						{
-							$table_name = $r[0];
-
-							$wpdb->get_results("SELECT * FROM ".$table_name." LIMIT 0, 1");
-
-							if($wpdb->num_rows == 0)
-							{
-								// This will create log errors when WP can't find comments table. So maybe if we only drop non-core tables???
-								//$wpdb->query("DROP TABLE IF EXISTS ".$table_name);
-							}
-
-							else
-							{
-								switch($table_name)
-								{
-									case $table_prefix.'posts':
-										$result_posts = $wpdb->get_results("SELECT ID FROM ".$table_prefix."posts WHERE post_status IN ('".implode("','", array('auto-draft', 'draft', 'ignore', 'inherit', 'trash'))."')");
-
-										foreach($result_posts as $r)
-										{
-											$post_id = $r->ID;
-
-											$wpdb->query($wpdb->prepare("DELETE FROM ".$table_prefix."postmeta WHERE post_id = '%d'", $post_id));
-											$wpdb->query($wpdb->prepare("DELETE FROM ".$table_prefix."posts WHERE ID = '%d'", $post_id));
-										}
-									break;
-								}
-							}
-						}
-					}
-				}*/
-				###################################
 			}
 		}
 
@@ -2295,7 +2237,7 @@ class mf_site_manager
 						$this->arr_core[$site] = (isset($arr_json['core']) ? $arr_json['core'] : '');
 						$this->arr_themes[$site] = (isset($arr_json['themes']) ? $arr_json['themes'] : '');
 						$this->arr_plugins[$site] = (isset($arr_json['plugins']) ? $arr_json['plugins'] : '');
-						
+
 						if(!isset($arr_json['core']) || isset($arr_json['error']))
 						{
 							do_log(__FUNCTION__.": ".var_export($headers, true)." -> ".$content);
