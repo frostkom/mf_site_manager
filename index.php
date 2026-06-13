@@ -3,7 +3,7 @@
 Plugin Name: MF Site Manager
 Plugin URI: https://github.com/frostkom/mf_site_manager
 Description: Add MultiSite functionality to compare sites, clone data etc.
-Version: 5.7.9
+Version: 5.7.10
 Licence: GPLv2 or later
 Author: Martin Fors
 Author URI: https://martinfors.se
@@ -68,7 +68,7 @@ if(!function_exists('is_plugin_active') || function_exists('is_plugin_active') &
 	function uninstall_site_manager()
 	{
 		mf_uninstall_plugin(array(
-			'options' => array('setting_site_manager_multisite', 'setting_site_manager_server_ip', 'setting_site_manager_server_ip_target', 'setting_site_manager_server_ips_allowed', 'setting_site_manager_site_comparison', 'setting_site_manager_site_clone_path'),
+			'options' => array('setting_site_manager_multisite', 'setting_site_manager_server_ip', 'setting_site_manager_server_ip_target', 'setting_site_manager_server_ips_allowed', 'setting_site_manager_site_comparison_multisite', 'setting_site_manager_site_comparison', 'setting_site_manager_site_clone_path'),
 		));
 	}
 }

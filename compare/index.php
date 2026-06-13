@@ -1,8 +1,9 @@
 <?php
 
+$setting_site_manager_site_comparison_multisite = get_option('setting_site_manager_site_comparison_multisite');
 $setting_site_manager_site_comparison = get_option('setting_site_manager_site_comparison');
 
-if($setting_site_manager_site_comparison == '')
+if(!($setting_site_manager_site_comparison_multisite > 0) && $setting_site_manager_site_comparison == '')
 {
 	mf_redirect(admin_url("options-general.php?page=settings_mf_base#settings_site_manager"));
 }
@@ -18,7 +19,7 @@ echo "<div class='wrap'>
 	.get_notification();
 
 	$obj_site_manager->get_content_versions();
-	$obj_site_manager->get_sites($setting_site_manager_site_comparison);
+	$obj_site_manager->get_sites($setting_site_manager_site_comparison_multisite, $setting_site_manager_site_comparison);
 
 	if(count($obj_site_manager->arr_sites) > 0)
 	{
@@ -66,7 +67,7 @@ echo "<div class='wrap'>
 
 							else
 							{
-								$out .= __("Does not support this", 'lang_site_manager')." (".$setting_site_manager_site_comparison." -> ".$site." -> ".var_export($obj_site_manager->arr_sites, true)." -> ".var_export($obj_site_manager->arr_sites_error, true).")";
+								$out .= __("Does not support this", 'lang_site_manager')." (".setting_site_manager_site_comparison_multisite." / ".$setting_site_manager_site_comparison." -> ".$site." -> ".var_export($obj_site_manager->arr_sites, true)." -> ".var_export($obj_site_manager->arr_sites_error, true).")";
 
 								$has_equal_version = false;
 							}

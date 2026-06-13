@@ -579,14 +579,21 @@ class mf_site_manager
 			$arr_settings['setting_site_manager_server_ip'] = __("Server IP", 'lang_site_manager');
 			$arr_settings['setting_site_manager_server_ip_target'] = __("Target Server IP", 'lang_site_manager');
 			$arr_settings['setting_site_manager_server_ips_allowed'] = __("Server IPs allowed", 'lang_site_manager');
-			$arr_settings['setting_site_manager_site_comparison'] = __("Sites to compare with", 'lang_site_manager');
 
-			if(get_option('setting_site_manager_site_comparison') != '')
+			if(is_multisite())
 			{
-				$arr_settings['setting_site_manager_site_clone_path'] = __("Path to Clone to", 'lang_site_manager');
+				$arr_settings['setting_site_manager_site_comparison_multisite'] = __("Site to compare with", 'lang_site_manager');
 			}
 
-			//$arr_settings['setting_site_manager_template_site'] = __("Template Site", 'lang_site_manager');
+			if(get_option('setting_site_manager_site_comparison_multisite') == '')
+			{
+				$arr_settings['setting_site_manager_site_comparison'] = __("Sites to compare with", 'lang_site_manager');
+
+				if(get_option('setting_site_manager_site_comparison') != '')
+				{
+					$arr_settings['setting_site_manager_site_clone_path'] = __("Path to Clone to", 'lang_site_manager');
+				}
+			}
 
 			show_settings_fields(array('area' => $options_area, 'object' => $this, 'settings' => $arr_settings));
 		}
@@ -670,6 +677,16 @@ class mf_site_manager
 			echo show_textfield(array('name' => $setting_key, 'value' => $option));
 		}
 
+		function setting_site_manager_site_comparison_multisite_callback()
+		{
+			global $wpdb;
+
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
+
+			echo show_select(array('data' => $this->get_sites_for_select(array('exclude' => $wpdb->blogid)), 'name' => $setting_key, 'value' => $option));
+		}
+
 		function setting_site_manager_site_comparison_callback()
 		{
 			$setting_key = get_setting_key(__FUNCTION__);
@@ -688,29 +705,6 @@ class mf_site_manager
 			echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => "/live, /test", 'description' => __("The absolute path to receiving WP root", 'lang_site_manager')));
 		}
 
-		function setting_site_manager_template_site_callback()
-		{
-			$setting_key = get_setting_key(__FUNCTION__);
-			$option = get_option($setting_key);
-
-			$placeholder = get_site_url();
-
-			if($option != '')
-			{
-				if($option == $placeholder)
-				{
-					$option = "";
-				}
-
-				else
-				{
-					$option = trim($option, "/");
-				}
-			}
-
-			echo show_textfield(array('type' => 'url', 'name' => $setting_key, 'value' => $option, 'placeholder' => $placeholder));
-		}
-
 	function admin_menu()
 	{
 		$menu_root = 'mf_site_manager/';
@@ -720,7 +714,7 @@ class mf_site_manager
 		$menu_title = __("Site Manager", 'lang_site_manager');
 		add_menu_page($menu_title, $menu_title, $menu_capability, $menu_start, '', 'dashicons-images-alt2', 100);
 
-		if(get_option('setting_site_manager_site_comparison') != '')
+		if(get_option('setting_site_manager_site_comparison_multisite') > 0 || get_option('setting_site_manager_site_comparison') != '')
 		{
 			$menu_title = __("Compare Sites", 'lang_site_manager');
 			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."compare/index.php");
@@ -750,7 +744,7 @@ class mf_site_manager
 
 		if(IS_EDITOR)
 		{
-			if(get_option('setting_site_manager_site_comparison') != '')
+			if(get_option('setting_site_manager_site_comparison_multisite') > 0 || get_option('setting_site_manager_site_comparison') != '')
 			{
 				global $menu, $submenu;
 
@@ -2212,20 +2206,46 @@ class mf_site_manager
 		#############################
 	}
 
-	function get_sites($setting_site_manager_site_comparison)
+	function get_sites($setting_site_manager_site_comparison_multisite, $setting_site_manager_site_comparison)
 	{
-		if($setting_site_manager_site_comparison != '')
+		if($setting_site_manager_site_comparison_multisite > 0)
 		{
-			$this->arr_sites = array_map('trim', explode(",", $setting_site_manager_site_comparison));
+			$this->arr_sites = [];
+
+			$result = get_sites(array('ID' => $setting_site_manager_site_comparison_multisite));
+
+			foreach($result as $r)
+			{
+				$this->arr_sites[0] = trim($r->domain.$r->path, "/");
+
+				$site = $this->arr_sites[0];
+
+				switch_to_blog($r->blog_id);
+
+				$obj_site_manager = new mf_site_manager();
+				$obj_site_manager->get_content_versions();
+
+				$this->arr_core[$site] = $obj_site_manager->arr_core['this'];
+				$this->arr_themes[$site] = $obj_site_manager->arr_themes['this'];
+				$this->arr_plugins[$site] = $obj_site_manager->arr_plugins['this'];
+
+				restore_current_blog();
+				break;
+			}
 		}
 
-		$count_temp = count($this->arr_sites);
-
-		if($count_temp > 0)
+		else
 		{
+			if($setting_site_manager_site_comparison != '')
+			{
+				$this->arr_sites = array_map('trim', explode(",", $setting_site_manager_site_comparison));
+			}
+
+			$count_temp = count($this->arr_sites);
+
 			for($i = 0; $i < $count_temp; $i++)
 			{
-				$this->arr_sites[$i] = $site = $this->arr_sites[$i];
+				$site = $this->arr_sites[$i]; //$this->arr_sites[$i] = 
 				$site_ajax = $site.$this->compare_uri;
 
 				list($content, $headers) = get_url_content(array('url' => $site_ajax, 'catch_head' => true));
