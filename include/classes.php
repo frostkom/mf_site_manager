@@ -2078,6 +2078,12 @@ class mf_site_manager
 	function count_uploads_callback($data)
 	{
 		$this->uploads_amount++;
+
+		if($this->uploads_amount % 100 == 0)
+		{
+			sleep(1);
+			set_time_limit(60);
+		}
 	}
 
 	function get_block_parts($theme_slug)
@@ -2118,10 +2124,24 @@ class mf_site_manager
 	{
 		global $wpdb;
 
-		list($upload_path, $upload_url) = get_uploads_folder();
-
 		$this->uploads_amount = 0;
+
+		/*list($upload_path, $upload_url) = get_uploads_folder();
+
+		if(IS_SUPER_ADMIN)
+		{
+			echo "<p>".__FUNCTION__.": ".$upload_path."</p>";
+		}
+
 		get_file_info(array('path' => $upload_path, 'callback' => array($this, 'count_uploads_callback')));
+
+		if(IS_SUPER_ADMIN)
+		{
+			echo "<p>".__FUNCTION__.": ".$this->uploads_amount."</p>";
+		}*/
+
+		$wpdb->get_results($wpdb->prepare("SELECT ID FROM ".$wpdb->posts." WHERE post_type = %s", 'attachment'));
+		$this->uploads_amount = $wpdb->num_rows;
 
 		$this->arr_core['this'] = array(
 			'version' => get_bloginfo('version'),
@@ -2369,11 +2389,6 @@ class mf_site_manager
 		{
 			case 'themes':
 				$array = $this->arr_themes;
-
-				if(IS_SUPER_ADMIN)
-				{
-					//$out .= "Test ".__LINE__.": ".var_export($array, true);
-				}
 			break;
 
 			case 'plugins':
