@@ -2745,7 +2745,57 @@ class mf_site_manager
 																		."</div>
 																	</form>";*/
 
-																	$out_li_temp .= "<p class='italic'>".sprintf(__("You have to add the template in the %seditor%s first. Then you can update from the source site.", 'lang_site_manager'), "<a href='".admin_url("site-editor.php?p=/template")."'>", "</a>")."</p>";
+																	$theme_slug = get_stylesheet();
+																	$template_id = $theme_slug.'//'.$key_all;
+																	$template = get_block_template($template_id, 'wp_template');
+
+																	$post_id = 0;
+
+																	if ( ! $template ) {
+																		//return false; // No such template file, and nothing in the DB either.
+																	}
+
+																	else if ( 'custom' === $template->source ) {
+																		//return false; // Already customized in the DB — nothing to do.
+																	}
+
+																	else
+																	{
+																		$post_id = wp_insert_post(array(
+																			'post_type' => $arr_value_remote['post_type'],
+																			'post_name' => $key_all,
+																			'post_title'   => ($template->title ?: $key_all),
+																			'post_content' => $template->content,
+																			'post_excerpt' => ($template->description ?: ''),
+																			'post_status'  => 'publish',
+																		));
+																	}
+
+																	if ( $post_id > 0 && ! is_wp_error( $post_id ) )
+																	{
+																		// Make sure the wp_theme taxonomy term exists for this theme.
+																		if ( ! term_exists( $theme_slug, 'wp_theme' ) )
+																		{
+																			wp_insert_term( $theme_slug, 'wp_theme' );
+																		}
+
+																		wp_set_object_terms( $post_id, $theme_slug, 'wp_theme' );
+
+																		$out_li_temp .= "<p class='italic'>".__("The template was created. Reload the page to update from the source.", 'lang_site_manager')."</p>";
+																	}
+
+																	else
+																	{
+																		//$out_li_temp .= "<p class='italic'>".sprintf(__("You have to add the template in the %seditor%s first. Then you can update from the source site.", 'lang_site_manager'), "<a href='".admin_url("site-editor.php?p=/".$arr_value_remote['post_type']."/".$theme_slug."//".$key_all."&canvas=edit")."'>", "</a>")."</p>";
+																		$out_li_temp .= "<p class='italic'>".sprintf(__("You have to add the template in the %seditor%s first. Then you can update from the source site.", 'lang_site_manager'), "<a href='".admin_url("site-editor.php?p=/template")."'>", "</a>")."</p>";
+
+																		/*$result = $wpdb->get_results($wpdb->prepare("SELECT * FROM ".$wpdb->posts." WHERE post_type = %s ORDER BY post_date DESC LIMIT 0, 1", $arr_value_remote['post_type']));
+
+																		foreach($result as $r)
+																		{
+																			$out_li_temp .= "<p>".var_export($result, true)."</p>";
+																		}*/
+																	}
 																}
 
 																else
