@@ -563,6 +563,8 @@ class mf_site_manager
 
 	function settings_site_manager()
 	{
+		global $wpdb;
+
 		if(IS_SUPER_ADMIN)
 		{
 			$options_area = __FUNCTION__;
@@ -570,6 +572,16 @@ class mf_site_manager
 			add_settings_section($options_area, "", array($this, $options_area.'_callback'), BASE_OPTIONS_PAGE);
 
 			$arr_settings = [];
+
+			if(IS_SUPER_ADMIN)
+			{
+				if(is_multisite())
+				{
+					$arr_settings['setting_site_manager_network_admin_email'] = __("Network Admin E-mail", 'lang_site_manager');
+				}
+
+				$arr_settings['setting_site_manager_admin_email'] = __("Admin E-mail", 'lang_site_manager');
+			}
 
 			if(is_multisite() == false)
 			{
@@ -580,7 +592,7 @@ class mf_site_manager
 			$arr_settings['setting_site_manager_server_ip_target'] = __("Target Server IP", 'lang_site_manager');
 			$arr_settings['setting_site_manager_server_ips_allowed'] = __("Server IPs allowed", 'lang_site_manager');
 
-			if(is_multisite())
+			if(is_multisite() && count($this->get_sites_for_select(array('exclude' => $wpdb->blogid))) > 1)
 			{
 				$arr_settings['setting_site_manager_site_comparison_multisite'] = __("Site to compare with", 'lang_site_manager');
 			}
@@ -605,6 +617,44 @@ class mf_site_manager
 
 		echo settings_header($setting_key, __("Site Manager", 'lang_site_manager'));
 	}
+
+		function setting_site_manager_network_admin_email_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
+
+			$admin_email = get_site_option('admin_email');
+
+			echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => $admin_email));
+
+			if($option != '' && $option != $admin_email)
+			{
+				update_site_option('admin_email', $option);
+				delete_site_option('new_admin_email');
+				delete_option($setting_key);
+
+				echo "Changed ".$admin_email." -> ".$option;
+			}
+		}
+
+		function setting_site_manager_admin_email_callback()
+		{
+			$setting_key = get_setting_key(__FUNCTION__);
+			$option = get_option($setting_key);
+
+			$admin_email = get_option('admin_email');
+
+			echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => $admin_email));
+
+			if($option != '' && $option != $admin_email)
+			{
+				update_option('admin_email', $option);
+				delete_option('new_admin_email');
+				delete_option($setting_key);
+
+				echo "Changed ".$admin_email." -> ".$option;
+			}
+		}
 
 		function setting_site_manager_multisite_callback()
 		{
