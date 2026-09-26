@@ -625,16 +625,17 @@ class mf_site_manager
 
 			$admin_email = get_site_option('admin_email');
 
-			echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => $admin_email));
-
 			if($option != '' && $option != $admin_email)
 			{
 				update_site_option('admin_email', $option);
 				delete_site_option('new_admin_email');
 				delete_option($setting_key);
 
-				echo "Changed ".$admin_email." -> ".$option;
+				$option = "";
+				$admin_email = get_site_option('admin_email');
 			}
+
+			echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => $admin_email));
 		}
 
 		function setting_site_manager_admin_email_callback()
@@ -644,16 +645,17 @@ class mf_site_manager
 
 			$admin_email = get_option('admin_email');
 
-			echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => $admin_email));
-
 			if($option != '' && $option != $admin_email)
 			{
 				update_option('admin_email', $option);
 				delete_option('new_admin_email');
 				delete_option($setting_key);
 
-				echo "Changed ".$admin_email." -> ".$option;
+				$option = "";
+				$admin_email = get_option('admin_email');
 			}
+
+			echo show_textfield(array('name' => $setting_key, 'value' => $option, 'placeholder' => $admin_email));
 		}
 
 		function setting_site_manager_multisite_callback()
@@ -788,8 +790,8 @@ class mf_site_manager
 				}
 			}
 
-			$menu_title = __("Change URL", 'lang_site_manager');
-			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."change/index.php");
+			/*$menu_title = __("Change URL", 'lang_site_manager');
+			add_submenu_page($menu_start, $menu_title, $menu_title, $menu_capability, $menu_root."change/index.php");*/
 		}
 
 		if(IS_EDITOR)
@@ -3304,7 +3306,7 @@ class mf_site_manager
 
 	function admin_footer()
 	{
-		if(is_multisite())
+		/*if(is_multisite())
 		{
 			$screen = get_current_screen();
 
@@ -3316,7 +3318,7 @@ class mf_site_manager
 
 				mf_enqueue_script('script_site_manager_url', $plugin_include_url."script_wp_url.js", array('change_url_link' => get_admin_url($blog_id, "admin.php?page=mf_site_manager/change/index.php"), 'change_url_text' => __("Change URL", 'lang_site_manager')));
 			}
-		}
+		}*/
 
 		$this->wp_footer();
 	}
