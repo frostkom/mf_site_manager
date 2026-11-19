@@ -295,15 +295,31 @@ class mf_site_manager
 		return $arr_out;
 	}
 
+	function is_development_site()
+	{
+		$http_host = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '' ? $_SERVER['HTTP_HOST'] : get_site_url());
+
+		return ($http_host != '' && preg_match($this->development_regexp, $http_host));
+	}
+
+	function display_development_badge()
+	{
+		$plugin_include_url = plugin_dir_url(__FILE__);
+		mf_enqueue_style('style_site_manager_dev', $plugin_include_url."style_dev.css");
+
+		$this->footer_output .= "<a href='".admin_url()."' class='dev_site'>".__("Development Site", 'lang_site_manager')."</a>";
+	}
+
 	function init()
 	{
 		load_plugin_textdomain('lang_site_manager', false, str_replace("/include", "", dirname(plugin_basename(__FILE__)))."/lang/");
 
-		$http_host = (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '' ? $_SERVER['HTTP_HOST'] : get_site_url());
-
-		if($http_host != '' && preg_match($this->development_regexp, $http_host))
+		if($this->is_development_site())
 		{
-			$this->is_dev_site();
+			add_filter('auto_update_plugin', '__return_true');
+			add_filter('auto_update_theme', '__return_true');
+
+			$this->display_development_badge();
 		}
 	}
 
@@ -3365,14 +3381,6 @@ class mf_site_manager
 		{
 			echo $this->footer_output;
 		}
-	}
-
-	function is_dev_site()
-	{
-		$plugin_include_url = plugin_dir_url(__FILE__);
-		mf_enqueue_style('style_site_manager_dev', $plugin_include_url."style_dev.css");
-
-		$this->footer_output .= "<a href='".admin_url()."' class='dev_site'>".__("Development Site", 'lang_site_manager')."</a>";
 	}
 
 	function option_blogname($value, $option)
