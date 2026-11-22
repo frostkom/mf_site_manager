@@ -2,6 +2,7 @@
 
 if(!defined('ABSPATH'))
 {
+	nocache_headers();
 	header('Content-Type: application/json');
 
 	$folder = str_replace("/wp-content/plugins/mf_site_manager/include/api", "/", dirname(__FILE__));
